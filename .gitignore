@@ -1,0 +1,4 @@
+.prism.log
+dist/
+/mercury
+*.exe
