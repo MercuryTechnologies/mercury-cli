@@ -14,7 +14,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/stainless-sdks/mercury-cli/internal/jsonview"
+	"github.com/MercuryTechnologies/mercury-cli/internal/jsonview"
 	"github.com/stainless-sdks/mercury-go/option"
 
 	"github.com/charmbracelet/x/term"

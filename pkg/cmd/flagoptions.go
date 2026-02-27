@@ -14,10 +14,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/stainless-sdks/mercury-cli/internal/apiform"
-	"github.com/stainless-sdks/mercury-cli/internal/apiquery"
-	"github.com/stainless-sdks/mercury-cli/internal/debugmiddleware"
-	"github.com/stainless-sdks/mercury-cli/internal/requestflag"
+	"github.com/MercuryTechnologies/mercury-cli/internal/apiform"
+	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
+	"github.com/MercuryTechnologies/mercury-cli/internal/debugmiddleware"
+	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 	"github.com/stainless-sdks/mercury-go/option"
 
 	"github.com/goccy/go-yaml"
