@@ -5,7 +5,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/stainless-sdks/mercury-cli/internal/mocktest"
+	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
 func TestWebhooksDelete(t *testing.T) {
