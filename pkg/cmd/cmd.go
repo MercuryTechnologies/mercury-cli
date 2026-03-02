@@ -73,19 +73,19 @@ func init() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:     "ar:customers",
+				Name:     "accounts-recievable:customers",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&arCustomersDelete,
+					&accountsRecievableCustomersDelete,
 				},
 			},
 			{
-				Name:     "ar:invoices",
+				Name:     "accounts-recievable:invoices",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&arInvoicesCancel,
+					&accountsRecievableInvoicesCancel,
 				},
 			},
 			{
