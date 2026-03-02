@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var arCustomersDelete = cli.Command{
+var accountsRecievableCustomersDelete = cli.Command{
 	Name:    "delete",
 	Usage:   "Delete a customer. This action cannot be undone.",
 	Suggest: true,
@@ -23,11 +23,11 @@ var arCustomersDelete = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleArCustomersDelete,
+	Action:          handleAccountsRecievableCustomersDelete,
 	HideHelpCommand: true,
 }
 
-func handleArCustomersDelete(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsRecievableCustomersDelete(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
@@ -49,5 +49,5 @@ func handleArCustomersDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Ar.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
+	return client.AccountsRecievable.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
 }

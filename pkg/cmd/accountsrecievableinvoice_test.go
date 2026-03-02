@@ -8,11 +8,11 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
-func TestArInvoicesCancel(t *testing.T) {
+func TestAccountsRecievableInvoicesCancel(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	mocktest.TestRunMockTestWithFlags(
 		t,
-		"ar:invoices", "cancel",
+		"accounts-recievable:invoices", "cancel",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }

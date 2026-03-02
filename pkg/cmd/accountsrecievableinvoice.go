@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var arInvoicesCancel = cli.Command{
+var accountsRecievableInvoicesCancel = cli.Command{
 	Name:    "cancel",
 	Usage:   "Cancel an invoice. This action cannot be undone.",
 	Suggest: true,
@@ -23,11 +23,11 @@ var arInvoicesCancel = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleArInvoicesCancel,
+	Action:          handleAccountsRecievableInvoicesCancel,
 	HideHelpCommand: true,
 }
 
-func handleArInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsRecievableInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -49,5 +49,5 @@ func handleArInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Ar.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
+	return client.AccountsRecievable.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
 }
