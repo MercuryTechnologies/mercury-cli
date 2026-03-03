@@ -5,12 +5,127 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 	"github.com/stainless-sdks/mercury-go"
+	"github.com/stainless-sdks/mercury-go/option"
+	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
+
+var webhooksCreate = cli.Command{
+	Name:    "create",
+	Usage:   "Register a new webhook endpoint to receive event notifications",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "url",
+			Usage:    " The URL to which webhook events will be delivered",
+			Required: true,
+			BodyPath: "url",
+		},
+		&requestflag.Flag[any]{
+			Name:     "event-type",
+			Usage:    " Optional array of event types to subscribe to. Nothing means subscribe to all event types.",
+			BodyPath: "eventTypes",
+		},
+		&requestflag.Flag[any]{
+			Name:     "filter-path",
+			Usage:    " Optional array of resource field paths to filter events by. When specified, webhook events will only be sent when one of these fields changes. Nothing means no filtering (all events are sent).",
+			BodyPath: "filterPaths",
+		},
+	},
+	Action:          handleWebhooksCreate,
+	HideHelpCommand: true,
+}
+
+var webhooksRetrieve = cli.Command{
+	Name:    "retrieve",
+	Usage:   "Retrieve details of a specific webhook endpoint by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "webhook-endpoint-id",
+			Usage:    "ID for the webhook",
+			Required: true,
+		},
+	},
+	Action:          handleWebhooksRetrieve,
+	HideHelpCommand: true,
+}
+
+var webhooksUpdate = cli.Command{
+	Name:    "update",
+	Usage:   "Update the configuration of an existing webhook endpoint. A webhook that has\nbeen disabled due to consecutive delivery failures can be reactivated by setting\nits status to 'active'.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "webhook-endpoint-id",
+			Usage:    "ID for the webhook",
+			Required: true,
+		},
+		&requestflag.Flag[any]{
+			Name:     "event-type",
+			Usage:    " Event types to subscribe to. Send null to subscribe to all event types. Send an array to subscribe to specific types. Omit to leave unchanged.",
+			BodyPath: "eventTypes",
+		},
+		&requestflag.Flag[any]{
+			Name:     "filter-path",
+			Usage:    " Resource field paths to filter events by. When specified, webhook events will only be sent when one of these fields changes. Send null for no filtering. Send an array to filter by specific fields. Omit to leave unchanged.",
+			BodyPath: "filterPaths",
+		},
+		&requestflag.Flag[any]{
+			Name:     "status",
+			Usage:    " Webhook status. Only 'active' and 'paused' values are allowed. Omit to leave unchanged.",
+			BodyPath: "status",
+		},
+		&requestflag.Flag[any]{
+			Name:     "url",
+			Usage:    " The URL to which webhook events will be delivered. Omit to leave unchanged.",
+			BodyPath: "url",
+		},
+	},
+	Action:          handleWebhooksUpdate,
+	HideHelpCommand: true,
+}
+
+var webhooksList = cli.Command{
+	Name:    "list",
+	Usage:   "Retrieve a paginated list of all webhook endpoints for your organization.\nSupports filtering by status.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "end-before",
+			Usage:     "The ID of the webhook to end the page before (exclusive). When provided, results will end just before this ID and work backwards. Use this for reverse pagination or to retrieve previous pages. Cannot be combined with start_after.",
+			QueryPath: "end_before",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "limit",
+			Usage:     "Maximum number of results to return. Allowed range: 1 to 1000. Defaults to 1000",
+			Default:   1000,
+			QueryPath: "limit",
+		},
+		&requestflag.Flag[string]{
+			Name:      "order",
+			Usage:     "Sort order. Can be 'asc' or 'desc'. Defaults to 'asc'",
+			Default:   "asc",
+			QueryPath: "order",
+		},
+		&requestflag.Flag[string]{
+			Name:      "start-after",
+			Usage:     "The ID of the webhook to start the page after (exclusive). When provided, results will begin with the webhook immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
+			QueryPath: "start_after",
+		},
+		&requestflag.Flag[[]string]{
+			Name:      "status",
+			QueryPath: "status",
+		},
+	},
+	Action:          handleWebhooksList,
+	HideHelpCommand: true,
+}
 
 var webhooksDelete = cli.Command{
 	Name:    "delete",
@@ -45,6 +160,155 @@ var webhooksVerify = cli.Command{
 	},
 	Action:          handleWebhooksVerify,
 	HideHelpCommand: true,
+}
+
+func handleWebhooksCreate(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.WebhookNewParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Webhooks.New(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "webhooks create", obj, format, transform)
+}
+
+func handleWebhooksRetrieve(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("webhook-endpoint-id") && len(unusedArgs) > 0 {
+		cmd.Set("webhook-endpoint-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Webhooks.Get(ctx, cmd.Value("webhook-endpoint-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "webhooks retrieve", obj, format, transform)
+}
+
+func handleWebhooksUpdate(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("webhook-endpoint-id") && len(unusedArgs) > 0 {
+		cmd.Set("webhook-endpoint-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.WebhookUpdateParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Webhooks.Update(
+		ctx,
+		cmd.Value("webhook-endpoint-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "webhooks update", obj, format, transform)
+}
+
+func handleWebhooksList(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.WebhookListParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	if format == "raw" {
+		var res []byte
+		options = append(options, option.WithResponseBodyInto(&res))
+		_, err = client.Webhooks.List(ctx, params, options...)
+		if err != nil {
+			return err
+		}
+		obj := gjson.ParseBytes(res)
+		return ShowJSON(os.Stdout, "webhooks list", obj, format, transform)
+	} else {
+		iter := client.Webhooks.ListAutoPaging(ctx, params, options...)
+		return ShowJSONIterator(os.Stdout, "webhooks list", iter, format, transform)
+	}
 }
 
 func handleWebhooksDelete(ctx context.Context, cmd *cli.Command) error {
