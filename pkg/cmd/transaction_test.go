@@ -13,6 +13,7 @@ func TestTransactionsRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"transactions", "retrieve",
+		"--api-key", "string",
 		"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -22,6 +23,7 @@ func TestTransactionsUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"transactions", "update",
+		"--api-key", "string",
 		"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--category-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--note", "note",
@@ -33,6 +35,7 @@ func TestTransactionsList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"transactions", "list",
+		"--api-key", "string",
 		"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--category-id", "categoryId",
 		"--end", "end",
@@ -55,8 +58,9 @@ func TestTransactionsUploadAttachment(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"transactions", "upload-attachment",
+		"--api-key", "string",
 		"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		"--file", "",
+		"--file", "...",
 		"--attachment-type", "receipt",
 	)
 }

@@ -14,13 +14,14 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "create",
+		"--api-key", "string",
 		"--ach-debit-enabled=true",
 		"--cc-email", "string",
 		"--credit-card-enabled=true",
 		"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		"--due-date", "2016-07-22",
-		"--invoice-date", "2016-07-22",
+		"--due-date", "'2016-07-22'",
+		"--invoice-date", "'2016-07-22'",
 		"--line-item", "{name: name, quantity: 0, unitPrice: 0, salesTaxRate: 0}",
 		"--use-real-account-number=true",
 		"--internal-note", "internalNote",
@@ -28,8 +29,8 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 		"--payer-memo", "payerMemo",
 		"--po-number", "poNumber",
 		"--send-email-option", "DontSend",
-		"--service-period-end-date", "2016-07-22",
-		"--service-period-start-date", "2016-07-22",
+		"--service-period-end-date", "'2016-07-22'",
+		"--service-period-start-date", "'2016-07-22'",
 	)
 
 	// Check that inner flags have been set up correctly
@@ -44,8 +45,8 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 		"--credit-card-enabled=true",
 		"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		"--due-date", "2016-07-22",
-		"--invoice-date", "2016-07-22",
+		"--due-date", "'2016-07-22'",
+		"--invoice-date", "'2016-07-22'",
 		"--line-item.name", "name",
 		"--line-item.quantity", "0",
 		"--line-item.unit-price", "0",
@@ -56,8 +57,8 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 		"--payer-memo", "payerMemo",
 		"--po-number", "poNumber",
 		"--send-email-option", "DontSend",
-		"--service-period-end-date", "2016-07-22",
-		"--service-period-start-date", "2016-07-22",
+		"--service-period-end-date", "'2016-07-22'",
+		"--service-period-start-date", "'2016-07-22'",
 	)
 }
 
@@ -66,6 +67,7 @@ func TestAccountsRecievableInvoicesRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "retrieve",
+		"--api-key", "string",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -75,20 +77,21 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "update",
+		"--api-key", "string",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--ach-debit-enabled=true",
 		"--cc-email", "string",
 		"--credit-card-enabled=true",
-		"--due-date", "2016-07-22",
-		"--invoice-date", "2016-07-22",
+		"--due-date", "'2016-07-22'",
+		"--invoice-date", "'2016-07-22'",
 		"--invoice-number", "invoiceNumber",
 		"--line-item", "{name: name, quantity: 0, unitPrice: 0, salesTaxRate: 0}",
 		"--use-real-account-number=true",
 		"--internal-note", "internalNote",
 		"--payer-memo", "payerMemo",
 		"--po-number", "poNumber",
-		"--service-period-end-date", "2016-07-22",
-		"--service-period-start-date", "2016-07-22",
+		"--service-period-end-date", "'2016-07-22'",
+		"--service-period-start-date", "'2016-07-22'",
 	)
 
 	// Check that inner flags have been set up correctly
@@ -102,8 +105,8 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 		"--ach-debit-enabled=true",
 		"--cc-email", "string",
 		"--credit-card-enabled=true",
-		"--due-date", "2016-07-22",
-		"--invoice-date", "2016-07-22",
+		"--due-date", "'2016-07-22'",
+		"--invoice-date", "'2016-07-22'",
 		"--invoice-number", "invoiceNumber",
 		"--line-item.name", "name",
 		"--line-item.quantity", "0",
@@ -113,8 +116,8 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 		"--internal-note", "internalNote",
 		"--payer-memo", "payerMemo",
 		"--po-number", "poNumber",
-		"--service-period-end-date", "2016-07-22",
-		"--service-period-start-date", "2016-07-22",
+		"--service-period-end-date", "'2016-07-22'",
+		"--service-period-start-date", "'2016-07-22'",
 	)
 }
 
@@ -123,6 +126,7 @@ func TestAccountsRecievableInvoicesList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "list",
+		"--api-key", "string",
 		"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--limit", "1",
 		"--order", "asc",
@@ -135,6 +139,7 @@ func TestAccountsRecievableInvoicesCancel(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "cancel",
+		"--api-key", "string",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -144,6 +149,7 @@ func TestAccountsRecievableInvoicesListAttachments(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "list-attachments",
+		"--api-key", "string",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }

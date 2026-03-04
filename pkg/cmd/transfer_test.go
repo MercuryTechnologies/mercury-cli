@@ -13,6 +13,7 @@ func TestTransferCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"transfer", "create",
+		"--api-key", "string",
 		"--amount", "0.01",
 		"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--idempotency-key", "idempotencyKey",
