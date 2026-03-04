@@ -118,6 +118,7 @@ func init() {
 					&accountsRecievableInvoicesUpdate,
 					&accountsRecievableInvoicesList,
 					&accountsRecievableInvoicesCancel,
+					&accountsRecievableInvoicesDownloadPdf,
 					&accountsRecievableInvoicesListAttachments,
 				},
 			},
@@ -169,6 +170,15 @@ func init() {
 				Commands: []*cli.Command{
 					&safesRetrieve,
 					&safesList,
+					&safesDownloadDocument,
+				},
+			},
+			{
+				Name:     "statements",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsDownloadPdf,
 				},
 			},
 			{
