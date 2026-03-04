@@ -13,5 +13,6 @@ func TestOrganizationRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"organization", "retrieve",
+		"--api-key", "string",
 	)
 }

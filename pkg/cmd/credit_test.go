@@ -13,5 +13,6 @@ func TestCreditList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"credit", "list",
+		"--api-key", "string",
 	)
 }
