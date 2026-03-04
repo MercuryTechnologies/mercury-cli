@@ -310,6 +310,26 @@ var accountsRecievableInvoicesCancel = cli.Command{
 	HideHelpCommand: true,
 }
 
+var accountsRecievableInvoicesDownloadPdf = cli.Command{
+	Name:    "download-pdf",
+	Usage:   "Downloads a PDF file for the specified invoice. The response includes a\nContent-Disposition header set to 'attachment' with the filename.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "invoice-id",
+			Usage:    "ID for the invoice.",
+			Required: true,
+		},
+		&requestflag.Flag[string]{
+			Name:    "output",
+			Aliases: []string{"o"},
+			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
+		},
+	},
+	Action:          handleAccountsRecievableInvoicesDownloadPdf,
+	HideHelpCommand: true,
+}
+
 var accountsRecievableInvoicesListAttachments = cli.Command{
 	Name:    "list-attachments",
 	Usage:   "Retrieve a list of all attachments for a specific invoice",
@@ -497,6 +517,39 @@ func handleAccountsRecievableInvoicesCancel(ctx context.Context, cmd *cli.Comman
 	}
 
 	return client.AccountsRecievable.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
+}
+
+func handleAccountsRecievableInvoicesDownloadPdf(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
+		cmd.Set("invoice-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	response, err := client.AccountsRecievable.Invoices.DownloadPdf(ctx, cmd.Value("invoice-id").(string), options...)
+	if err != nil {
+		return err
+	}
+	message, err := writeBinaryResponse(response, cmd.String("output"))
+	if message != "" {
+		fmt.Println(message)
+	}
+	return err
 }
 
 func handleAccountsRecievableInvoicesListAttachments(ctx context.Context, cmd *cli.Command) error {
