@@ -13,6 +13,7 @@ func TestUsersRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"users", "retrieve",
+		"--api-key", "string",
 		"--user-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -22,6 +23,7 @@ func TestUsersList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"users", "list",
+		"--api-key", "string",
 		"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--limit", "1",
 		"--order", "asc",

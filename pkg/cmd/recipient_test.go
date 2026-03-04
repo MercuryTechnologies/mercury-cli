@@ -14,6 +14,7 @@ func TestRecipientsCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "create",
+		"--api-key", "string",
 		"--email", "string",
 		"--name", "name",
 		"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
@@ -57,6 +58,7 @@ func TestRecipientsRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "retrieve",
+		"--api-key", "string",
 		"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -66,6 +68,7 @@ func TestRecipientsUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "update",
+		"--api-key", "string",
 		"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
 		"--check-info", "{address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}}",
@@ -111,6 +114,7 @@ func TestRecipientsList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "list",
+		"--api-key", "string",
 		"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--limit", "1",
 		"--order", "asc",
@@ -123,6 +127,7 @@ func TestRecipientsListAttachments(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "list-attachments",
+		"--api-key", "string",
 		"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--limit", "1",
 		"--order", "asc",
@@ -135,7 +140,8 @@ func TestRecipientsUploadAttachment(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "upload-attachment",
+		"--api-key", "string",
 		"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		"--file", "",
+		"--file", "...",
 	)
 }

@@ -13,6 +13,7 @@ func TestWebhooksCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "create",
+		"--api-key", "string",
 		"--url", "url",
 		"--event-type", "[transaction.created]",
 		"--filter-path", "[transaction.amount]",
@@ -24,6 +25,7 @@ func TestWebhooksRetrieve(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "retrieve",
+		"--api-key", "string",
 		"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -33,6 +35,7 @@ func TestWebhooksUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "update",
+		"--api-key", "string",
 		"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--event-type", "[transaction.created]",
 		"--filter-path", "[transaction.amount]",
@@ -46,6 +49,7 @@ func TestWebhooksList(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "list",
+		"--api-key", "string",
 		"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--limit", "1",
 		"--order", "asc",
@@ -59,6 +63,7 @@ func TestWebhooksDelete(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "delete",
+		"--api-key", "string",
 		"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 }
@@ -68,6 +73,7 @@ func TestWebhooksVerify(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"webhooks", "verify",
+		"--api-key", "string",
 		"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--event-type", "transaction.created",
 	)
