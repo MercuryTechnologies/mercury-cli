@@ -83,6 +83,7 @@ func TestWebhooksList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "webhooks", "list",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
 			"--order", "asc",

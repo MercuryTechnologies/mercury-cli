@@ -42,6 +42,10 @@ var treasuryList = cli.Command{
 			Usage:     "The ID of the account to start the page after (exclusive). When provided, results will begin with the account immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
 		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
 	},
 	Action:          handleTreasuryList,
 	HideHelpCommand: true,
@@ -83,6 +87,10 @@ var treasuryRetrieveStatements = cli.Command{
 			Name:      "start-after",
 			Usage:     "The ID of the statement to start the page after (exclusive). When provided, results will begin with the statement immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
+		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
 	Action:          handleTreasuryRetrieveStatements,
@@ -155,7 +163,11 @@ func handleTreasuryList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(os.Stdout, "treasury list", obj, format, transform)
 	} else {
 		iter := client.Treasury.ListAutoPaging(ctx, params, options...)
-		return ShowJSONIterator(os.Stdout, "treasury list", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "treasury list", iter, format, transform, maxItems)
 	}
 }
 
@@ -206,7 +218,11 @@ func handleTreasuryRetrieveStatements(ctx context.Context, cmd *cli.Command) err
 			params,
 			options...,
 		)
-		return ShowJSONIterator(os.Stdout, "treasury retrieve-statements", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "treasury retrieve-statements", iter, format, transform, maxItems)
 	}
 }
 
