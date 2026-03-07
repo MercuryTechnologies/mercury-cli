@@ -1,6 +1,7 @@
 package mocktest
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net"
@@ -54,8 +55,14 @@ func restoreNetwork(origClient, origDefault http.RoundTripper) {
 }
 
 // TestRunMockTestWithFlags runs a test against a mock server with the provided
-// CLI flags and ensures it succeeds
-func TestRunMockTestWithFlags(t *testing.T, flags ...string) {
+// CLI args and ensures it succeeds
+func TestRunMockTestWithFlags(t *testing.T, args ...string) {
+	TestRunMockTestWithPipeAndFlags(t, nil, args...)
+}
+
+// TestRunMockTestWithPipeAndFlags runs a test against a mock server with the provided
+// data piped over stdin and CLI args and ensures it succeeds
+func TestRunMockTestWithPipeAndFlags(t *testing.T, pipeData []byte, args ...string) {
 	origClient, origDefault := blockNetworkExceptMockServer()
 	defer restoreNetwork(origClient, origDefault)
 
@@ -71,14 +78,14 @@ func TestRunMockTestWithFlags(t *testing.T, flags ...string) {
 	_, filename, _, ok := runtime.Caller(0)
 	require.True(t, ok, "Could not get current file path")
 	dirPath := filepath.Dir(filename)
-	project := filepath.Join(dirPath, "..", "..", "cmd", "...")
+	project := filepath.Join(dirPath, "..", "..", "cmd", "mercury")
 
-	args := []string{"run", project, "--base-url", mockServerURL.String()}
-	args = append(args, flags...)
+	args = append([]string{"run", project, "--base-url", mockServerURL.String()}, args...)
 
-	t.Logf("Testing command: mercury %s", strings.Join(args[4:], " "))
+	t.Logf("Testing command: go run ./cmd/mercury %s", strings.Join(args[2:], " "))
 
 	cliCmd := exec.Command("go", args...)
+	cliCmd.Stdin = bytes.NewReader(pipeData)
 
 	// Pipe the CLI tool's output into `head` so it doesn't hang when simulating
 	// paginated or streamed endpoints. 100 lines of output should be enough to
