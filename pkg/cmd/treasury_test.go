@@ -14,6 +14,7 @@ func TestTreasuryList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "treasury", "list",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
 			"--order", "asc",
@@ -28,6 +29,7 @@ func TestTreasuryRetrieveStatements(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "treasury", "retrieve-statements",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--treasury-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--document-type", "MonthlyStatement",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

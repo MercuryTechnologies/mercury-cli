@@ -65,6 +65,10 @@ var eventsList = cli.Command{
 			Usage:     "The ID of the event to start the page after (exclusive). When provided, results will begin with the event immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
 		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
 	},
 	Action:          handleEventsList,
 	HideHelpCommand: true,
@@ -139,6 +143,10 @@ func handleEventsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(os.Stdout, "events list", obj, format, transform)
 	} else {
 		iter := client.Events.ListAutoPaging(ctx, params, options...)
-		return ShowJSONIterator(os.Stdout, "events list", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "events list", iter, format, transform, maxItems)
 	}
 }

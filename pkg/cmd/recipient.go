@@ -290,6 +290,10 @@ var recipientsList = cli.Command{
 			Usage:     "The ID of the recipient to start the page after (exclusive). When provided, results will begin with the recipient immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
 		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
 	},
 	Action:          handleRecipientsList,
 	HideHelpCommand: true,
@@ -321,6 +325,10 @@ var recipientsListAttachments = cli.Command{
 			Name:      "start-after",
 			Usage:     "The ID of the recipient attachment to start the page after (exclusive). When provided, results will begin with the recipient attachment immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
+		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
 	Action:          handleRecipientsListAttachments,
@@ -492,7 +500,11 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(os.Stdout, "recipients list", obj, format, transform)
 	} else {
 		iter := client.Recipients.ListAutoPaging(ctx, params, options...)
-		return ShowJSONIterator(os.Stdout, "recipients list", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "recipients list", iter, format, transform, maxItems)
 	}
 }
 
@@ -530,7 +542,11 @@ func handleRecipientsListAttachments(ctx context.Context, cmd *cli.Command) erro
 		return ShowJSON(os.Stdout, "recipients list-attachments", obj, format, transform)
 	} else {
 		iter := client.Recipients.ListAttachmentsAutoPaging(ctx, params, options...)
-		return ShowJSONIterator(os.Stdout, "recipients list-attachments", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "recipients list-attachments", iter, format, transform, maxItems)
 	}
 }
 

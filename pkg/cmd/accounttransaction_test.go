@@ -15,6 +15,7 @@ func TestAccountTransactionsList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "account:transactions", "list",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--category-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--end", "end",

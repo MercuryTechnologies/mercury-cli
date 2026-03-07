@@ -25,6 +25,7 @@ func TestAccountList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "account", "list",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
 			"--order", "asc",
@@ -50,6 +51,7 @@ func TestAccountListStatements(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t, "account", "list-statements",
 			"--api-key", "string",
+			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--end", "end",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
