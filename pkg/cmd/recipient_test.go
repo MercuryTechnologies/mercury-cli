@@ -32,6 +32,7 @@ func TestRecipientsCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "create",
+		"--api-key", "string",
 		"--email", "string",
 		"--name", "name",
 		"--address.address1", "address1",
@@ -87,6 +88,7 @@ func TestRecipientsUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"recipients", "update",
+		"--api-key", "string",
 		"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--address.address1", "address1",
 		"--address.city", "city",

@@ -52,6 +52,7 @@ func TestAccountTransactionsSend(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"account:transactions", "send",
+		"--api-key", "string",
 		"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--amount", "0.01",
 		"--idempotency-key", "idempotencyKey",
