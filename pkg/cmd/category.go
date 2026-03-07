@@ -42,6 +42,10 @@ var categoriesList = cli.Command{
 			Usage:     "The ID of the category to start the page after (exclusive). When provided, results will begin with the category immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
 		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
 	},
 	Action:          handleCategoriesList,
 	HideHelpCommand: true,
@@ -81,6 +85,10 @@ func handleCategoriesList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(os.Stdout, "categories list", obj, format, transform)
 	} else {
 		iter := client.Categories.ListAutoPaging(ctx, params, options...)
-		return ShowJSONIterator(os.Stdout, "categories list", iter, format, transform)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "categories list", iter, format, transform, maxItems)
 	}
 }
