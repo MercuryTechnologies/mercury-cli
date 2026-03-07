@@ -76,14 +76,16 @@ func TestTransactionsUploadAttachment(t *testing.T) {
 			t, "transactions", "upload-attachment",
 			"--api-key", "string",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--file", "...",
+			"--file", "Example data",
 			"--attachment-type", "receipt",
 		)
 	})
 
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
-		pipeData := []byte("attachmentType: receipt")
+		pipeData := []byte("" +
+			"file: Example data\n" +
+			"attachmentType: receipt\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData, "transactions", "upload-attachment",
 			"--api-key", "string",
