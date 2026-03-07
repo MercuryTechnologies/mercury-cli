@@ -40,6 +40,7 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "create",
+		"--api-key", "string",
 		"--ach-debit-enabled=true",
 		"--cc-email", "string",
 		"--credit-card-enabled=true",
@@ -101,6 +102,7 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 	mocktest.TestRunMockTestWithFlags(
 		t,
 		"accounts-recievable:invoices", "update",
+		"--api-key", "string",
 		"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		"--ach-debit-enabled=true",
 		"--cc-email", "string",
