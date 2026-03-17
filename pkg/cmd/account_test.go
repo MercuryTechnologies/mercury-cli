@@ -12,8 +12,9 @@ func TestAccountRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "retrieve",
+			t,
 			"--api-key", "string",
+			"account", "retrieve",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -23,8 +24,9 @@ func TestAccountList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "list",
+			t,
 			"--api-key", "string",
+			"account", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -38,8 +40,9 @@ func TestAccountListCards(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "list-cards",
+			t,
 			"--api-key", "string",
+			"account", "list-cards",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -49,8 +52,9 @@ func TestAccountListStatements(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "list-statements",
+			t,
 			"--api-key", "string",
+			"account", "list-statements",
 			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--end", "end",
@@ -67,8 +71,9 @@ func TestAccountRequestSendMoney(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "request-send-money",
+			t,
 			"--api-key", "string",
+			"account", "request-send-money",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--amount", "0.01",
 			"--idempotency-key", "idempotencyKey",
@@ -89,8 +94,9 @@ func TestAccountRequestSendMoney(t *testing.T) {
 			"externalMemo: externalMemo\n" +
 			"note: note\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "account", "request-send-money",
+			t, pipeData,
 			"--api-key", "string",
+			"account", "request-send-money",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -100,8 +106,9 @@ func TestAccountRetrieveTransaction(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account", "retrieve-transaction",
+			t,
 			"--api-key", "string",
+			"account", "retrieve-transaction",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)

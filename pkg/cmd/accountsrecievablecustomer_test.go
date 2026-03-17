@@ -13,8 +13,9 @@ func TestAccountsRecievableCustomersCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "create",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address", "{address1: address1, city: city, country: country, name: name, postalCode: postalCode, region: region, address2: address2}",
@@ -27,8 +28,9 @@ func TestAccountsRecievableCustomersCreate(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "create",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address.address1", "address1",
@@ -55,8 +57,9 @@ func TestAccountsRecievableCustomersCreate(t *testing.T) {
 			"  region: region\n" +
 			"  address2: address2\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "accounts-recievable:customers", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"accounts-recievable:customers", "create",
 		)
 	})
 }
@@ -65,8 +68,9 @@ func TestAccountsRecievableCustomersRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "retrieve",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "retrieve",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -76,8 +80,9 @@ func TestAccountsRecievableCustomersUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "update",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -92,8 +97,9 @@ func TestAccountsRecievableCustomersUpdate(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "update",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -123,8 +129,9 @@ func TestAccountsRecievableCustomersUpdate(t *testing.T) {
 			"  region: region\n" +
 			"  address2: address2\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "accounts-recievable:customers", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"accounts-recievable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -134,8 +141,9 @@ func TestAccountsRecievableCustomersList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "list",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -149,8 +157,9 @@ func TestAccountsRecievableCustomersDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "accounts-recievable:customers", "delete",
+			t,
 			"--api-key", "string",
+			"accounts-recievable:customers", "delete",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

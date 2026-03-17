@@ -12,8 +12,9 @@ func TestTransactionsRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "transactions", "retrieve",
+			t,
 			"--api-key", "string",
+			"transactions", "retrieve",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -23,8 +24,9 @@ func TestTransactionsUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "transactions", "update",
+			t,
 			"--api-key", "string",
+			"transactions", "update",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--category-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--note", "note",
@@ -37,8 +39,9 @@ func TestTransactionsUpdate(t *testing.T) {
 			"categoryId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"note: note\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "transactions", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"transactions", "update",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -48,8 +51,9 @@ func TestTransactionsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "transactions", "list",
+			t,
 			"--api-key", "string",
+			"transactions", "list",
 			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--category-id", "categoryId",
@@ -73,8 +77,9 @@ func TestTransactionsUploadAttachment(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "transactions", "upload-attachment",
+			t,
 			"--api-key", "string",
+			"transactions", "upload-attachment",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--file", "Example data",
 			"--attachment-type", "receipt",
@@ -87,8 +92,9 @@ func TestTransactionsUploadAttachment(t *testing.T) {
 			"file: Example data\n" +
 			"attachmentType: receipt\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "transactions", "upload-attachment",
+			t, pipeData,
 			"--api-key", "string",
+			"transactions", "upload-attachment",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
