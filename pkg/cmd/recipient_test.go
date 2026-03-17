@@ -13,8 +13,9 @@ func TestRecipientsCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "create",
+			t,
 			"--api-key", "string",
+			"recipients", "create",
 			"--email", "string",
 			"--name", "name",
 			"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
@@ -32,8 +33,9 @@ func TestRecipientsCreate(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "create",
+			t,
 			"--api-key", "string",
+			"recipients", "create",
 			"--email", "string",
 			"--name", "name",
 			"--address.address1", "address1",
@@ -100,8 +102,9 @@ func TestRecipientsCreate(t *testing.T) {
 			"  routingNumber: routingNumber\n" +
 			"nickname: nickname\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "recipients", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"recipients", "create",
 		)
 	})
 }
@@ -110,8 +113,9 @@ func TestRecipientsRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "retrieve",
+			t,
 			"--api-key", "string",
+			"recipients", "retrieve",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -121,8 +125,9 @@ func TestRecipientsUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "update",
+			t,
 			"--api-key", "string",
+			"recipients", "update",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
 			"--check-info", "{address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}}",
@@ -141,8 +146,9 @@ func TestRecipientsUpdate(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "update",
+			t,
 			"--api-key", "string",
+			"recipients", "update",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--address.address1", "address1",
 			"--address.city", "city",
@@ -210,8 +216,9 @@ func TestRecipientsUpdate(t *testing.T) {
 			"name: name\n" +
 			"nickname: nickname\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "recipients", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"recipients", "update",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -221,8 +228,9 @@ func TestRecipientsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "list",
+			t,
 			"--api-key", "string",
+			"recipients", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -236,8 +244,9 @@ func TestRecipientsListAttachments(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "list-attachments",
+			t,
 			"--api-key", "string",
+			"recipients", "list-attachments",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -251,8 +260,9 @@ func TestRecipientsUploadAttachment(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "recipients", "upload-attachment",
+			t,
 			"--api-key", "string",
+			"recipients", "upload-attachment",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--file", "Example data",
 		)
@@ -262,8 +272,9 @@ func TestRecipientsUploadAttachment(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("file: Example data")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "recipients", "upload-attachment",
+			t, pipeData,
 			"--api-key", "string",
+			"recipients", "upload-attachment",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

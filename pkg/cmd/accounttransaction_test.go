@@ -13,8 +13,9 @@ func TestAccountTransactionsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account:transactions", "list",
+			t,
 			"--api-key", "string",
+			"account:transactions", "list",
 			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--category-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -35,8 +36,9 @@ func TestAccountTransactionsSend(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "account:transactions", "send",
+			t,
 			"--api-key", "string",
+			"account:transactions", "send",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--amount", "0.01",
 			"--idempotency-key", "idempotencyKey",
@@ -54,8 +56,9 @@ func TestAccountTransactionsSend(t *testing.T) {
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
-			t, "account:transactions", "send",
+			t,
 			"--api-key", "string",
+			"account:transactions", "send",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--amount", "0.01",
 			"--idempotency-key", "idempotencyKey",
@@ -81,8 +84,9 @@ func TestAccountTransactionsSend(t *testing.T) {
 			"    category: Employee\n" +
 			"    additionalInfo: additionalInfo\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "account:transactions", "send",
+			t, pipeData,
 			"--api-key", "string",
+			"account:transactions", "send",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
