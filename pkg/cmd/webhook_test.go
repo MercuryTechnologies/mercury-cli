@@ -12,8 +12,9 @@ func TestWebhooksCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "create",
+			t,
 			"--api-key", "string",
+			"webhooks", "create",
 			"--url", "url",
 			"--event-type", "[transaction.created]",
 			"--filter-path", "[transaction.amount]",
@@ -29,8 +30,9 @@ func TestWebhooksCreate(t *testing.T) {
 			"filterPaths:\n" +
 			"  - transaction.amount\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "webhooks", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"webhooks", "create",
 		)
 	})
 }
@@ -39,8 +41,9 @@ func TestWebhooksRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "retrieve",
+			t,
 			"--api-key", "string",
+			"webhooks", "retrieve",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -50,8 +53,9 @@ func TestWebhooksUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "update",
+			t,
 			"--api-key", "string",
+			"webhooks", "update",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--event-type", "[transaction.created]",
 			"--filter-path", "[transaction.amount]",
@@ -70,8 +74,9 @@ func TestWebhooksUpdate(t *testing.T) {
 			"status: active\n" +
 			"url: url\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "webhooks", "update",
+			t, pipeData,
 			"--api-key", "string",
+			"webhooks", "update",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -81,8 +86,9 @@ func TestWebhooksList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "list",
+			t,
 			"--api-key", "string",
+			"webhooks", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -97,8 +103,9 @@ func TestWebhooksDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "delete",
+			t,
 			"--api-key", "string",
+			"webhooks", "delete",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -108,8 +115,9 @@ func TestWebhooksVerify(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "webhooks", "verify",
+			t,
 			"--api-key", "string",
+			"webhooks", "verify",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--event-type", "transaction.created",
 		)
@@ -119,8 +127,9 @@ func TestWebhooksVerify(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("eventType: transaction.created")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "webhooks", "verify",
+			t, pipeData,
 			"--api-key", "string",
+			"webhooks", "verify",
 			"--webhook-endpoint-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

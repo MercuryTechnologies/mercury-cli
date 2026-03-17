@@ -12,8 +12,9 @@ func TestTransferCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "transfer", "create",
+			t,
 			"--api-key", "string",
+			"transfer", "create",
 			"--amount", "0.01",
 			"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--idempotency-key", "idempotencyKey",
@@ -31,8 +32,9 @@ func TestTransferCreate(t *testing.T) {
 			"sourceAccountId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"note: note\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
-			t, pipeData, "transfer", "create",
+			t, pipeData,
 			"--api-key", "string",
+			"transfer", "create",
 		)
 	})
 }

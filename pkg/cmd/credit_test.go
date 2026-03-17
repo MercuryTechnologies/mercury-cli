@@ -12,8 +12,9 @@ func TestCreditList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
-			t, "credit", "list",
+			t,
 			"--api-key", "string",
+			"credit", "list",
 		)
 	})
 }
