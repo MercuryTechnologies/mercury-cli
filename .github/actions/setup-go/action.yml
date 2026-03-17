@@ -2,18 +2,20 @@ name: Setup Go
 description: 'Sets up Go environment with private modules'
 inputs:
   stainless-api-key:
-    required: true
+    required: false
     description: the value of the STAINLESS_API_KEY secret
 runs:
   using: composite
   steps:
     - uses: stainless-api/retrieve-github-access-token@v1
+      if: github.repository == 'stainless-sdks/mercury-cli'
       id: get_token
       with:
         repo: stainless-sdks/mercury-go
         stainless-api-key: ${{ inputs.stainless-api-key }}
 
     - name: Configure Git for access to the Go SDK's staging repo
+      if: github.repository == 'stainless-sdks/mercury-cli'
       shell: bash
       run: git config --global url."https://x-access-token:${{ steps.get_token.outputs.github_access_token }}@github.com/stainless-sdks/mercury-go".insteadOf "https://github.com/stainless-sdks/mercury-go"
 
