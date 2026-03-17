@@ -11,8 +11,10 @@ on:
     branches-ignore:
       - 'stl-preview-head/**'
       - 'stl-preview-base/**'
+
 env:
   GOPRIVATE: github.com/stainless-sdks/mercury-go
+
 jobs:
   lint:
     timeout-minutes: 10
@@ -26,6 +28,14 @@ jobs:
       - uses: ./.github/actions/setup-go
         with:
           stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
+
+      - name: Link staging branch
+        if: github.repository == 'stainless-sdks/mercury-cli'
+        run: |
+          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}'
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
 
       - name: Run lints
         run: ./scripts/lint
@@ -44,6 +54,14 @@ jobs:
       - uses: ./.github/actions/setup-go
         with:
           stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
+
+      - name: Link staging branch
+        if: github.repository == 'stainless-sdks/mercury-cli'
+        run: |
+          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}'
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
 
       - name: Run goreleaser
         uses: goreleaser/goreleaser-action@v6.1.0
@@ -83,6 +101,14 @@ jobs:
       - uses: ./.github/actions/setup-go
         with:
           stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
+
+      - name: Link staging branch
+        if: github.repository == 'stainless-sdks/mercury-cli'
+        run: |
+          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}'
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
 
       - name: Run tests
         run: ./scripts/test
