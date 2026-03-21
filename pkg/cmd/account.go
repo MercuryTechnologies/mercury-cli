@@ -156,6 +156,7 @@ var accountRequestSendMoney = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "payment-method",
+			Usage:    `Allowed values: "ach", "check", "domesticWire", "internationalWire".`,
 			Required: true,
 			BodyPath: "paymentMethod",
 		},
