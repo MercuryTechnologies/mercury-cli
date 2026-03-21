@@ -78,6 +78,7 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "address.state",
+			Usage:      `Allowed values: "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY".`,
 			InnerField: "state",
 		},
 	},
@@ -120,6 +121,7 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.electronic-account-type",
+			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings".`,
 			InnerField: "electronicAccountType",
 		},
 		&requestflag.InnerFlag[string]{
@@ -211,6 +213,7 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "address.state",
+			Usage:      `Allowed values: "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY".`,
 			InnerField: "state",
 		},
 	},
@@ -253,6 +256,7 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.electronic-account-type",
+			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings".`,
 			InnerField: "electronicAccountType",
 		},
 		&requestflag.InnerFlag[string]{

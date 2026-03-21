@@ -74,6 +74,7 @@ var accountTransactionsList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "status",
+			Usage:     `Allowed values: "pending", "sent", "cancelled", "failed", "reversed", "blocked".`,
 			QueryPath: "status",
 		},
 		&requestflag.Flag[int64]{

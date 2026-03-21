@@ -58,6 +58,7 @@ var eventsList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "resource-type",
+			Usage:     `Allowed values: "transaction", "checkingAccount", "savingsAccount", "treasuryAccount", "investmentAccount", "creditAccount".`,
 			QueryPath: "resourceType",
 		},
 		&requestflag.Flag[string]{
