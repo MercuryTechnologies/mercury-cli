@@ -73,7 +73,7 @@ var transactionsList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "end",
-			Usage:     "Latest createdAt date to filter for. If it's not provided, it defaults to current day. Format: YYYY-MM-DD or an ISO 8601 string. Please note that your Mercury transactions on your Dashboard might have their postedAt date displayed, as opposed to createdAt",
+			Usage:     "Latest createdAt date to filter for. If it’s not provided, it defaults to current day. Format: YYYY-MM-DD or an ISO 8601 string. Please note that your Mercury transactions on your Dashboard might have their postedAt date displayed, as opposed to createdAt",
 			QueryPath: "end",
 		},
 		&requestflag.Flag[string]{
