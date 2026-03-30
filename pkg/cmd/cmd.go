@@ -93,6 +93,7 @@ func init() {
 		Commands: []*cli.Command{
 			{
 				Name:     "accounts-recievable",
+				Usage:    "Manage AR attachments",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -101,6 +102,7 @@ func init() {
 			},
 			{
 				Name:     "accounts-recievable:customers",
+				Usage:    "Manage AR customers",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -113,6 +115,7 @@ func init() {
 			},
 			{
 				Name:     "accounts-recievable:invoices",
+				Usage:    "Manage AR invoices",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -127,6 +130,7 @@ func init() {
 			},
 			{
 				Name:     "categories",
+				Usage:    "Manage expense categories",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -135,6 +139,7 @@ func init() {
 			},
 			{
 				Name:     "credit",
+				Usage:    "Manage credit accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -143,6 +148,7 @@ func init() {
 			},
 			{
 				Name:     "events",
+				Usage:    "Manage API events",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -152,6 +158,7 @@ func init() {
 			},
 			{
 				Name:     "organization",
+				Usage:    "Organization information",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -160,6 +167,7 @@ func init() {
 			},
 			{
 				Name:     "request-send-money",
+				Usage:    "Manage send money approval requests",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -168,6 +176,7 @@ func init() {
 			},
 			{
 				Name:     "safes",
+				Usage:    "Manage SAFE requests",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -178,6 +187,7 @@ func init() {
 			},
 			{
 				Name:     "statements",
+				Usage:    "Download account statements",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -186,6 +196,7 @@ func init() {
 			},
 			{
 				Name:     "transfer",
+				Usage:    "Create account transfers",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -194,6 +205,7 @@ func init() {
 			},
 			{
 				Name:     "treasury",
+				Usage:    "Manage treasury accounts and transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -204,6 +216,7 @@ func init() {
 			},
 			{
 				Name:     "users",
+				Usage:    "Manage organization team members",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -213,6 +226,7 @@ func init() {
 			},
 			{
 				Name:     "webhooks",
+				Usage:    "Manage webhooks",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -226,6 +240,7 @@ func init() {
 			},
 			{
 				Name:     "account",
+				Usage:    "Manage bank accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -239,6 +254,7 @@ func init() {
 			},
 			{
 				Name:     "account:transactions",
+				Usage:    "Manage account transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -248,6 +264,7 @@ func init() {
 			},
 			{
 				Name:     "recipients",
+				Usage:    "Manage payment recipients",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -261,6 +278,7 @@ func init() {
 			},
 			{
 				Name:     "transactions",
+				Usage:    "Manage transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
