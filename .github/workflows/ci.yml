@@ -15,7 +15,7 @@ on:
       - 'stl-preview-base/**'
 
 env:
-  GOPRIVATE: github.com/stainless-sdks/mercury-go
+  GOPRIVATE: github.com/MercuryTechnologies/mercury-go,github.com/stainless-sdks/mercury-go
 
 jobs:
   lint:
