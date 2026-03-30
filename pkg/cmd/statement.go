@@ -8,7 +8,7 @@ import (
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
-	"github.com/stainless-sdks/mercury-go"
+	"github.com/MercuryTechnologies/mercury-go"
 	"github.com/urfave/cli/v3"
 )
 
