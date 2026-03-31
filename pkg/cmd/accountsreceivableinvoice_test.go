@@ -9,13 +9,13 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 )
 
-func TestAccountsRecievableInvoicesCreate(t *testing.T) {
+func TestAccountsReceivableInvoicesCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "create",
+			"accounts-receivable:invoices", "create",
 			"--ach-debit-enabled=true",
 			"--cc-email", "string",
 			"--credit-card-enabled=true",
@@ -37,13 +37,13 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsRecievableInvoicesCreate)
+		requestflag.CheckInnerFlags(accountsReceivableInvoicesCreate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "create",
+			"accounts-receivable:invoices", "create",
 			"--ach-debit-enabled=true",
 			"--cc-email", "string",
 			"--credit-card-enabled=true",
@@ -93,30 +93,30 @@ func TestAccountsRecievableInvoicesCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "create",
+			"accounts-receivable:invoices", "create",
 		)
 	})
 }
 
-func TestAccountsRecievableInvoicesRetrieve(t *testing.T) {
+func TestAccountsReceivableInvoicesRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "retrieve",
+			"accounts-receivable:invoices", "retrieve",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
+func TestAccountsReceivableInvoicesUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "update",
+			"accounts-receivable:invoices", "update",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--ach-debit-enabled=true",
 			"--cc-email", "string",
@@ -136,13 +136,13 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsRecievableInvoicesUpdate)
+		requestflag.CheckInnerFlags(accountsReceivableInvoicesUpdate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "update",
+			"accounts-receivable:invoices", "update",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--ach-debit-enabled=true",
 			"--cc-email", "string",
@@ -187,19 +187,19 @@ func TestAccountsRecievableInvoicesUpdate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "update",
+			"accounts-receivable:invoices", "update",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsRecievableInvoicesList(t *testing.T) {
+func TestAccountsReceivableInvoicesList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "list",
+			"accounts-receivable:invoices", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -209,38 +209,38 @@ func TestAccountsRecievableInvoicesList(t *testing.T) {
 	})
 }
 
-func TestAccountsRecievableInvoicesCancel(t *testing.T) {
+func TestAccountsReceivableInvoicesCancel(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "cancel",
+			"accounts-receivable:invoices", "cancel",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsRecievableInvoicesDownloadPdf(t *testing.T) {
+func TestAccountsReceivableInvoicesDownloadPdf(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "download-pdf",
+			"accounts-receivable:invoices", "download-pdf",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--output", "/dev/null",
 		)
 	})
 }
 
-func TestAccountsRecievableInvoicesListAttachments(t *testing.T) {
+func TestAccountsReceivableInvoicesListAttachments(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:invoices", "list-attachments",
+			"accounts-receivable:invoices", "list-attachments",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

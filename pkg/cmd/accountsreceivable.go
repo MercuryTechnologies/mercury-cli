@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountsRecievableRetrieveAttachment = cli.Command{
+var accountsReceivableRetrieveAttachment = cli.Command{
 	Name:    "retrieve-attachment",
 	Usage:   "Retrieve attachment details including download URL",
 	Suggest: true,
@@ -26,11 +26,11 @@ var accountsRecievableRetrieveAttachment = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsRecievableRetrieveAttachment,
+	Action:          handleAccountsReceivableRetrieveAttachment,
 	HideHelpCommand: true,
 }
 
-func handleAccountsRecievableRetrieveAttachment(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableRetrieveAttachment(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("attachment-id") && len(unusedArgs) > 0 {
@@ -54,7 +54,7 @@ func handleAccountsRecievableRetrieveAttachment(ctx context.Context, cmd *cli.Co
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsRecievable.GetAttachment(ctx, cmd.Value("attachment-id").(string), options...)
+	_, err = client.AccountsReceivable.GetAttachment(ctx, cmd.Value("attachment-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -62,5 +62,5 @@ func handleAccountsRecievableRetrieveAttachment(ctx context.Context, cmd *cli.Co
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-recievable retrieve-attachment", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts-receivable retrieve-attachment", obj, format, transform)
 }
