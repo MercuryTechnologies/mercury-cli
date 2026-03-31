@@ -72,11 +72,13 @@ func init() {
 			},
 			&requestflag.Flag[string]{
 				Name:    "username",
+				Hidden:  true,
 				Usage:   "Basic authentication for Mercury API.\n\nUse your API token as the username with an empty password.\n\nExample:\nUsername: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`\nPassword: (empty)\n",
 				Sources: cli.EnvVars("MERCURY_USERNAME"),
 			},
 			&requestflag.Flag[string]{
 				Name:    "password",
+				Hidden:  true,
 				Usage:   "Basic authentication for Mercury API.\n\nUse your API token as the username with an empty password.\n\nExample:\nUsername: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`\nPassword: (empty)\n",
 				Sources: cli.EnvVars("MERCURY_PASSWORD"),
 			},
@@ -87,13 +89,13 @@ func init() {
 			},
 			&cli.StringFlag{
 				Name:  "environment",
-				Usage: "Set the environment for API requests",
+				Usage: "API environment: sandbox or production",
 			},
 		},
 		Commands: []*cli.Command{
 			{
 				Name:     "accounts-receivable:attachements",
-        Usage:    "Manage AR attachments",
+        Usage:    "Get accounts receivable attachment details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -102,7 +104,7 @@ func init() {
 			},
 			{
 				Name:     "accounts-receivable:customers",
-				Usage:    "Manage AR customers",
+				Usage:    "Create, update, and delete accounts receivable customers",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -115,7 +117,7 @@ func init() {
 			},
 			{
 				Name:     "accounts-receivable:invoices",
-				Usage:    "Manage AR invoices",
+				Usage:    "Create, update, and download accounts receivable invoices",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -130,7 +132,7 @@ func init() {
 			},
 			{
 				Name:     "categories",
-				Usage:    "Manage expense categories",
+				Usage:    "List expense categories",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -139,7 +141,7 @@ func init() {
 			},
 			{
 				Name:     "credit",
-				Usage:    "Manage credit accounts",
+				Usage:    "List credit accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -148,7 +150,7 @@ func init() {
 			},
 			{
 				Name:     "events",
-				Usage:    "Manage API events",
+				Usage:    "List and inspect API events",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -158,7 +160,7 @@ func init() {
 			},
 			{
 				Name:     "organization",
-				Usage:    "Organization information",
+				Usage:    "View organization details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -167,7 +169,7 @@ func init() {
 			},
 			{
 				Name:     "request-send-money",
-				Usage:    "Manage send money approval requests",
+				Usage:    "View send money approval requests",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -176,7 +178,7 @@ func init() {
 			},
 			{
 				Name:     "safes",
-				Usage:    "Manage SAFE requests",
+				Usage:    "List and download SAFE agreements",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -187,7 +189,7 @@ func init() {
 			},
 			{
 				Name:     "statements",
-				Usage:    "Download account statements",
+				Usage:    "Download account statements as PDF",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -196,7 +198,7 @@ func init() {
 			},
 			{
 				Name:     "transfer",
-				Usage:    "Create account transfers",
+				Usage:    "Initiate transfers between accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -205,7 +207,7 @@ func init() {
 			},
 			{
 				Name:     "treasury",
-				Usage:    "Manage treasury accounts and transactions",
+				Usage:    "View treasury accounts, statements, and transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -216,7 +218,7 @@ func init() {
 			},
 			{
 				Name:     "users",
-				Usage:    "Manage organization team members",
+				Usage:    "List and view organization team members",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -226,7 +228,7 @@ func init() {
 			},
 			{
 				Name:     "webhooks",
-				Usage:    "Manage webhooks",
+				Usage:    "Set up and manage webhook endpoints",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -240,7 +242,7 @@ func init() {
 			},
 			{
 				Name:     "accounts",
-        Usage:    "Manage bank accounts",
+        Usage:    "View accounts, cards, and transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -256,7 +258,7 @@ func init() {
 			},
 			{
 				Name:     "recipients",
-				Usage:    "Manage payment recipients",
+				Usage:    "Add, update, and manage payment recipients",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -270,7 +272,7 @@ func init() {
 			},
 			{
 				Name:     "transactions",
-				Usage:    "Manage transactions",
+				Usage:    "Search, update, and attach files to transactions",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{

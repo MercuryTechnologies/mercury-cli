@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"math/rand"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -13,15 +13,7 @@ import (
 )
 
 var (
-	starChars = []string{"✦", "·", "⋆", "✧", "∘", "⊹", "˚", "°"}
-
-	// Dutch still life palette
-	mercuryBlue    = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF"))
-	mercuryBlueDim = lipgloss.NewStyle().Foreground(lipgloss.Color("#1E3299"))
-	mercuryBlueMid = lipgloss.NewStyle().Foreground(lipgloss.Color("#2B46CC"))
-	warmWhite  = lipgloss.NewStyle().Foreground(lipgloss.Color("223"))
-	creamDim   = lipgloss.NewStyle().Foreground(lipgloss.Color("#1E3299"))
-	lavender   = lipgloss.NewStyle().Foreground(lipgloss.Color("139"))
+	mercuryBlue = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF"))
 
 	helpTitle = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF")).Bold(true)
 	helpDim   = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
@@ -29,6 +21,22 @@ var (
 	helpFlag  = lipgloss.NewStyle().Foreground(lipgloss.Color("#5B7AFF"))
 	helpDesc  = lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
 	helpFrame = lipgloss.NewStyle().Foreground(lipgloss.Color("#1E3299"))
+
+	logoLines = []string{
+		`⠀⠀⠀⠀⠀⠀⠀⣀⡤⠶⠒⠛⠛⠉⠛⠛⢶⡶⠤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⠀⠀⠀⣠⠔⠋⠁⠀⣀⡤⢤⡴⠶⠦⡄⠀⠹⡄⠀⠉⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⠀⢠⠞⠁⠀⣠⠖⢻⡁⠀⢾⠀⠀⠀⣹⠀⠀⡿⠓⢤⡀⠀⠱⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⣰⠋⠀⢠⠞⠁⠀⠈⢧⡀⠈⠓⠲⠶⠧⢄⣰⠃⠀⠀⠙⢆⠀⠈⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⢠⣇⡴⠒⠛⠛⠓⠲⡴⠋⠙⢦⣤⣤⣄⡀⠀⠈⢳⠴⠒⠛⠙⢧⠀⠈⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣶⣶⡆⠀⠀⠀⠀⣶⣶⣶⠀⠀⠀⠀⢰⣶⣶⣶⣶⣶⣶⠀⠀⠀⠀⢰⣶⣶⣶⣶⣶⣄⠀⠀⠀⠀⠀⢀⣤⣶⡶⠶⢶⣶⣄⠀⠀⠀⠀⣶⡆⠀⠀⠀⠀⣶⡆⠀⠀⠀⠀⢰⣶⣶⣶⣶⣦⡄⠀⠀⠀⠰⣶⣄⠀⠀⠀⣠⣶⠆`,
+		`⣾⠋⠀⣠⠴⠶⢤⡼⠁⠀⡴⠋⠀⠀⠀⠉⢳⣴⠃⠀⣠⠴⠶⢼⡆⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠹⣿⡄⠀⠀⣼⡿⢻⣿⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⢈⣿⡇⠀⠀⠀⢠⣿⡟⠁⠀⠀⠀⠈⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⢸⣿⠀⠀⠀⣹⣿⠀⠀⠀⠀⠘⢿⣦⠀⣴⡿⠃⠀`,
+		`⣿⠀⠀⡇⠀⠀⢀⡇⠀⢸⡇⠀⠀⠀⠀⠀⠀⡇⠀⢰⡇⠀⠀⢈⡇⠀⢸⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⢻⣷⠀⢰⣿⠁⢸⣿⠀⠀⠀⠀⢸⣿⡷⠶⠶⠶⠷⠀⠀⠀⠀⢸⣿⡷⢶⣶⡿⠛⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⢸⣿⠶⣶⣾⠟⠋⠀⠀⠀⠀⠀⠈⢻⣿⡟⠁⠀⠀`,
+		`⢿⠀⠀⣟⠒⠒⠋⠀⢀⡼⠳⣄⠀⠀⠀⢀⡼⠁⠀⡼⠙⠒⠒⠋⠀⢀⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⢿⣷⣿⠃⠀⢸⣿⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠻⣷⡄⠀⠀⠀⠀⠘⣿⣧⡀⠀⠀⠀⢀⡀⠀⠀⠀⠀⣿⣇⠀⠀⠀⢠⣿⠇⠀⠀⠀⠀⢸⣿⠀⠈⢿⣧⡀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀`,
+		`⠘⡆⠀⠸⣦⣤⡤⠴⠻⣄⠀⠈⠉⠛⠛⠻⢤⣀⠞⠳⢤⣤⣤⡤⠖⢋⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠿⠀⠀⠈⠿⠏⠀⠀⠸⠿⠀⠀⠀⠀⠸⠿⠿⠿⠿⠿⠿⠆⠀⠀⠀⠸⠿⠇⠀⠀⠹⠿⠆⠀⠀⠀⠀⠈⠛⠿⢷⣶⡾⠿⠋⠀⠀⠀⠀⠈⠻⠷⣶⡾⠿⠋⠀⠀⠀⠀⠀⠼⠿⠀⠀⠈⠿⠷⠀⠀⠀⠀⠀⠀⠸⠿⠇⠀⠀⠀`,
+		`⠀⠹⣄⠀⠘⢦⡀⠀⢀⡞⠙⢒⡶⠶⢤⡀⠀⠹⡄⠀⠀⣠⠎⠀⢀⡞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⠀⠘⢦⡀⠀⠙⠦⣼⡁⠀⢼⠀⠀⠀⣹⠀⠀⣷⡤⠞⠁⠀⡰⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⠀⠀⠀⠙⠢⣄⡀⠈⢧⠀⠈⠓⠶⠶⠛⠚⠋⠁⠀⣀⠴⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+		`⠀⠀⠀⠀⠀⠀⠀⠉⠓⠶⠷⣦⣤⣀⣠⣤⠤⠴⠒⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
+	}
 )
 
 func getTermWidth() int {
@@ -42,174 +50,17 @@ func getTermWidth() int {
 	return w
 }
 
-func randomStar() string {
-	s := starChars[rand.Intn(len(starChars))]
-	switch rand.Intn(7) {
-	case 0:
-		return mercuryBlue.Render(s)
-	case 1:
-		return warmWhite.Render(s)
-	case 2, 3:
-		return mercuryBlueMid.Render(s)
-	default:
-		return mercuryBlueDim.Render(s)
-	}
-}
-
-// padTo pads a plain string to exactly w display columns with trailing spaces.
-func padTo(s string, w int) string {
-	sw := lipgloss.Width(s)
-	if sw >= w {
-		return s
-	}
-	return s + strings.Repeat(" ", w-sw)
-}
-
-// framedLine renders ║<content padded to innerW>║
-func framedLine(content string, innerW int) string {
-	return helpFrame.Render("║") + padTo(content, innerW) + helpFrame.Render("║")
-}
-
-func starField(width, density int) string {
-	parts := make([]string, width)
-	for i := range parts {
-		parts[i] = " "
-	}
-	count := density + rand.Intn(density/2+1)
-	for i := 0; i < count; i++ {
-		parts[rand.Intn(width)] = randomStar()
-	}
-	return strings.Join(parts, "")
-}
-
 func banner(width int) string {
-	innerW := width - 2
-
-	// Roman columns
-	colL := []string{
-		" ╭┈┈┈╮ ",
-		" ┆⌇⌇⌇┆ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" ╰───╯ ",
-	}
-	colR := []string{
-		" ╭┈┈┈╮ ",
-		" ┆⌇⌇⌇┆ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" │║║║│ ",
-		" ╰───╯ ",
-	}
-
-	mercuryText := []string{
-		` ███╗   ███╗███████╗██████╗  ██████╗██╗   ██╗██████╗ ██╗   ██╗`,
-		` ████╗ ████║██╔════╝██╔══██╗██╔════╝██║   ██║██╔══██╗╚██╗ ██╔╝`,
-		` ██╔████╔██║█████╗  ██████╔╝██║     ██║   ██║██████╔╝ ╚████╔╝ `,
-		` ██║╚██╔╝██║██╔══╝  ██╔══██╗██║     ██║   ██║██╔══██╗  ╚██╔╝  `,
-		` ██║ ╚═╝ ██║███████╗██║  ██║╚██████╗╚██████╔╝██║  ██║   ██║   `,
-		` ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   `,
-	}
-
-	colW := lipgloss.Width(colL[0])
-	centerW := innerW - colW*2
-
-	// Layout: 3 star rows above, 6 text rows, 3 star rows below = 12 interior rows
-	// Columns span all 12 rows: capital at top, base at bottom, shaft fills middle
-	starsAbove := 3
-	textLines := len(mercuryText)
-	starsBelow := 3
-	totalRows := starsAbove + textLines + starsBelow
-
-	// Build column strings for each row dynamically
-	colShaftL := " │║║║│ "
-	colShaftR := " │║║║│ "
-	getColL := func(row int) string {
-		if row == 0 {
-			return colL[0] // capital top
-		}
-		if row == 1 {
-			return colL[1] // capital bottom
-		}
-		if row == totalRows-2 {
-			return colL[1] // base top (reuse capital detail)
-		}
-		if row == totalRows-1 {
-			return colL[len(colL)-1] // base
-		}
-		return colShaftL
-	}
-	getColR := func(row int) string {
-		if row == 0 {
-			return colR[0]
-		}
-		if row == 1 {
-			return colR[1]
-		}
-		if row == totalRows-2 {
-			return colR[1]
-		}
-		if row == totalRows-1 {
-			return colR[len(colR)-1]
-		}
-		return colShaftR
-	}
-
 	var sb strings.Builder
-
-	// Frame top
-	sb.WriteString(helpFrame.Render("╔"+strings.Repeat("═", innerW)+"╗") + "\n")
-
-	starDensities := []int{20, 15, 12}
-
-	for row := 0; row < totalRows; row++ {
-		left := getColL(row)
-		right := getColR(row)
-
-		var center string
-		ti := row - starsAbove
-		if ti >= 0 && ti < textLines {
-			center = mercuryText[ti]
+	sb.WriteString("\n")
+	for _, line := range logoLines {
+		lw := lipgloss.Width(line)
+		pad := (width - lw) / 2
+		if pad < 0 {
+			pad = 0
 		}
-
-		// Center the text in the middle zone, fill empty space with stars
-		cw := lipgloss.Width(center)
-		lpad := (centerW - cw) / 2
-		if lpad < 0 {
-			lpad = 0
-		}
-		rpad := centerW - cw - lpad
-		if rpad < 0 {
-			rpad = 0
-		}
-
-		// Vary star density: denser at edges, sparser near text
-		density := 12
-		if row < starsAbove {
-			density = starDensities[row]
-		} else if row >= starsAbove+textLines {
-			density = starDensities[totalRows-1-row]
-		}
-		_ = density
-
-		leftStars := starField(lpad, lpad/7+1)
-		rightStars := starField(rpad, rpad/7+1)
-		centeredText := leftStars + mercuryBlue.Render(center) + rightStars
-
-		line := creamDim.Render(left) + centeredText + creamDim.Render(right)
-		sb.WriteString(framedLine(line, innerW) + "\n")
+		sb.WriteString(strings.Repeat(" ", pad) + mercuryBlue.Render(line) + "\n")
 	}
-
-	// Frame bottom
-	sb.WriteString(helpFrame.Render("╚"+strings.Repeat("═", innerW)+"╝") + "\n")
-
 	return sb.String()
 }
 
@@ -236,7 +87,7 @@ func formatFlags(flags []cli.Flag) string {
 		if len(names) == 0 {
 			continue
 		}
-		if pf, ok := f.(interface{ IsHidden() bool }); ok && pf.IsHidden() {
+		if pf, ok := f.(interface{ IsVisible() bool }); ok && !pf.IsVisible() {
 			continue
 		}
 
@@ -255,7 +106,7 @@ func formatFlags(flags []cli.Flag) string {
 			}
 		}
 
-		padded := fmt.Sprintf("  %-30s", flagStr)
+		padded := fmt.Sprintf("  %-36s", flagStr)
 		lines = append(lines, helpFlag.Render(padded)+helpDesc.Render(usage))
 	}
 	return strings.Join(lines, "\n")
@@ -270,8 +121,8 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 	sb.WriteString(banner(width))
 	sb.WriteString("\n")
 
-	usage := fmt.Sprintf("  %s <command> [OPTIONS]\n  %s <resource> <subcommand> [OPTIONS]",
-		helpCmd.Render(cmd.Name), helpCmd.Render(cmd.Name))
+	usage := fmt.Sprintf("  %s <resource> <subcommand> [OPTIONS]",
+		helpCmd.Render(cmd.Name))
 	sb.WriteString(boxSection("Usage", usage, width))
 	sb.WriteString("\n")
 
@@ -287,7 +138,13 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 	groups := []group{}
 	groupMap := map[string]int{}
 
-	for _, sub := range cmd.Commands {
+	sorted := make([]*cli.Command, len(cmd.Commands))
+	copy(sorted, cmd.Commands)
+	slices.SortFunc(sorted, func(a, b *cli.Command) int {
+		return strings.Compare(a.Name, b.Name)
+	})
+
+	for _, sub := range sorted {
 		if sub.Hidden {
 			continue
 		}
@@ -295,7 +152,7 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 		if cat == "" {
 			cat = "Commands"
 		}
-		padded := fmt.Sprintf("  %-30s", sub.Name)
+		padded := fmt.Sprintf("  %-36s", sub.Name)
 		entry := helpCmd.Render(padded) + helpDesc.Render(sub.Usage)
 		if idx, ok := groupMap[cat]; ok {
 			groups[idx].commands = append(groups[idx].commands, entry)
