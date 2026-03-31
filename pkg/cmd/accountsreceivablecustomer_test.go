@@ -9,13 +9,13 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 )
 
-func TestAccountsRecievableCustomersCreate(t *testing.T) {
+func TestAccountsReceivableCustomersCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "create",
+			"accounts-receivable:customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address", "{address1: address1, city: city, country: country, name: name, postalCode: postalCode, region: region, address2: address2}",
@@ -24,13 +24,13 @@ func TestAccountsRecievableCustomersCreate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsRecievableCustomersCreate)
+		requestflag.CheckInnerFlags(accountsReceivableCustomersCreate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "create",
+			"accounts-receivable:customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address.address1", "address1",
@@ -59,30 +59,30 @@ func TestAccountsRecievableCustomersCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-recievable:customers", "create",
+			"accounts-receivable:customers", "create",
 		)
 	})
 }
 
-func TestAccountsRecievableCustomersRetrieve(t *testing.T) {
+func TestAccountsReceivableCustomersRetrieve(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "retrieve",
+			"accounts-receivable:customers", "retrieve",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsRecievableCustomersUpdate(t *testing.T) {
+func TestAccountsReceivableCustomersUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "update",
+			"accounts-receivable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -93,13 +93,13 @@ func TestAccountsRecievableCustomersUpdate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsRecievableCustomersUpdate)
+		requestflag.CheckInnerFlags(accountsReceivableCustomersUpdate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "update",
+			"accounts-receivable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -131,19 +131,19 @@ func TestAccountsRecievableCustomersUpdate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-recievable:customers", "update",
+			"accounts-receivable:customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsRecievableCustomersList(t *testing.T) {
+func TestAccountsReceivableCustomersList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "list",
+			"accounts-receivable:customers", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -153,13 +153,13 @@ func TestAccountsRecievableCustomersList(t *testing.T) {
 	})
 }
 
-func TestAccountsRecievableCustomersDelete(t *testing.T) {
+func TestAccountsReceivableCustomersDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable:customers", "delete",
+			"accounts-receivable:customers", "delete",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
