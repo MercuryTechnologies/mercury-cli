@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountRetrieve = cli.Command{
+var accountsRetrieve = cli.Command{
 	Name:    "retrieve",
 	Usage:   "Get account by ID",
 	Suggest: true,
@@ -26,11 +26,11 @@ var accountRetrieve = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountRetrieve,
+	Action:          handleAccountsRetrieve,
 	HideHelpCommand: true,
 }
 
-var accountList = cli.Command{
+var accountsList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of accounts. Supports cursor-based pagination with\nlimit, order, start_after, and end_before query parameters.",
 	Suggest: true,
@@ -62,11 +62,72 @@ var accountList = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleAccountList,
+	Action:          handleAccountsList,
 	HideHelpCommand: true,
 }
 
-var accountListCards = cli.Command{
+var accountsCreateTransaction = requestflag.WithInnerFlags(cli.Command{
+	Name:    "create-transaction",
+	Usage:   "Send money from an account to a recipient. Creates a transaction that will be\nprocessed immediately or may require approval.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "account-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+		},
+		&requestflag.Flag[float64]{
+			Name:     "amount",
+			Usage:    "A positive dollar amount with at least 1 cent.",
+			Required: true,
+			BodyPath: "amount",
+		},
+		&requestflag.Flag[string]{
+			Name:     "idempotency-key",
+			Usage:    "Unique string identifying the transaction",
+			Required: true,
+			BodyPath: "idempotencyKey",
+		},
+		&requestflag.Flag[string]{
+			Name:     "payment-method",
+			Usage:    "If domesticWire is used, then the purpose field is required.",
+			Required: true,
+			BodyPath: "paymentMethod",
+		},
+		&requestflag.Flag[string]{
+			Name:     "recipient-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+			BodyPath: "recipientId",
+		},
+		&requestflag.Flag[string]{
+			Name:     "external-memo",
+			Usage:    "Optional external memo",
+			BodyPath: "externalMemo",
+		},
+		&requestflag.Flag[string]{
+			Name:     "note",
+			Usage:    "Optional note",
+			BodyPath: "note",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "purpose",
+			Usage:    " External API representation of SendMoneyPurpose.\n Only exposes the 'simple' field to decouple internal implementation from external API.",
+			BodyPath: "purpose",
+		},
+	},
+	Action:          handleAccountsCreateTransaction,
+	HideHelpCommand: true,
+}, map[string][]requestflag.HasOuterFlag{
+	"purpose": {
+		&requestflag.InnerFlag[any]{
+			Name:       "purpose.simple",
+			InnerField: "simple",
+		},
+	},
+})
+
+var accountsListCards = cli.Command{
 	Name:    "list-cards",
 	Usage:   "Retrieve all debit and credit cards associated with a specific account.",
 	Suggest: true,
@@ -77,11 +138,11 @@ var accountListCards = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountListCards,
+	Action:          handleAccountsListCards,
 	HideHelpCommand: true,
 }
 
-var accountListStatements = cli.Command{
+var accountsListStatements = cli.Command{
 	Name:    "list-statements",
 	Usage:   "Retrieve a paginated list of monthly statements for a specific account. Supports\ncursor-based pagination with limit, order, start_after, and end_before query\nparameters, as well as date range filtering with start and end parameters.",
 	Suggest: true,
@@ -128,11 +189,82 @@ var accountListStatements = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleAccountListStatements,
+	Action:          handleAccountsListStatements,
 	HideHelpCommand: true,
 }
 
-var accountRequestSendMoney = cli.Command{
+var accountsListTransactions = cli.Command{
+	Name:    "list-transactions",
+	Usage:   "Retrieve a paginated list of transactions for a specific account. Supports\nfiltering by date range, status, and search terms.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "account-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+		},
+		&requestflag.Flag[string]{
+			Name:      "category-id",
+			Usage:     "UUID of a custom category. Can be returned from /categories endpoint.",
+			QueryPath: "categoryId",
+		},
+		&requestflag.Flag[string]{
+			Name:      "end",
+			Usage:     "Latest date to filter transactions. If not provided, defaults to the current date. Format: YYYY-MM-DD or ISO 8601 string",
+			QueryPath: "end",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "limit",
+			Usage:     "Maximum number of results to return. Allowed range: 1 to 1000. Defaults to 1000",
+			Default:   1000,
+			QueryPath: "limit",
+		},
+		&requestflag.Flag[string]{
+			Name:      "mercury-category",
+			Usage:     "Name of mercuryCategory you want to filter on. Merchant Type in the UI.",
+			QueryPath: "mercuryCategory",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "offset",
+			Usage:     "Number of results to skip for pagination",
+			QueryPath: "offset",
+		},
+		&requestflag.Flag[string]{
+			Name:      "order",
+			Usage:     "Sort order. Can be 'asc' or 'desc'. Defaults to 'desc'",
+			Default:   "desc",
+			QueryPath: "order",
+		},
+		&requestflag.Flag[string]{
+			Name:      "request-id",
+			Usage:     "ID returned from /account/:id/request-send-money",
+			QueryPath: "requestId",
+		},
+		&requestflag.Flag[string]{
+			Name:      "search",
+			Usage:     "Search term to filter transactions by description or counterparty name",
+			QueryPath: "search",
+		},
+		&requestflag.Flag[string]{
+			Name:      "start",
+			Usage:     "Earliest date to filter transactions. If not provided, defaults to 30 days before the current date. Format: YYYY-MM-DD or ISO 8601 string",
+			QueryPath: "start",
+		},
+		&requestflag.Flag[string]{
+			Name:      "status",
+			Usage:     `Allowed values: "pending", "sent", "cancelled", "failed", "reversed", "blocked".`,
+			QueryPath: "status",
+		},
+		&requestflag.Flag[int64]{
+			Name:  "max-items",
+			Usage: "The maximum number of items to return (use -1 for unlimited).",
+		},
+	},
+	Action:          handleAccountsListTransactions,
+	HideHelpCommand: true,
+}
+
+var accountsRequestSendMoney = cli.Command{
 	Name:    "request-send-money",
 	Usage:   "Create a \"request to send money\" that will require approval based on your\norganization's approval policies.",
 	Suggest: true,
@@ -177,11 +309,11 @@ var accountRequestSendMoney = cli.Command{
 			BodyPath: "note",
 		},
 	},
-	Action:          handleAccountRequestSendMoney,
+	Action:          handleAccountsRequestSendMoney,
 	HideHelpCommand: true,
 }
 
-var accountRetrieveTransaction = cli.Command{
+var accountsRetrieveTransaction = cli.Command{
 	Name:    "retrieve-transaction",
 	Usage:   "Get transaction by ID",
 	Suggest: true,
@@ -197,11 +329,11 @@ var accountRetrieveTransaction = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountRetrieveTransaction,
+	Action:          handleAccountsRetrieveTransaction,
 	HideHelpCommand: true,
 }
 
-func handleAccountRetrieve(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsRetrieve(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
@@ -225,7 +357,7 @@ func handleAccountRetrieve(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Account.Get(ctx, cmd.Value("account-id").(string), options...)
+	_, err = client.Accounts.Get(ctx, cmd.Value("account-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -233,10 +365,10 @@ func handleAccountRetrieve(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "account retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts retrieve", obj, format, transform)
 }
 
-func handleAccountList(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -262,23 +394,65 @@ func handleAccountList(ctx context.Context, cmd *cli.Command) error {
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.Account.List(ctx, params, options...)
+		_, err = client.Accounts.List(ctx, params, options...)
 		if err != nil {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "account list", obj, format, transform)
+		return ShowJSON(os.Stdout, "accounts list", obj, format, transform)
 	} else {
-		iter := client.Account.ListAutoPaging(ctx, params, options...)
+		iter := client.Accounts.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "account list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "accounts list", iter, format, transform, maxItems)
 	}
 }
 
-func handleAccountListCards(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsCreateTransaction(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
+		cmd.Set("account-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.AccountNewTransactionParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Accounts.NewTransaction(
+		ctx,
+		cmd.Value("account-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "accounts create-transaction", obj, format, transform)
+}
+
+func handleAccountsListCards(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
@@ -302,7 +476,7 @@ func handleAccountListCards(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Account.ListCards(ctx, cmd.Value("account-id").(string), options...)
+	_, err = client.Accounts.ListCards(ctx, cmd.Value("account-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -310,10 +484,10 @@ func handleAccountListCards(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "account list-cards", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts list-cards", obj, format, transform)
 }
 
-func handleAccountListStatements(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsListStatements(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
@@ -342,7 +516,7 @@ func handleAccountListStatements(ctx context.Context, cmd *cli.Command) error {
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.Account.ListStatements(
+		_, err = client.Accounts.ListStatements(
 			ctx,
 			cmd.Value("account-id").(string),
 			params,
@@ -352,9 +526,9 @@ func handleAccountListStatements(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "account list-statements", obj, format, transform)
+		return ShowJSON(os.Stdout, "accounts list-statements", obj, format, transform)
 	} else {
-		iter := client.Account.ListStatementsAutoPaging(
+		iter := client.Accounts.ListStatementsAutoPaging(
 			ctx,
 			cmd.Value("account-id").(string),
 			params,
@@ -364,11 +538,66 @@ func handleAccountListStatements(ctx context.Context, cmd *cli.Command) error {
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "account list-statements", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "accounts list-statements", iter, format, transform, maxItems)
 	}
 }
 
-func handleAccountRequestSendMoney(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsListTransactions(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
+		cmd.Set("account-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.AccountListTransactionsParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	if format == "raw" {
+		var res []byte
+		options = append(options, option.WithResponseBodyInto(&res))
+		_, err = client.Accounts.ListTransactions(
+			ctx,
+			cmd.Value("account-id").(string),
+			params,
+			options...,
+		)
+		if err != nil {
+			return err
+		}
+		obj := gjson.ParseBytes(res)
+		return ShowJSON(os.Stdout, "accounts list-transactions", obj, format, transform)
+	} else {
+		iter := client.Accounts.ListTransactionsAutoPaging(
+			ctx,
+			cmd.Value("account-id").(string),
+			params,
+			options...,
+		)
+		maxItems := int64(-1)
+		if cmd.IsSet("max-items") {
+			maxItems = cmd.Value("max-items").(int64)
+		}
+		return ShowJSONIterator(os.Stdout, "accounts list-transactions", iter, format, transform, maxItems)
+	}
+}
+
+func handleAccountsRequestSendMoney(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
@@ -394,7 +623,7 @@ func handleAccountRequestSendMoney(ctx context.Context, cmd *cli.Command) error 
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Account.RequestSendMoney(
+	_, err = client.Accounts.RequestSendMoney(
 		ctx,
 		cmd.Value("account-id").(string),
 		params,
@@ -407,10 +636,10 @@ func handleAccountRequestSendMoney(ctx context.Context, cmd *cli.Command) error 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "account request-send-money", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts request-send-money", obj, format, transform)
 }
 
-func handleAccountRetrieveTransaction(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsRetrieveTransaction(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("transaction-id") && len(unusedArgs) > 0 {
@@ -438,7 +667,7 @@ func handleAccountRetrieveTransaction(ctx context.Context, cmd *cli.Command) err
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Account.GetTransaction(
+	_, err = client.Accounts.GetTransaction(
 		ctx,
 		cmd.Value("transaction-id").(string),
 		params,
@@ -451,5 +680,5 @@ func handleAccountRetrieveTransaction(ctx context.Context, cmd *cli.Command) err
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "account retrieve-transaction", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts retrieve-transaction", obj, format, transform)
 }
