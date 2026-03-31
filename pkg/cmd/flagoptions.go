@@ -18,7 +18,7 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/debugmiddleware"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
-	"github.com/MercuryTechnologies/mercury-go/option"
+	"github.com/stainless-sdks/mercury-go/option"
 
 	"github.com/goccy/go-yaml"
 	"github.com/urfave/cli/v3"
