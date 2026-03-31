@@ -92,12 +92,12 @@ func init() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:     "accounts-receivable",
-				Usage:    "Manage AR attachments",
+				Name:     "accounts-receivable:attachements",
+        Usage:    "Manage AR attachments",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableRetrieveAttachment,
+					&accountsReceivableAttachementsRetrieve,
 				},
 			},
 			{
@@ -239,27 +239,19 @@ func init() {
 				},
 			},
 			{
-				Name:     "account",
-				Usage:    "Manage bank accounts",
+				Name:     "accounts",
+        Usage:    "Manage bank accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountRetrieve,
-					&accountList,
-					&accountListCards,
-					&accountListStatements,
-					&accountRequestSendMoney,
-					&accountRetrieveTransaction,
-				},
-			},
-			{
-				Name:     "account:transactions",
-				Usage:    "Manage account transactions",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&accountTransactionsList,
-					&accountTransactionsSend,
+					&accountsRetrieve,
+					&accountsList,
+					&accountsCreateTransaction,
+					&accountsListCards,
+					&accountsListStatements,
+					&accountsListTransactions,
+					&accountsRequestSendMoney,
+					&accountsRetrieveTransaction,
 				},
 			},
 			{
