@@ -8,13 +8,13 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
-func TestAccountsRecievableRetrieveAttachment(t *testing.T) {
+func TestAccountsReceivableRetrieveAttachment(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-recievable", "retrieve-attachment",
+			"accounts-receivable", "retrieve-attachment",
 			"--attachment-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

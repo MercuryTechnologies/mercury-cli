@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountsRecievableInvoicesCreate = requestflag.WithInnerFlags(cli.Command{
+var accountsReceivableInvoicesCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
 	Usage:   "Create a new invoice for the organization",
 	Suggest: true,
@@ -110,7 +110,7 @@ var accountsRecievableInvoicesCreate = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "servicePeriodStartDate",
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesCreate,
+	Action:          handleAccountsReceivableInvoicesCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"line-item": {
@@ -137,7 +137,7 @@ var accountsRecievableInvoicesCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsRecievableInvoicesRetrieve = cli.Command{
+var accountsReceivableInvoicesRetrieve = cli.Command{
 	Name:    "retrieve",
 	Usage:   "Retrieve details of an invoice by its ID",
 	Suggest: true,
@@ -148,11 +148,11 @@ var accountsRecievableInvoicesRetrieve = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesRetrieve,
+	Action:          handleAccountsReceivableInvoicesRetrieve,
 	HideHelpCommand: true,
 }
 
-var accountsRecievableInvoicesUpdate = requestflag.WithInnerFlags(cli.Command{
+var accountsReceivableInvoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
 	Usage:   "Update an existing invoice",
 	Suggest: true,
@@ -236,7 +236,7 @@ var accountsRecievableInvoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "servicePeriodStartDate",
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesUpdate,
+	Action:          handleAccountsReceivableInvoicesUpdate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"line-item": {
@@ -263,7 +263,7 @@ var accountsRecievableInvoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsRecievableInvoicesList = cli.Command{
+var accountsReceivableInvoicesList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of invoices. Supports cursor-based pagination with\nlimit, order, start_after, and end_before query parameters.",
 	Suggest: true,
@@ -295,11 +295,11 @@ var accountsRecievableInvoicesList = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesList,
+	Action:          handleAccountsReceivableInvoicesList,
 	HideHelpCommand: true,
 }
 
-var accountsRecievableInvoicesCancel = cli.Command{
+var accountsReceivableInvoicesCancel = cli.Command{
 	Name:    "cancel",
 	Usage:   "Cancel an invoice. This action cannot be undone.",
 	Suggest: true,
@@ -310,11 +310,11 @@ var accountsRecievableInvoicesCancel = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesCancel,
+	Action:          handleAccountsReceivableInvoicesCancel,
 	HideHelpCommand: true,
 }
 
-var accountsRecievableInvoicesDownloadPdf = cli.Command{
+var accountsReceivableInvoicesDownloadPdf = cli.Command{
 	Name:    "download-pdf",
 	Usage:   "Downloads a PDF file for the specified invoice. The response includes a\nContent-Disposition header set to 'attachment' with the filename.",
 	Suggest: true,
@@ -330,11 +330,11 @@ var accountsRecievableInvoicesDownloadPdf = cli.Command{
 			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesDownloadPdf,
+	Action:          handleAccountsReceivableInvoicesDownloadPdf,
 	HideHelpCommand: true,
 }
 
-var accountsRecievableInvoicesListAttachments = cli.Command{
+var accountsReceivableInvoicesListAttachments = cli.Command{
 	Name:    "list-attachments",
 	Usage:   "Retrieve a list of all attachments for a specific invoice",
 	Suggest: true,
@@ -345,11 +345,11 @@ var accountsRecievableInvoicesListAttachments = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsRecievableInvoicesListAttachments,
+	Action:          handleAccountsReceivableInvoicesListAttachments,
 	HideHelpCommand: true,
 }
 
-func handleAccountsRecievableInvoicesCreate(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -357,7 +357,7 @@ func handleAccountsRecievableInvoicesCreate(ctx context.Context, cmd *cli.Comman
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsRecievableInvoiceNewParams{}
+	params := mercury.AccountsReceivableInvoiceNewParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -372,7 +372,7 @@ func handleAccountsRecievableInvoicesCreate(ctx context.Context, cmd *cli.Comman
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsRecievable.Invoices.New(ctx, params, options...)
+	_, err = client.AccountsReceivable.Invoices.New(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -380,10 +380,10 @@ func handleAccountsRecievableInvoicesCreate(ctx context.Context, cmd *cli.Comman
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-recievable:invoices create", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts-receivable:invoices create", obj, format, transform)
 }
 
-func handleAccountsRecievableInvoicesRetrieve(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesRetrieve(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -407,7 +407,7 @@ func handleAccountsRecievableInvoicesRetrieve(ctx context.Context, cmd *cli.Comm
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsRecievable.Invoices.Get(ctx, cmd.Value("invoice-id").(string), options...)
+	_, err = client.AccountsReceivable.Invoices.Get(ctx, cmd.Value("invoice-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -415,10 +415,10 @@ func handleAccountsRecievableInvoicesRetrieve(ctx context.Context, cmd *cli.Comm
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-recievable:invoices retrieve", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts-receivable:invoices retrieve", obj, format, transform)
 }
 
-func handleAccountsRecievableInvoicesUpdate(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesUpdate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -429,7 +429,7 @@ func handleAccountsRecievableInvoicesUpdate(ctx context.Context, cmd *cli.Comman
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsRecievableInvoiceUpdateParams{}
+	params := mercury.AccountsReceivableInvoiceUpdateParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -444,7 +444,7 @@ func handleAccountsRecievableInvoicesUpdate(ctx context.Context, cmd *cli.Comman
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsRecievable.Invoices.Update(
+	_, err = client.AccountsReceivable.Invoices.Update(
 		ctx,
 		cmd.Value("invoice-id").(string),
 		params,
@@ -457,10 +457,10 @@ func handleAccountsRecievableInvoicesUpdate(ctx context.Context, cmd *cli.Comman
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-recievable:invoices update", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts-receivable:invoices update", obj, format, transform)
 }
 
-func handleAccountsRecievableInvoicesList(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -468,7 +468,7 @@ func handleAccountsRecievableInvoicesList(ctx context.Context, cmd *cli.Command)
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsRecievableInvoiceListParams{}
+	params := mercury.AccountsReceivableInvoiceListParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -486,23 +486,23 @@ func handleAccountsRecievableInvoicesList(ctx context.Context, cmd *cli.Command)
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.AccountsRecievable.Invoices.List(ctx, params, options...)
+		_, err = client.AccountsReceivable.Invoices.List(ctx, params, options...)
 		if err != nil {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "accounts-recievable:invoices list", obj, format, transform)
+		return ShowJSON(os.Stdout, "accounts-receivable:invoices list", obj, format, transform)
 	} else {
-		iter := client.AccountsRecievable.Invoices.ListAutoPaging(ctx, params, options...)
+		iter := client.AccountsReceivable.Invoices.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "accounts-recievable:invoices list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "accounts-receivable:invoices list", iter, format, transform, maxItems)
 	}
 }
 
-func handleAccountsRecievableInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -524,10 +524,10 @@ func handleAccountsRecievableInvoicesCancel(ctx context.Context, cmd *cli.Comman
 		return err
 	}
 
-	return client.AccountsRecievable.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
+	return client.AccountsReceivable.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
 }
 
-func handleAccountsRecievableInvoicesDownloadPdf(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesDownloadPdf(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -549,7 +549,7 @@ func handleAccountsRecievableInvoicesDownloadPdf(ctx context.Context, cmd *cli.C
 		return err
 	}
 
-	response, err := client.AccountsRecievable.Invoices.DownloadPdf(ctx, cmd.Value("invoice-id").(string), options...)
+	response, err := client.AccountsReceivable.Invoices.DownloadPdf(ctx, cmd.Value("invoice-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -560,7 +560,7 @@ func handleAccountsRecievableInvoicesDownloadPdf(ctx context.Context, cmd *cli.C
 	return err
 }
 
-func handleAccountsRecievableInvoicesListAttachments(ctx context.Context, cmd *cli.Command) error {
+func handleAccountsReceivableInvoicesListAttachments(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
@@ -584,7 +584,7 @@ func handleAccountsRecievableInvoicesListAttachments(ctx context.Context, cmd *c
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsRecievable.Invoices.ListAttachments(ctx, cmd.Value("invoice-id").(string), options...)
+	_, err = client.AccountsReceivable.Invoices.ListAttachments(ctx, cmd.Value("invoice-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -592,5 +592,5 @@ func handleAccountsRecievableInvoicesListAttachments(ctx context.Context, cmd *c
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-recievable:invoices list-attachments", obj, format, transform)
+	return ShowJSON(os.Stdout, "accounts-receivable:invoices list-attachments", obj, format, transform)
 }
