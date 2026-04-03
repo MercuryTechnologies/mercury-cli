@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
@@ -264,13 +265,16 @@ func TestRecipientsUploadAttachment(t *testing.T) {
 			"--api-key", "string",
 			"recipients", "upload-attachment",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--file", "Example data",
+			"--file", mocktest.TestFile(t, "Example data"),
 		)
 	})
 
 	t.Run("piping data", func(t *testing.T) {
+		testFile := mocktest.TestFile(t, "Example data")
 		// Test piping YAML data over stdin
-		pipeData := []byte("file: Example data")
+		pipeDataStr := "file: Example data"
+		pipeDataStr = strings.ReplaceAll(pipeDataStr, "Example data", testFile)
+		pipeData := []byte(pipeDataStr)
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
