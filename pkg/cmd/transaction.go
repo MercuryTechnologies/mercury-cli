@@ -151,10 +151,11 @@ var transactionsUploadAttachment = cli.Command{
 			Required: true,
 		},
 		&requestflag.Flag[string]{
-			Name:     "file",
-			Usage:    "The file to upload",
-			Required: true,
-			BodyPath: "file",
+			Name:      "file",
+			Usage:     "The file to upload",
+			Required:  true,
+			BodyPath:  "file",
+			FileInput: true,
 		},
 		&requestflag.Flag[string]{
 			Name:     "attachment-type",
