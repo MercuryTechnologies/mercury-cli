@@ -30,8 +30,8 @@ var requestSendMoneyRetrieve = cli.Command{
 	HideHelpCommand: true,
 }
 
-var requestSendMoneyListSendMoneyRequests = cli.Command{
-	Name:    "list-send-money-requests",
+var requestSendMoneyList = cli.Command{
+	Name:    "list",
 	Usage:   "Retrieve a paginated list of send money approval requests for the authenticated\norganization. Supports filtering by account and status.",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -66,7 +66,7 @@ var requestSendMoneyListSendMoneyRequests = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleRequestSendMoneyListSendMoneyRequests,
+	Action:          handleRequestSendMoneyList,
 	HideHelpCommand: true,
 }
 
@@ -105,7 +105,7 @@ func handleRequestSendMoneyRetrieve(ctx context.Context, cmd *cli.Command) error
 	return ShowJSON(os.Stdout, "request-send-money retrieve", obj, format, transform)
 }
 
-func handleRequestSendMoneyListSendMoneyRequests(ctx context.Context, cmd *cli.Command) error {
+func handleRequestSendMoneyList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -113,7 +113,7 @@ func handleRequestSendMoneyListSendMoneyRequests(ctx context.Context, cmd *cli.C
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RequestSendMoneyListSendMoneyRequestsParams{}
+	params := mercury.RequestSendMoneyListParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -131,18 +131,18 @@ func handleRequestSendMoneyListSendMoneyRequests(ctx context.Context, cmd *cli.C
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.RequestSendMoney.ListSendMoneyRequests(ctx, params, options...)
+		_, err = client.RequestSendMoney.List(ctx, params, options...)
 		if err != nil {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "request-send-money list-send-money-requests", obj, format, transform)
+		return ShowJSON(os.Stdout, "request-send-money list", obj, format, transform)
 	} else {
-		iter := client.RequestSendMoney.ListSendMoneyRequestsAutoPaging(ctx, params, options...)
+		iter := client.RequestSendMoney.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "request-send-money list-send-money-requests", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "request-send-money list", iter, format, transform, maxItems)
 	}
 }
