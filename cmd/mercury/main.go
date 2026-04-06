@@ -11,7 +11,7 @@ import (
 	"slices"
 
 	"github.com/MercuryTechnologies/mercury-cli/pkg/cmd"
-	"github.com/stainless-sdks/mercury-go"
+	"github.com/MercuryTechnologies/mercury-go"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
