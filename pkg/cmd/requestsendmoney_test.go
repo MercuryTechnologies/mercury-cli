@@ -19,3 +19,20 @@ func TestRequestSendMoneyRetrieve(t *testing.T) {
 		)
 	})
 }
+
+func TestRequestSendMoneyListSendMoneyRequests(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"request-send-money", "list-send-money-requests",
+			"--max-items", "10",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--limit", "1",
+			"--start-after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--status", "pendingApproval",
+		)
+	})
+}
