@@ -177,6 +177,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&requestSendMoneyRetrieve,
+					&requestSendMoneyListSendMoneyRequests,
 				},
 			},
 			{
