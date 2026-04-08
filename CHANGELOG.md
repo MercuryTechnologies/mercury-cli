@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 (2026-04-08)
+
+Full Changelog: [v0.1.0...v0.1.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.1.0...v0.1.1)
+
+### Bug Fixes
+
+* remove basicAuth ([ff77abc](https://github.com/MercuryTechnologies/mercury-cli/commit/ff77abc7b05dcec7fd1dae8891c8fe06c4cc1cbc))
+
 ## 0.1.0 (2026-04-08)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.0.1...v0.1.0)
