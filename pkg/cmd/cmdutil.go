@@ -46,12 +46,6 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 		option.WithHeader("X-Stainless-Runtime", "cli"),
 		option.WithHeader("X-Stainless-CLI-Command", cmd.FullName()),
 	}
-	if cmd.IsSet("username") {
-		opts = append(opts, option.WithUsername(cmd.String("username")))
-	}
-	if cmd.IsSet("password") {
-		opts = append(opts, option.WithPassword(cmd.String("password")))
-	}
 	if cmd.IsSet("api-key") {
 		opts = append(opts, option.WithAPIKey(cmd.String("api-key")))
 	}
