@@ -57,25 +57,9 @@ For details about specific commands, use the `--help` flag.
 
 ### Environment variables
 
-| Environment variable | Description                           | Required | Default value |
-| -------------------- | ------------------------------------- | -------- | ------------- |
-| `MERCURY_USERNAME`   | Basic authentication for Mercury API. |
-
-Use your API token as the username with an empty password.
-
-Example:
-Username: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
-Password: (empty)
-| no | `null` |
-| `MERCURY_PASSWORD` | Basic authentication for Mercury API.
-
-Use your API token as the username with an empty password.
-
-Example:
-Username: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
-Password: (empty)
-| no | `null` |
-| `MERCURY_API_KEY` | Bearer token authentication for Mercury API.
+| Environment variable | Description                                  | Required | Default value |
+| -------------------- | -------------------------------------------- | -------- | ------------- |
+| `MERCURY_API_KEY`    | Bearer token authentication for Mercury API. |
 
 Use your API token in the Authorization header:
 `Authorization: Bearer TOKEN`
@@ -88,24 +72,6 @@ Tokens can be generated from your Mercury dashboard settings.
 | no | `null` |
 
 ### Global flags
-
-- `--username` - Basic authentication for Mercury API.
-
-Use your API token as the username with an empty password.
-
-Example:
-Username: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
-Password: (empty)
-(can also be set with `MERCURY_USERNAME` env var)
-
-- `--password` - Basic authentication for Mercury API.
-
-Use your API token as the username with an empty password.
-
-Example:
-Username: `secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
-Password: (empty)
-(can also be set with `MERCURY_PASSWORD` env var)
 
 - `--api-key` - Bearer token authentication for Mercury API.
 
