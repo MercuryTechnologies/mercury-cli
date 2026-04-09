@@ -13,8 +13,8 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var statementsDownloadPdf = cli.Command{
-	Name:    "download-pdf",
+var statementsDownload = cli.Command{
+	Name:    "download",
 	Usage:   "Downloads a PDF file for the specified account statement. The response includes\na Content-Disposition header for proper file download handling. Returns binary\nPDF data.",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -29,11 +29,11 @@ var statementsDownloadPdf = cli.Command{
 			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
 		},
 	},
-	Action:          handleStatementsDownloadPdf,
+	Action:          handleStatementsDownload,
 	HideHelpCommand: true,
 }
 
-func handleStatementsDownloadPdf(ctx context.Context, cmd *cli.Command) error {
+func handleStatementsDownload(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("statement-id") && len(unusedArgs) > 0 {
@@ -55,7 +55,7 @@ func handleStatementsDownloadPdf(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	response, err := client.Statements.DownloadPdf(ctx, cmd.Value("statement-id").(string), options...)
+	response, err := client.Statements.Download(ctx, cmd.Value("statement-id").(string), options...)
 	if err != nil {
 		return err
 	}
