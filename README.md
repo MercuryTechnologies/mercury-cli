@@ -65,7 +65,7 @@ Use your API token in the Authorization header:
 `Authorization: Bearer TOKEN`
 
 Example:
-`Authorization: Bearer secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
+`Authorization: Bearer secret-token:mercury_<TOKEN>`
 
 Your Mercury API token should include the 'secret-token:' prefix.
 Tokens can be generated from your Mercury dashboard settings.
@@ -79,7 +79,7 @@ Use your API token in the Authorization header:
 `Authorization: Bearer TOKEN`
 
 Example:
-`Authorization: Bearer secret-token:mercury_production_wma_24SCp4G81X3yHL4Wq8FgzuaP9ye3VKf2mgTDctXyRg5HY_yrucrem`
+`Authorization: Bearer secret-token:mercury_<TOKEN>`
 
 Your Mercury API token should include the 'secret-token:' prefix.
 Tokens can be generated from your Mercury dashboard settings.
