@@ -122,6 +122,14 @@ func init() {
 				},
 			},
 			{
+				Name:     "cards",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&cardsList,
+				},
+			},
+			{
 				Name:     "categories",
 				Usage:    "List expense categories",
 				Category: "API RESOURCE",
@@ -242,7 +250,6 @@ func init() {
 					&accountsCreateTransaction,
 					&accountsGet,
 					&accountsGetTransaction,
-					&accountsListCards,
 					&accountsListStatements,
 					&accountsListTransactions,
 					&accountsRequestSendMoney,
