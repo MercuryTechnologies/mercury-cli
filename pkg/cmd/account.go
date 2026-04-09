@@ -147,21 +147,6 @@ var accountsGetTransaction = cli.Command{
 	HideHelpCommand: true,
 }
 
-var accountsListCards = cli.Command{
-	Name:    "list-cards",
-	Usage:   "Retrieve all debit and credit cards associated with a specific account.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-	},
-	Action:          handleAccountsListCards,
-	HideHelpCommand: true,
-}
-
 var accountsListStatements = cli.Command{
 	Name:    "list-statements",
 	Usage:   "Retrieve a paginated list of monthly statements for a specific account. Supports\ncursor-based pagination with limit, order, start_after, and end_before query\nparameters, as well as date range filtering with start and end parameters.",
@@ -494,41 +479,6 @@ func handleAccountsGetTransaction(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts get-transaction", obj, format, transform)
-}
-
-func handleAccountsListCards(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.ListCards(ctx, cmd.Value("account-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts list-cards", obj, format, transform)
 }
 
 func handleAccountsListStatements(ctx context.Context, cmd *cli.Command) error {
