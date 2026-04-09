@@ -14,16 +14,16 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var organizationGet = cli.Command{
+var orgGet = cli.Command{
 	Name:            "get",
 	Usage:           "Retrieve information about your organization including EIN, legal business name,\nand DBAs.",
 	Suggest:         true,
 	Flags:           []cli.Flag{},
-	Action:          handleOrganizationGet,
+	Action:          handleOrgGet,
 	HideHelpCommand: true,
 }
 
-func handleOrganizationGet(ctx context.Context, cmd *cli.Command) error {
+func handleOrgGet(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -44,7 +44,7 @@ func handleOrganizationGet(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Organization.Get(ctx, options...)
+	_, err = client.Org.Get(ctx, options...)
 	if err != nil {
 		return err
 	}
@@ -52,5 +52,5 @@ func handleOrganizationGet(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "organization get", obj, format, transform)
+	return ShowJSON(os.Stdout, "org get", obj, format, transform)
 }
