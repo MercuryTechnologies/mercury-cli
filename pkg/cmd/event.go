@@ -60,8 +60,8 @@ var eventsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var eventsGaet = cli.Command{
-	Name:    "gaet",
+var eventsGet = cli.Command{
+	Name:    "get",
 	Usage:   "Get event by ID",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -71,7 +71,7 @@ var eventsGaet = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleEventsGaet,
+	Action:          handleEventsGet,
 	HideHelpCommand: true,
 }
 
@@ -117,7 +117,7 @@ func handleEventsList(ctx context.Context, cmd *cli.Command) error {
 	}
 }
 
-func handleEventsGaet(ctx context.Context, cmd *cli.Command) error {
+func handleEventsGet(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("event-id") && len(unusedArgs) > 0 {
@@ -141,7 +141,7 @@ func handleEventsGaet(ctx context.Context, cmd *cli.Command) error {
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Events.Gaet(ctx, cmd.Value("event-id").(string), options...)
+	_, err = client.Events.Get(ctx, cmd.Value("event-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -149,5 +149,5 @@ func handleEventsGaet(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "events gaet", obj, format, transform)
+	return ShowJSON(os.Stdout, "events get", obj, format, transform)
 }

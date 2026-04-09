@@ -152,7 +152,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&eventsList,
-					&eventsGaet,
+					&eventsGet,
 				},
 			},
 			{
