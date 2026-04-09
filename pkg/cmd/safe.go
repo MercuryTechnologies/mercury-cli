@@ -24,8 +24,8 @@ var safesList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var safesDownloadDocument = cli.Command{
-	Name:    "download-document",
+var safesDownload = cli.Command{
+	Name:    "download",
 	Usage:   "Download the PDF document for a specific SAFE request. Returns binary PDF data\nwith a Content-Disposition header.",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -40,7 +40,7 @@ var safesDownloadDocument = cli.Command{
 			Usage:   "The file where the response contents will be stored. Use the value '-' to force output to stdout.",
 		},
 	},
-	Action:          handleSafesDownloadDocument,
+	Action:          handleSafesDownload,
 	HideHelpCommand: true,
 }
 
@@ -91,7 +91,7 @@ func handleSafesList(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(os.Stdout, "safes list", obj, format, transform)
 }
 
-func handleSafesDownloadDocument(ctx context.Context, cmd *cli.Command) error {
+func handleSafesDownload(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("safe-request-id") && len(unusedArgs) > 0 {
@@ -113,7 +113,7 @@ func handleSafesDownloadDocument(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	response, err := client.Safes.DownloadDocument(ctx, cmd.Value("safe-request-id").(string), options...)
+	response, err := client.Safes.Download(ctx, cmd.Value("safe-request-id").(string), options...)
 	if err != nil {
 		return err
 	}
