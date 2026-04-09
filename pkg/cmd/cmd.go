@@ -150,12 +150,12 @@ func init() {
 				},
 			},
 			{
-				Name:     "organization",
+				Name:     "org",
 				Usage:    "View organization details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&organizationGet,
+					&orgGet,
 				},
 			},
 			{
