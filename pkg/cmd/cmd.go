@@ -85,12 +85,12 @@ func init() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:     "accounts-receivable:attachements",
+				Name:     "accounts-receivable:attachments",
         Usage:    "Get accounts receivable attachment details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableAttachementsGet,
+					&accountsReceivableAttachmentsGet,
 				},
 			},
 			{
