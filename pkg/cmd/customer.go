@@ -15,7 +15,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountsReceivableCustomersCreate = requestflag.WithInnerFlags(cli.Command{
+var customersCreate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "create",
 	Usage:   "Create a new customer for the organization",
 	Suggest: true,
@@ -38,7 +38,7 @@ var accountsReceivableCustomersCreate = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "address",
 		},
 	},
-	Action:          handleAccountsReceivableCustomersCreate,
+	Action:          handleCustomersCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"address": {
@@ -80,7 +80,7 @@ var accountsReceivableCustomersCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsReceivableCustomersUpdate = requestflag.WithInnerFlags(cli.Command{
+var customersUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
 	Usage:   "Update an existing customer",
 	Suggest: true,
@@ -114,7 +114,7 @@ var accountsReceivableCustomersUpdate = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "address",
 		},
 	},
-	Action:          handleAccountsReceivableCustomersUpdate,
+	Action:          handleCustomersUpdate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"address": {
@@ -156,7 +156,7 @@ var accountsReceivableCustomersUpdate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsReceivableCustomersList = cli.Command{
+var customersList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of customers. Supports cursor-based pagination with\nlimit, order, start_after, and end_before query parameters.",
 	Suggest: true,
@@ -188,11 +188,11 @@ var accountsReceivableCustomersList = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleAccountsReceivableCustomersList,
+	Action:          handleCustomersList,
 	HideHelpCommand: true,
 }
 
-var accountsReceivableCustomersDelete = cli.Command{
+var customersDelete = cli.Command{
 	Name:    "delete",
 	Usage:   "Delete a customer. This action cannot be undone.",
 	Suggest: true,
@@ -203,11 +203,11 @@ var accountsReceivableCustomersDelete = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsReceivableCustomersDelete,
+	Action:          handleCustomersDelete,
 	HideHelpCommand: true,
 }
 
-var accountsReceivableCustomersGet = cli.Command{
+var customersGet = cli.Command{
 	Name:    "get",
 	Usage:   "Retrieve details of a specific customer by their ID",
 	Suggest: true,
@@ -218,11 +218,11 @@ var accountsReceivableCustomersGet = cli.Command{
 			Required: true,
 		},
 	},
-	Action:          handleAccountsReceivableCustomersGet,
+	Action:          handleCustomersGet,
 	HideHelpCommand: true,
 }
 
-func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Command) error {
+func handleCustomersCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -230,7 +230,7 @@ func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Comma
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsReceivableCustomerNewParams{}
+	params := mercury.CustomerNewParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -245,7 +245,7 @@ func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Comma
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsReceivable.Customers.New(ctx, params, options...)
+	_, err = client.Customers.New(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -253,10 +253,10 @@ func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Comma
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-receivable:customers create", obj, format, transform)
+	return ShowJSON(os.Stdout, "customers create", obj, format, transform)
 }
 
-func handleAccountsReceivableCustomersUpdate(ctx context.Context, cmd *cli.Command) error {
+func handleCustomersUpdate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
@@ -267,7 +267,7 @@ func handleAccountsReceivableCustomersUpdate(ctx context.Context, cmd *cli.Comma
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsReceivableCustomerUpdateParams{}
+	params := mercury.CustomerUpdateParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -282,7 +282,7 @@ func handleAccountsReceivableCustomersUpdate(ctx context.Context, cmd *cli.Comma
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsReceivable.Customers.Update(
+	_, err = client.Customers.Update(
 		ctx,
 		cmd.Value("customer-id").(string),
 		params,
@@ -295,10 +295,10 @@ func handleAccountsReceivableCustomersUpdate(ctx context.Context, cmd *cli.Comma
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-receivable:customers update", obj, format, transform)
+	return ShowJSON(os.Stdout, "customers update", obj, format, transform)
 }
 
-func handleAccountsReceivableCustomersList(ctx context.Context, cmd *cli.Command) error {
+func handleCustomersList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -306,7 +306,7 @@ func handleAccountsReceivableCustomersList(ctx context.Context, cmd *cli.Command
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountsReceivableCustomerListParams{}
+	params := mercury.CustomerListParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -324,23 +324,23 @@ func handleAccountsReceivableCustomersList(ctx context.Context, cmd *cli.Command
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.AccountsReceivable.Customers.List(ctx, params, options...)
+		_, err = client.Customers.List(ctx, params, options...)
 		if err != nil {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "accounts-receivable:customers list", obj, format, transform)
+		return ShowJSON(os.Stdout, "customers list", obj, format, transform)
 	} else {
-		iter := client.AccountsReceivable.Customers.ListAutoPaging(ctx, params, options...)
+		iter := client.Customers.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "accounts-receivable:customers list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "customers list", iter, format, transform, maxItems)
 	}
 }
 
-func handleAccountsReceivableCustomersDelete(ctx context.Context, cmd *cli.Command) error {
+func handleCustomersDelete(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
@@ -362,10 +362,10 @@ func handleAccountsReceivableCustomersDelete(ctx context.Context, cmd *cli.Comma
 		return err
 	}
 
-	return client.AccountsReceivable.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
+	return client.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
 }
 
-func handleAccountsReceivableCustomersGet(ctx context.Context, cmd *cli.Command) error {
+func handleCustomersGet(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
@@ -389,7 +389,7 @@ func handleAccountsReceivableCustomersGet(ctx context.Context, cmd *cli.Command)
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsReceivable.Customers.Get(ctx, cmd.Value("customer-id").(string), options...)
+	_, err = client.Customers.Get(ctx, cmd.Value("customer-id").(string), options...)
 	if err != nil {
 		return err
 	}
@@ -397,5 +397,5 @@ func handleAccountsReceivableCustomersGet(ctx context.Context, cmd *cli.Command)
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-receivable:customers get", obj, format, transform)
+	return ShowJSON(os.Stdout, "customers get", obj, format, transform)
 }
