@@ -80,21 +80,6 @@ var accountsReceivableCustomersCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsReceivableCustomersRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Retrieve details of a specific customer by their ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "customer-id",
-			Usage:    "The customer who will receive the invoice. Use the /api/v1/ar/customers endpoint to list your customers and find the corresponding id, or create a new customer first.",
-			Required: true,
-		},
-	},
-	Action:          handleAccountsReceivableCustomersRetrieve,
-	HideHelpCommand: true,
-}
-
 var accountsReceivableCustomersUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
 	Usage:   "Update an existing customer",
@@ -222,6 +207,21 @@ var accountsReceivableCustomersDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var accountsReceivableCustomersGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve details of a specific customer by their ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "customer-id",
+			Usage:    "The customer who will receive the invoice. Use the /api/v1/ar/customers endpoint to list your customers and find the corresponding id, or create a new customer first.",
+			Required: true,
+		},
+	},
+	Action:          handleAccountsReceivableCustomersGet,
+	HideHelpCommand: true,
+}
+
 func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -254,41 +254,6 @@ func handleAccountsReceivableCustomersCreate(ctx context.Context, cmd *cli.Comma
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts-receivable:customers create", obj, format, transform)
-}
-
-func handleAccountsReceivableCustomersRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
-		cmd.Set("customer-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsReceivable.Customers.Get(ctx, cmd.Value("customer-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-receivable:customers retrieve", obj, format, transform)
 }
 
 func handleAccountsReceivableCustomersUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -398,4 +363,39 @@ func handleAccountsReceivableCustomersDelete(ctx context.Context, cmd *cli.Comma
 	}
 
 	return client.AccountsReceivable.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
+}
+
+func handleAccountsReceivableCustomersGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("customer-id") && len(unusedArgs) > 0 {
+		cmd.Set("customer-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.AccountsReceivable.Customers.Get(ctx, cmd.Value("customer-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "accounts-receivable:customers get", obj, format, transform)
 }

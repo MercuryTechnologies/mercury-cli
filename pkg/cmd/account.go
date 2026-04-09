@@ -15,21 +15,6 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountsRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Get account by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-	},
-	Action:          handleAccountsRetrieve,
-	HideHelpCommand: true,
-}
-
 var accountsList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of accounts. Supports cursor-based pagination with\nlimit, order, start_after, and end_before query parameters.",
@@ -126,6 +111,41 @@ var accountsCreateTransaction = requestflag.WithInnerFlags(cli.Command{
 		},
 	},
 })
+
+var accountsGet = cli.Command{
+	Name:    "get",
+	Usage:   "Get account by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "account-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+		},
+	},
+	Action:          handleAccountsGet,
+	HideHelpCommand: true,
+}
+
+var accountsGetTransaction = cli.Command{
+	Name:    "get-transaction",
+	Usage:   "Get transaction by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "account-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+		},
+		&requestflag.Flag[string]{
+			Name:     "transaction-id",
+			Usage:    "ID for this transaction",
+			Required: true,
+		},
+	},
+	Action:          handleAccountsGetTransaction,
+	HideHelpCommand: true,
+}
 
 var accountsListCards = cli.Command{
 	Name:    "list-cards",
@@ -313,61 +333,6 @@ var accountsRequestSendMoney = cli.Command{
 	HideHelpCommand: true,
 }
 
-var accountsRetrieveTransaction = cli.Command{
-	Name:    "retrieve-transaction",
-	Usage:   "Get transaction by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:     "transaction-id",
-			Usage:    "ID for this transaction",
-			Required: true,
-		},
-	},
-	Action:          handleAccountsRetrieveTransaction,
-	HideHelpCommand: true,
-}
-
-func handleAccountsRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.Get(ctx, cmd.Value("account-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts retrieve", obj, format, transform)
-}
-
 func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -450,6 +415,85 @@ func handleAccountsCreateTransaction(ctx context.Context, cmd *cli.Command) erro
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts create-transaction", obj, format, transform)
+}
+
+func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
+		cmd.Set("account-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Accounts.Get(ctx, cmd.Value("account-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "accounts get", obj, format, transform)
+}
+
+func handleAccountsGetTransaction(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("transaction-id") && len(unusedArgs) > 0 {
+		cmd.Set("transaction-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.AccountGetTransactionParams{
+		AccountID: cmd.Value("account-id").(string),
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Accounts.GetTransaction(
+		ctx,
+		cmd.Value("transaction-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "accounts get-transaction", obj, format, transform)
 }
 
 func handleAccountsListCards(ctx context.Context, cmd *cli.Command) error {
@@ -637,48 +681,4 @@ func handleAccountsRequestSendMoney(ctx context.Context, cmd *cli.Command) error
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts request-send-money", obj, format, transform)
-}
-
-func handleAccountsRetrieveTransaction(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("transaction-id") && len(unusedArgs) > 0 {
-		cmd.Set("transaction-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.AccountGetTransactionParams{
-		AccountID: cmd.Value("account-id").(string),
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.GetTransaction(
-		ctx,
-		cmd.Value("transaction-id").(string),
-		params,
-		options...,
-	)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts retrieve-transaction", obj, format, transform)
 }

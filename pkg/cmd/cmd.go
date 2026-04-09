@@ -90,7 +90,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableAttachementsRetrieve,
+					&accountsReceivableAttachementsGet,
 				},
 			},
 			{
@@ -100,10 +100,10 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsReceivableCustomersCreate,
-					&accountsReceivableCustomersRetrieve,
 					&accountsReceivableCustomersUpdate,
 					&accountsReceivableCustomersList,
 					&accountsReceivableCustomersDelete,
+					&accountsReceivableCustomersGet,
 				},
 			},
 			{
@@ -113,11 +113,11 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsReceivableInvoicesCreate,
-					&accountsReceivableInvoicesRetrieve,
 					&accountsReceivableInvoicesUpdate,
 					&accountsReceivableInvoicesList,
 					&accountsReceivableInvoicesCancel,
 					&accountsReceivableInvoicesDownloadPdf,
+					&accountsReceivableInvoicesGet,
 					&accountsReceivableInvoicesListAttachments,
 				},
 			},
@@ -145,8 +145,8 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&eventsRetrieve,
 					&eventsList,
+					&eventsGaet,
 				},
 			},
 			{
@@ -155,7 +155,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&organizationRetrieve,
+					&organizationGet,
 				},
 			},
 			{
@@ -164,8 +164,8 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&requestSendMoneyRetrieve,
 					&requestSendMoneyList,
+					&requestSendMoneyGet,
 				},
 			},
 			{
@@ -174,9 +174,9 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&safesRetrieve,
 					&safesList,
 					&safesDownloadDocument,
+					&safesGet,
 				},
 			},
 			{
@@ -214,8 +214,8 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&usersRetrieve,
 					&usersList,
+					&usersGet,
 				},
 			},
 			{
@@ -225,10 +225,10 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&webhooksCreate,
-					&webhooksRetrieve,
 					&webhooksUpdate,
 					&webhooksList,
 					&webhooksDelete,
+					&webhooksGet,
 					&webhooksVerify,
 				},
 			},
@@ -238,14 +238,14 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsRetrieve,
 					&accountsList,
 					&accountsCreateTransaction,
+					&accountsGet,
+					&accountsGetTransaction,
 					&accountsListCards,
 					&accountsListStatements,
 					&accountsListTransactions,
 					&accountsRequestSendMoney,
-					&accountsRetrieveTransaction,
 				},
 			},
 			{
@@ -255,9 +255,9 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&recipientsCreate,
-					&recipientsRetrieve,
 					&recipientsUpdate,
 					&recipientsList,
+					&recipientsGet,
 					&recipientsListAttachments,
 					&recipientsUploadAttachment,
 				},
@@ -268,9 +268,9 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&transactionsRetrieve,
 					&transactionsUpdate,
 					&transactionsList,
+					&transactionsGet,
 					&transactionsUploadAttachment,
 				},
 			},
