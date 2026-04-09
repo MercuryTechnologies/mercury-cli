@@ -9,13 +9,13 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 )
 
-func TestAccountsReceivableCustomersCreate(t *testing.T) {
+func TestCustomersCreate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "create",
+			"customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address", "{address1: address1, city: city, country: country, name: name, postalCode: postalCode, region: region, address2: address2}",
@@ -24,13 +24,13 @@ func TestAccountsReceivableCustomersCreate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsReceivableCustomersCreate)
+		requestflag.CheckInnerFlags(customersCreate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "create",
+			"customers", "create",
 			"--email", "email",
 			"--name", "name",
 			"--address.address1", "address1",
@@ -59,18 +59,18 @@ func TestAccountsReceivableCustomersCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-receivable:customers", "create",
+			"customers", "create",
 		)
 	})
 }
 
-func TestAccountsReceivableCustomersUpdate(t *testing.T) {
+func TestCustomersUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "update",
+			"customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -81,13 +81,13 @@ func TestAccountsReceivableCustomersUpdate(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(accountsReceivableCustomersUpdate)
+		requestflag.CheckInnerFlags(customersUpdate)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "update",
+			"customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
 			"--name", "name",
@@ -119,19 +119,19 @@ func TestAccountsReceivableCustomersUpdate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"accounts-receivable:customers", "update",
+			"customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsReceivableCustomersList(t *testing.T) {
+func TestCustomersList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "list",
+			"customers", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -141,25 +141,25 @@ func TestAccountsReceivableCustomersList(t *testing.T) {
 	})
 }
 
-func TestAccountsReceivableCustomersDelete(t *testing.T) {
+func TestCustomersDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "delete",
+			"customers", "delete",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
 
-func TestAccountsReceivableCustomersGet(t *testing.T) {
+func TestCustomersGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:customers", "get",
+			"customers", "get",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

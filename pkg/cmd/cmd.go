@@ -85,6 +85,18 @@ func init() {
 		},
 		Commands: []*cli.Command{
 			{
+				Name:     "customers",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&customersCreate,
+					&customersUpdate,
+					&customersList,
+					&customersDelete,
+					&customersGet,
+				},
+			},
+			{
 				Name:     "invoices",
 				Category: "API RESOURCE",
 				Suggest:  true,
@@ -104,18 +116,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsReceivableAttachmentsGet,
-				},
-			},
-			{
-				Name:     "accounts-receivable:customers",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&accountsReceivableCustomersCreate,
-					&accountsReceivableCustomersUpdate,
-					&accountsReceivableCustomersList,
-					&accountsReceivableCustomersDelete,
-					&accountsReceivableCustomersGet,
 				},
 			},
 			{
