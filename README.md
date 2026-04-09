@@ -48,7 +48,7 @@ mercury [resource] <command> [flags...]
 ```
 
 ```sh
-mercury accounts retrieve \
+mercury accounts get \
   --api-key 'My API Key' \
   --account-id REPLACE_ME
 ```

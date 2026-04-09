@@ -98,18 +98,6 @@ func TestAccountsReceivableInvoicesCreate(t *testing.T) {
 	})
 }
 
-func TestAccountsReceivableInvoicesRetrieve(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"accounts-receivable:invoices", "retrieve",
-			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
 func TestAccountsReceivableInvoicesUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
@@ -230,6 +218,18 @@ func TestAccountsReceivableInvoicesDownloadPdf(t *testing.T) {
 			"accounts-receivable:invoices", "download-pdf",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--output", "/dev/null",
+		)
+	})
+}
+
+func TestAccountsReceivableInvoicesGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts-receivable:invoices", "get",
+			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }

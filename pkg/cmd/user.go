@@ -15,21 +15,6 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var usersRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Get user by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "user-id",
-			Usage:    "ID for the user",
-			Required: true,
-		},
-	},
-	Action:          handleUsersRetrieve,
-	HideHelpCommand: true,
-}
-
 var usersList = cli.Command{
 	Name:    "list",
 	Usage:   "Get all users",
@@ -66,39 +51,19 @@ var usersList = cli.Command{
 	HideHelpCommand: true,
 }
 
-func handleUsersRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("user-id") && len(unusedArgs) > 0 {
-		cmd.Set("user-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Users.Get(ctx, cmd.Value("user-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "users retrieve", obj, format, transform)
+var usersGet = cli.Command{
+	Name:    "get",
+	Usage:   "Get user by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "user-id",
+			Usage:    "ID for the user",
+			Required: true,
+		},
+	},
+	Action:          handleUsersGet,
+	HideHelpCommand: true,
 }
 
 func handleUsersList(ctx context.Context, cmd *cli.Command) error {
@@ -141,4 +106,39 @@ func handleUsersList(ctx context.Context, cmd *cli.Command) error {
 		}
 		return ShowJSONIterator(os.Stdout, "users list", iter, format, transform, maxItems)
 	}
+}
+
+func handleUsersGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("user-id") && len(unusedArgs) > 0 {
+		cmd.Set("user-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Users.Get(ctx, cmd.Value("user-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "users get", obj, format, transform)
 }

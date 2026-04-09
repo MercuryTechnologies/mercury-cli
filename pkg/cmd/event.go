@@ -15,21 +15,6 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var eventsRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Get event by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "event-id",
-			Usage:    "ID for the API event",
-			Required: true,
-		},
-	},
-	Action:          handleEventsRetrieve,
-	HideHelpCommand: true,
-}
-
 var eventsList = cli.Command{
 	Name:    "list",
 	Usage:   "Get all events",
@@ -75,39 +60,19 @@ var eventsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-func handleEventsRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("event-id") && len(unusedArgs) > 0 {
-		cmd.Set("event-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Events.Get(ctx, cmd.Value("event-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "events retrieve", obj, format, transform)
+var eventsGaet = cli.Command{
+	Name:    "gaet",
+	Usage:   "Get event by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "event-id",
+			Usage:    "ID for the API event",
+			Required: true,
+		},
+	},
+	Action:          handleEventsGaet,
+	HideHelpCommand: true,
 }
 
 func handleEventsList(ctx context.Context, cmd *cli.Command) error {
@@ -150,4 +115,39 @@ func handleEventsList(ctx context.Context, cmd *cli.Command) error {
 		}
 		return ShowJSONIterator(os.Stdout, "events list", iter, format, transform, maxItems)
 	}
+}
+
+func handleEventsGaet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("event-id") && len(unusedArgs) > 0 {
+		cmd.Set("event-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Events.Gaet(ctx, cmd.Value("event-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "events gaet", obj, format, transform)
 }

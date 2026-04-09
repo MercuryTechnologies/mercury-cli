@@ -9,18 +9,6 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 )
 
-func TestAccountsRetrieve(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"accounts", "retrieve",
-			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
 func TestAccountsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
@@ -93,6 +81,31 @@ func TestAccountsCreateTransaction(t *testing.T) {
 			"--api-key", "string",
 			"accounts", "create-transaction",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAccountsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts", "get",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAccountsGetTransaction(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts", "get-transaction",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
@@ -182,19 +195,6 @@ func TestAccountsRequestSendMoney(t *testing.T) {
 			"--api-key", "string",
 			"accounts", "request-send-money",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
-func TestAccountsRetrieveTransaction(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"accounts", "retrieve-transaction",
-			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }
