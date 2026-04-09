@@ -247,7 +247,6 @@ func init() {
 					&accountsList,
 					&accountsCreateTransaction,
 					&accountsGet,
-					&accountsGetTransaction,
 					&accountsListStatements,
 					&accountsListTransactions,
 					&accountsRequestSendMoney,
