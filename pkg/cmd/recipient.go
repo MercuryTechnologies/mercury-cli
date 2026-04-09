@@ -132,21 +132,6 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var recipientsRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Retrieve details of a specific recipient by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-	},
-	Action:          handleRecipientsRetrieve,
-	HideHelpCommand: true,
-}
-
 var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
 	Usage:   "Update an existing recipient's information",
@@ -303,6 +288,21 @@ var recipientsList = cli.Command{
 	HideHelpCommand: true,
 }
 
+var recipientsGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve details of a specific recipient by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "recipient-id",
+			Usage:    "ID for a Mercury account.",
+			Required: true,
+		},
+	},
+	Action:          handleRecipientsGet,
+	HideHelpCommand: true,
+}
+
 var recipientsListAttachments = cli.Command{
 	Name:    "list-attachments",
 	Usage:   "Retrieve a paginated list of all recipient tax form attachments across all\nrecipients in the organization. Use cursor parameters (start_after, end_before)\nfor pagination.",
@@ -394,41 +394,6 @@ func handleRecipientsCreate(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(os.Stdout, "recipients create", obj, format, transform)
 }
 
-func handleRecipientsRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("recipient-id") && len(unusedArgs) > 0 {
-		cmd.Set("recipient-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Recipients.Get(ctx, cmd.Value("recipient-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "recipients retrieve", obj, format, transform)
-}
-
 func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -511,6 +476,41 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 		}
 		return ShowJSONIterator(os.Stdout, "recipients list", iter, format, transform, maxItems)
 	}
+}
+
+func handleRecipientsGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("recipient-id") && len(unusedArgs) > 0 {
+		cmd.Set("recipient-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Recipients.Get(ctx, cmd.Value("recipient-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "recipients get", obj, format, transform)
 }
 
 func handleRecipientsListAttachments(ctx context.Context, cmd *cli.Command) error {

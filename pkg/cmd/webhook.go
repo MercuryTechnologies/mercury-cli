@@ -41,21 +41,6 @@ var webhooksCreate = cli.Command{
 	HideHelpCommand: true,
 }
 
-var webhooksRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Retrieve details of a specific webhook endpoint by ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "webhook-endpoint-id",
-			Usage:    "ID for the webhook",
-			Required: true,
-		},
-	},
-	Action:          handleWebhooksRetrieve,
-	HideHelpCommand: true,
-}
-
 var webhooksUpdate = cli.Command{
 	Name:    "update",
 	Usage:   "Update the configuration of an existing webhook endpoint. A webhook that has\nbeen disabled due to consecutive delivery failures can be reactivated by setting\nits status to 'active'.",
@@ -146,6 +131,21 @@ var webhooksDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var webhooksGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve details of a specific webhook endpoint by ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "webhook-endpoint-id",
+			Usage:    "ID for the webhook",
+			Required: true,
+		},
+	},
+	Action:          handleWebhooksGet,
+	HideHelpCommand: true,
+}
+
 var webhooksVerify = cli.Command{
 	Name:    "verify",
 	Usage:   "Send a test event to verify the webhook endpoint is properly configured and\nreachable. The request body accepts an optional 'eventType' field to specify\nwhich event type to test (e.g., 'transaction.created', 'transaction.updated').\nIf omitted from the request body, defaults to 'transaction.created'.",
@@ -198,41 +198,6 @@ func handleWebhooksCreate(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "webhooks create", obj, format, transform)
-}
-
-func handleWebhooksRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("webhook-endpoint-id") && len(unusedArgs) > 0 {
-		cmd.Set("webhook-endpoint-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Webhooks.Get(ctx, cmd.Value("webhook-endpoint-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "webhooks retrieve", obj, format, transform)
 }
 
 func handleWebhooksUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -342,6 +307,41 @@ func handleWebhooksDelete(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	return client.Webhooks.Delete(ctx, cmd.Value("webhook-endpoint-id").(string), options...)
+}
+
+func handleWebhooksGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("webhook-endpoint-id") && len(unusedArgs) > 0 {
+		cmd.Set("webhook-endpoint-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Webhooks.Get(ctx, cmd.Value("webhook-endpoint-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "webhooks get", obj, format, transform)
 }
 
 func handleWebhooksVerify(ctx context.Context, cmd *cli.Command) error {

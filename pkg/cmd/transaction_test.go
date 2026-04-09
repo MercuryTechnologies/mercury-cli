@@ -9,18 +9,6 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
-func TestTransactionsRetrieve(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"transactions", "retrieve",
-			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
 func TestTransactionsUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
@@ -70,6 +58,18 @@ func TestTransactionsList(t *testing.T) {
 			"--start-after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--start-at", "start_at",
 			"--status", "pending",
+		)
+	})
+}
+
+func TestTransactionsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"transactions", "get",
+			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
 }

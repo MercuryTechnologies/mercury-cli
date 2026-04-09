@@ -64,18 +64,6 @@ func TestAccountsReceivableCustomersCreate(t *testing.T) {
 	})
 }
 
-func TestAccountsReceivableCustomersRetrieve(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"accounts-receivable:customers", "retrieve",
-			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
 func TestAccountsReceivableCustomersUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
@@ -160,6 +148,18 @@ func TestAccountsReceivableCustomersDelete(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"accounts-receivable:customers", "delete",
+			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAccountsReceivableCustomersGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts-receivable:customers", "get",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

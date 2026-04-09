@@ -137,21 +137,6 @@ var accountsReceivableInvoicesCreate = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-var accountsReceivableInvoicesRetrieve = cli.Command{
-	Name:    "retrieve",
-	Usage:   "Retrieve details of an invoice by its ID",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
-		},
-	},
-	Action:          handleAccountsReceivableInvoicesRetrieve,
-	HideHelpCommand: true,
-}
-
 var accountsReceivableInvoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 	Name:    "update",
 	Usage:   "Update an existing invoice",
@@ -334,6 +319,21 @@ var accountsReceivableInvoicesDownloadPdf = cli.Command{
 	HideHelpCommand: true,
 }
 
+var accountsReceivableInvoicesGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve details of an invoice by its ID",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "invoice-id",
+			Usage:    "ID for the invoice.",
+			Required: true,
+		},
+	},
+	Action:          handleAccountsReceivableInvoicesGet,
+	HideHelpCommand: true,
+}
+
 var accountsReceivableInvoicesListAttachments = cli.Command{
 	Name:    "list-attachments",
 	Usage:   "Retrieve a list of all attachments for a specific invoice",
@@ -381,41 +381,6 @@ func handleAccountsReceivableInvoicesCreate(ctx context.Context, cmd *cli.Comman
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts-receivable:invoices create", obj, format, transform)
-}
-
-func handleAccountsReceivableInvoicesRetrieve(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
-		cmd.Set("invoice-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.AccountsReceivable.Invoices.Get(ctx, cmd.Value("invoice-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts-receivable:invoices retrieve", obj, format, transform)
 }
 
 func handleAccountsReceivableInvoicesUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -558,6 +523,41 @@ func handleAccountsReceivableInvoicesDownloadPdf(ctx context.Context, cmd *cli.C
 		fmt.Println(message)
 	}
 	return err
+}
+
+func handleAccountsReceivableInvoicesGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
+		cmd.Set("invoice-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.AccountsReceivable.Invoices.Get(ctx, cmd.Value("invoice-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(os.Stdout, "accounts-receivable:invoices get", obj, format, transform)
 }
 
 func handleAccountsReceivableInvoicesListAttachments(ctx context.Context, cmd *cli.Command) error {
