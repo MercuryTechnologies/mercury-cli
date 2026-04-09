@@ -181,7 +181,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&safesList,
-					&safesDownloadDocument,
+					&safesDownload,
 					&safesGet,
 				},
 			},
@@ -191,7 +191,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&statementsDownloadPdf,
+					&statementsDownload,
 				},
 			},
 			{
