@@ -105,7 +105,7 @@ var accountsCreateTransaction = requestflag.WithInnerFlags(cli.Command{
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"purpose": {
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[map[string]any]{
 			Name:       "purpose.simple",
 			InnerField: "simple",
 		},
