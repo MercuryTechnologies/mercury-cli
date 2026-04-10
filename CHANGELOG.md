@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 (2026-04-10)
+
+Full Changelog: [v0.2.0...v0.2.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.0...v0.2.1)
+
+### Bug Fixes
+
+* **cli:** fix incompatible Go types for flag generated as array of maps ([cadc5dd](https://github.com/MercuryTechnologies/mercury-cli/commit/cadc5dd76c3e9685912e9f2ce2b2597840e9029e))
+* fix for failing to drop invalid module replace in link script ([ba1a25e](https://github.com/MercuryTechnologies/mercury-cli/commit/ba1a25e1955da4a575e37dc351a9ba3e46e08f45))
+
 ## 0.2.0 (2026-04-10)
 
 Full Changelog: [v0.1.1...v0.2.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.1.1...v0.2.0)
