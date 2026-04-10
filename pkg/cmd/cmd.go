@@ -8,9 +8,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"runtime"
 	"slices"
 	"strings"
 
@@ -364,24 +362,5 @@ func generateManpages(ctx context.Context, c *cli.Command) error {
 		}
 	}
 	fmt.Printf("Wrote manpages to %s\n", dir)
-	return nil
-}
-
-const hatURL = "https://talk-to-my-agent.myshopify.com/"
-
-func openHat(ctx context.Context, c *cli.Command) error {
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "darwin":
-		cmd = exec.Command("open", hatURL)
-	case "windows":
-		cmd = exec.Command("cmd", "/c", "start", hatURL)
-	default:
-		cmd = exec.Command("xdg-open", hatURL)
-	}
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to open browser: %w", err)
-	}
-	fmt.Println("Opening store in your browser...")
 	return nil
 }
