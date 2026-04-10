@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.2.0 (2026-04-10)
+
+Full Changelog: [v0.1.1...v0.2.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.1.1...v0.2.0)
+
+### ⚠ BREAKING CHANGES
+
+* remove account.get_transaction
+
+### Features
+
+* remove account.get_transaction ([c6bc7c3](https://github.com/MercuryTechnologies/mercury-cli/commit/c6bc7c3e4a4dcd55144c028b5622a33ce7b54c90))
+
+
+### Bug Fixes
+
+* get events typo ([24cd315](https://github.com/MercuryTechnologies/mercury-cli/commit/24cd3157982b05b3f545e73810c3407db51469b9))
+
+
+### Chores
+
+* **cli:** additional test cases for `ShowJSONIterator` ([777e10c](https://github.com/MercuryTechnologies/mercury-cli/commit/777e10cad687ff4e35bfffcba7631436791b310d))
+* **cli:** let `--format raw` be used in conjunction with `--transform` ([d835896](https://github.com/MercuryTechnologies/mercury-cli/commit/d8358961bd2309d523d77f4d8837aecc5f2f297c))
+* fix attachments typo ([8629d7d](https://github.com/MercuryTechnologies/mercury-cli/commit/8629d7dbba404424aa47af2ac4ebae93c232b109))
+* **internal:** codegen related update ([97c5744](https://github.com/MercuryTechnologies/mercury-cli/commit/97c5744bc85b6910421ce86a044c1a73d131646a))
+
+
+### Documentation
+
+* remove fake api token example ([d0bbe9d](https://github.com/MercuryTechnologies/mercury-cli/commit/d0bbe9d4419a864bf4f5b13a6ca429f47eb66fe8))
+
+
+### Styles
+
+* rename "retrieve" to "get" ([570eaea](https://github.com/MercuryTechnologies/mercury-cli/commit/570eaea86443294b09e2a871f023abb1879656a6))
+* rename `organization` to `org` ([e236ed8](https://github.com/MercuryTechnologies/mercury-cli/commit/e236ed8eb66f42055e3407ef3cb7d99d016ed020))
+* use `download` as method ([5d4398a](https://github.com/MercuryTechnologies/mercury-cli/commit/5d4398a5696c2a2f142a341bbe85339a8ab36060))
+
+
+### Refactors
+
+* create cards resource ([3f908bd](https://github.com/MercuryTechnologies/mercury-cli/commit/3f908bdadb8048c99f9eb9dedaf82c68fd569b67))
+* make `customers` top level resource ([c9fecfc](https://github.com/MercuryTechnologies/mercury-cli/commit/c9fecfc9e6404e63324038f284523245b5b09946))
+* make `invoices` top level resource ([027f3b4](https://github.com/MercuryTechnologies/mercury-cli/commit/027f3b45f6fbe557869f5d5ab262e7d58dc5f61e))
+
 ## 0.1.1 (2026-04-08)
 
 Full Changelog: [v0.1.0...v0.1.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.1.0...v0.1.1)
