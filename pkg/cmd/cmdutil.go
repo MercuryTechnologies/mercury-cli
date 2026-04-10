@@ -29,6 +29,8 @@ import (
 
 var OutputFormats = []string{"auto", "explore", "json", "jsonl", "pretty", "raw", "yaml"}
 
+const noResultsMessage = "No results."
+
 // ValidateBaseURL checks that a base URL is correctly prefixed with a protocol scheme and produces a better
 // error message than the person would see otherwise if it doesn't.
 func ValidateBaseURL(value, source string) error {
@@ -375,6 +377,11 @@ func ShowJSON(out *os.File, title string, res gjson.Result, format string, trans
 		}
 	}
 
+	if res.IsArray() && len(res.Array()) == 0 {
+		fmt.Fprintln(os.Stderr, noResultsMessage)
+		return nil
+	}
+
 	switch strings.ToLower(format) {
 	case "auto":
 		return ShowJSON(out, title, res, "json", "")
@@ -445,6 +452,11 @@ func ShowJSONIterator[T any](stdout *os.File, title string, iter jsonview.Iterat
 			usePager = true
 			break
 		}
+	}
+
+	if len(output) == 0 {
+		fmt.Fprintln(os.Stderr, noResultsMessage)
+		return iter.Err()
 	}
 
 	if !usePager {
