@@ -165,13 +165,16 @@ func init() {
 				},
 			},
 			{
-				Name:     "request-send-money",
-				Usage:    "View send money approval requests",
+				Name:     "payments",
+				Usage:    "Send money, request approvals, and transfer between accounts",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&requestSendMoneyList,
-					&requestSendMoneyGet,
+					&paymentsCreate,
+					&paymentsList,
+					&paymentsGet,
+					&paymentsRequest,
+					&paymentsTransfer,
 				},
 			},
 			{
@@ -208,15 +211,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&statementsTreasuryList,
-				},
-			},
-			{
-				Name:     "transfer",
-				Usage:    "Initiate transfers between accounts",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&transferCreate,
 				},
 			},
 			{
@@ -347,18 +341,6 @@ func init() {
 				Name:   "hat",
 				Usage:  "Open the store in your browser",
 				Action: openHat,
-			},
-			{
-				Name:     "payments",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&paymentsCreate,
-					&paymentsList,
-					&paymentsGet,
-					&paymentsRequest,
-					&paymentsTransfer,
-				},
 			},
 		},
 		HideHelpCommand: true,
