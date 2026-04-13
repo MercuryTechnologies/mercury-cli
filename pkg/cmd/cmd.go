@@ -107,16 +107,16 @@ func init() {
 					&invoicesCancel,
 					&invoicesDownload,
 					&invoicesGet,
-					&invoicesListAttachments,
 				},
 			},
 			{
-				Name:     "accounts-receivable:attachments",
+				Name:     "invoices:attachments",
         Usage:    "Get accounts receivable attachment details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableAttachmentsGet,
+					&invoicesAttachmentsList,
+					&invoicesAttachmentsGet,
 				},
 			},
 			{
@@ -195,6 +195,22 @@ func init() {
 				},
 			},
 			{
+				Name:     "statements:accounts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsAccountsList,
+				},
+			},
+			{
+				Name:     "statements:treasury",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsTreasuryList,
+				},
+			},
+			{
 				Name:     "transfer",
 				Usage:    "Initiate transfers between accounts",
 				Category: "API RESOURCE",
@@ -210,7 +226,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
-					&treasuryRetrieveStatements,
 					&treasuryRetrieveTransactions,
 				},
 			},
@@ -245,11 +260,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsList,
-					&accountsCreateTransaction,
 					&accountsGet,
-					&accountsListStatements,
-					&accountsListTransactions,
-					&accountsRequestSendMoney,
 				},
 			},
 			{
@@ -262,8 +273,15 @@ func init() {
 					&recipientsUpdate,
 					&recipientsList,
 					&recipientsGet,
-					&recipientsListAttachments,
-					&recipientsUploadAttachment,
+				},
+			},
+			{
+				Name:     "recipients:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&recipientsAttachmentsList,
+					&recipientsAttachmentsAttach,
 				},
 			},
 			{
@@ -275,7 +293,14 @@ func init() {
 					&transactionsUpdate,
 					&transactionsList,
 					&transactionsGet,
-					&transactionsUploadAttachment,
+				},
+			},
+			{
+				Name:     "transactions:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&transactionsAttachmentsAttach,
 				},
 			},
 			{
@@ -322,6 +347,18 @@ func init() {
 				Name:   "hat",
 				Usage:  "Open the store in your browser",
 				Action: openHat,
+			},
+			{
+				Name:     "payments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&paymentsCreate,
+					&paymentsList,
+					&paymentsGet,
+					&paymentsRequest,
+					&paymentsTransfer,
+				},
 			},
 		},
 		HideHelpCommand: true,

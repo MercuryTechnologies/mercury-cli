@@ -334,21 +334,6 @@ var invoicesGet = cli.Command{
 	HideHelpCommand: true,
 }
 
-var invoicesListAttachments = cli.Command{
-	Name:    "list-attachments",
-	Usage:   "Retrieve a list of all attachments for a specific invoice",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
-		},
-	},
-	Action:          handleInvoicesListAttachments,
-	HideHelpCommand: true,
-}
-
 func handleInvoicesCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -558,39 +543,4 @@ func handleInvoicesGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "invoices get", obj, format, transform)
-}
-
-func handleInvoicesListAttachments(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
-		cmd.Set("invoice-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Invoices.ListAttachments(ctx, cmd.Value("invoice-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "invoices list-attachments", obj, format, transform)
 }

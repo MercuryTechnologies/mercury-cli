@@ -15,14 +15,14 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var accountsList = cli.Command{
+var recipientsAttachmentsList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieve a paginated list of accounts. Supports cursor-based pagination with\nlimit, order, start_after, and end_before query parameters.",
+	Usage:   "Retrieve a paginated list of all recipient tax form attachments across all\nrecipients in the organization. Use cursor parameters (start_after, end_before)\nfor pagination.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
 			Name:      "end-before",
-			Usage:     "The ID of the account to end the page before (exclusive). When provided, results will end just before this ID and work backwards. Use this for reverse pagination or to retrieve previous pages. Cannot be combined with start_after.",
+			Usage:     "The ID of the recipient attachment to end the page before (exclusive). When provided, results will end just before this ID and work backwards. Use this for reverse pagination or to retrieve previous pages. Cannot be combined with start_after.",
 			QueryPath: "end_before",
 		},
 		&requestflag.Flag[int64]{
@@ -39,7 +39,7 @@ var accountsList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "start-after",
-			Usage:     "The ID of the account to start the page after (exclusive). When provided, results will begin with the account immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
+			Usage:     "The ID of the recipient attachment to start the page after (exclusive). When provided, results will begin with the recipient attachment immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
 			QueryPath: "start_after",
 		},
 		&requestflag.Flag[int64]{
@@ -47,26 +47,32 @@ var accountsList = cli.Command{
 			Usage: "The maximum number of items to return (use -1 for unlimited).",
 		},
 	},
-	Action:          handleAccountsList,
+	Action:          handleRecipientsAttachmentsList,
 	HideHelpCommand: true,
 }
 
-var accountsGet = cli.Command{
-	Name:    "get",
-	Usage:   "Get account by ID",
+var recipientsAttachmentsAttach = cli.Command{
+	Name:    "attach",
+	Usage:   "Upload a tax form attachment for a recipient. The file is uploaded via\nmultipart/form-data. Supported file types include PDF, images (PNG, JPG, GIF),\nand common document formats. The attachment will be associated as a tax document\nfor the recipient.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
+			Name:     "recipient-id",
 			Required: true,
 		},
+		&requestflag.Flag[string]{
+			Name:      "file",
+			Usage:     "The file to upload (tax form document)",
+			Required:  true,
+			BodyPath:  "file",
+			FileInput: true,
+		},
 	},
-	Action:          handleAccountsGet,
+	Action:          handleRecipientsAttachmentsAttach,
 	HideHelpCommand: true,
 }
 
-func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
+func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -74,7 +80,7 @@ func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.AccountListParams{}
+	params := mercury.RecipientAttachmentListParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -92,53 +98,50 @@ func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 	if format == "raw" {
 		var res []byte
 		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.Accounts.List(ctx, params, options...)
+		_, err = client.Recipients.Attachments.List(ctx, params, options...)
 		if err != nil {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "accounts list", obj, format, transform)
+		return ShowJSON(os.Stdout, "recipients:attachments list", obj, format, transform)
 	} else {
-		iter := client.Accounts.ListAutoPaging(ctx, params, options...)
+		iter := client.Recipients.Attachments.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "accounts list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, "recipients:attachments list", iter, format, transform, maxItems)
 	}
 }
 
-func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
+func handleRecipientsAttachmentsAttach(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
+	if !cmd.IsSet("recipient-id") && len(unusedArgs) > 0 {
+		cmd.Set("recipient-id", unusedArgs[0])
 		unusedArgs = unusedArgs[1:]
 	}
 	if len(unusedArgs) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
+	params := mercury.RecipientAttachmentAttachParams{}
+
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
 		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
+		MultipartFormEncoded,
 		false,
 	)
 	if err != nil {
 		return err
 	}
 
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.Get(ctx, cmd.Value("account-id").(string), options...)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts get", obj, format, transform)
+	return client.Recipients.Attachments.Attach(
+		ctx,
+		cmd.Value("recipient-id").(string),
+		params,
+		options...,
+	)
 }
