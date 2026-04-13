@@ -107,7 +107,6 @@ func init() {
 					&invoicesCancel,
 					&invoicesDownload,
 					&invoicesGet,
-					&invoicesListAttachments,
 				},
 			},
 			{
