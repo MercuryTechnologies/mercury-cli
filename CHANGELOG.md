@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.7 (2026-04-13)
+
+Full Changelog: [v0.2.6...v0.2.7](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.6...v0.2.7)
+
+### Refactors
+
+* rename list_transactions -&gt; transactions ([2f970cb](https://github.com/MercuryTechnologies/mercury-cli/commit/2f970cb2e189e3718b98f40c172732258bebaa54))
+
 ## 0.2.6 (2026-04-13)
 
 Full Changelog: [v0.2.5...v0.2.6](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.5...v0.2.6)
