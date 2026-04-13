@@ -199,6 +199,7 @@ func init() {
 					&statementsDownload,
 					{
 						Name:    "accounts",
+						Usage:   "List monthly account statements",
 						Suggest: true,
 						Commands: []*cli.Command{
 							&statementsAccountsList,
@@ -206,6 +207,7 @@ func init() {
 					},
 					{
 						Name:    "treasury",
+						Usage:   "List treasury account statements",
 						Suggest: true,
 						Commands: []*cli.Command{
 							&statementsTreasuryList,
@@ -269,6 +271,7 @@ func init() {
 					&recipientsGet,
 					{
 						Name:    "attachments",
+						Usage:   "List and upload recipient tax form attachments",
 						Suggest: true,
 						Commands: []*cli.Command{
 							&recipientsAttachmentsList,
@@ -288,6 +291,7 @@ func init() {
 					&transactionsGet,
 					{
 						Name:    "attachments",
+						Usage:   "Upload file attachments to transactions",
 						Suggest: true,
 						Commands: []*cli.Command{
 							&transactionsAttachmentsAttach,
