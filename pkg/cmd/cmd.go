@@ -111,11 +111,12 @@ func init() {
 				},
 			},
 			{
-				Name:     "accounts-receivable:attachments",
+				Name:     "invoices:attachments",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableAttachmentsGet,
+					&invoicesAttachmentsList,
+					&invoicesAttachmentsGet,
 				},
 			},
 			{

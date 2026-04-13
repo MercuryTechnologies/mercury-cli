@@ -8,13 +8,25 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
-func TestAccountsReceivableAttachmentsGet(t *testing.T) {
+func TestInvoicesAttachmentsList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"accounts-receivable:attachments", "get",
+			"invoices:attachments", "list",
+			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestInvoicesAttachmentsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"invoices:attachments", "get",
 			"--attachment-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
