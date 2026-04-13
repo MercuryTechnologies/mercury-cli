@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.4 (2026-04-13)
+
+Full Changelog: [v0.2.3...v0.2.4](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.3...v0.2.4)
+
+### Chores
+
+* remove old list_attachments. ([93d1c40](https://github.com/MercuryTechnologies/mercury-cli/commit/93d1c405ab56bf79459cf799cd55932ab9cbf473))
+
+
+### Refactors
+
+* consolidate money movement into single payments resource ([a7b610a](https://github.com/MercuryTechnologies/mercury-cli/commit/a7b610a8ad2f2f73720f0d25e30f41951ea5e54e))
+* make attachments a sub resource ([e9b8414](https://github.com/MercuryTechnologies/mercury-cli/commit/e9b8414564623d4e802654ee4ef281204851a1fb))
+* move ar attachments as a sub resrource ([a667236](https://github.com/MercuryTechnologies/mercury-cli/commit/a667236dfeb3aadf073f1c18f1da6a0b0015c8d2))
+* rename upload_attachment -&gt; attach ([503dc81](https://github.com/MercuryTechnologies/mercury-cli/commit/503dc81d79f996b7f6cf78d3def0ce5c8cfb1209))
+* unify statements into single resource with account/treasury subresources ([3ed5a0b](https://github.com/MercuryTechnologies/mercury-cli/commit/3ed5a0bc0b178b8b75f1a14a49fb0878f70a1228))
+* unify transactions listing into single resource ([6ebff83](https://github.com/MercuryTechnologies/mercury-cli/commit/6ebff83fef8adffac20706406bd6ceaed6893589))
+
 ## 0.2.3 (2026-04-10)
 
 Full Changelog: [v0.2.2...v0.2.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.2...v0.2.3)
