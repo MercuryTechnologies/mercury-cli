@@ -51,67 +51,6 @@ var accountsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var accountsCreateTransaction = requestflag.WithInnerFlags(cli.Command{
-	Name:    "create-transaction",
-	Usage:   "Send money from an account to a recipient. Creates a transaction that will be\nprocessed immediately or may require approval.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-		&requestflag.Flag[float64]{
-			Name:     "amount",
-			Usage:    "A positive dollar amount with at least 1 cent.",
-			Required: true,
-			BodyPath: "amount",
-		},
-		&requestflag.Flag[string]{
-			Name:     "idempotency-key",
-			Usage:    "Unique string identifying the transaction",
-			Required: true,
-			BodyPath: "idempotencyKey",
-		},
-		&requestflag.Flag[string]{
-			Name:     "payment-method",
-			Usage:    "If domesticWire is used, then the purpose field is required.",
-			Required: true,
-			BodyPath: "paymentMethod",
-		},
-		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-			BodyPath: "recipientId",
-		},
-		&requestflag.Flag[string]{
-			Name:     "external-memo",
-			Usage:    "Optional external memo",
-			BodyPath: "externalMemo",
-		},
-		&requestflag.Flag[string]{
-			Name:     "note",
-			Usage:    "Optional note",
-			BodyPath: "note",
-		},
-		&requestflag.Flag[map[string]any]{
-			Name:     "purpose",
-			Usage:    " External API representation of SendMoneyPurpose.\n Only exposes the 'simple' field to decouple internal implementation from external API.",
-			BodyPath: "purpose",
-		},
-	},
-	Action:          handleAccountsCreateTransaction,
-	HideHelpCommand: true,
-}, map[string][]requestflag.HasOuterFlag{
-	"purpose": {
-		&requestflag.InnerFlag[map[string]any]{
-			Name:       "purpose.simple",
-			InnerField: "simple",
-		},
-	},
-})
-
 var accountsGet = cli.Command{
 	Name:    "get",
 	Usage:   "Get account by ID",
@@ -124,55 +63,6 @@ var accountsGet = cli.Command{
 		},
 	},
 	Action:          handleAccountsGet,
-	HideHelpCommand: true,
-}
-
-var accountsRequestSendMoney = cli.Command{
-	Name:    "request-send-money",
-	Usage:   "Create a \"request to send money\" that will require approval based on your\norganization's approval policies.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-		&requestflag.Flag[float64]{
-			Name:     "amount",
-			Usage:    "A positive dollar amount with at least 1 cent.",
-			Required: true,
-			BodyPath: "amount",
-		},
-		&requestflag.Flag[string]{
-			Name:     "idempotency-key",
-			Usage:    "Unique string identifying the transaction",
-			Required: true,
-			BodyPath: "idempotencyKey",
-		},
-		&requestflag.Flag[string]{
-			Name:     "payment-method",
-			Usage:    `Allowed values: "ach", "check", "domesticWire", "internationalWire".`,
-			Required: true,
-			BodyPath: "paymentMethod",
-		},
-		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-			BodyPath: "recipientId",
-		},
-		&requestflag.Flag[string]{
-			Name:     "external-memo",
-			Usage:    "Optional external memo",
-			BodyPath: "externalMemo",
-		},
-		&requestflag.Flag[string]{
-			Name:     "note",
-			Usage:    "Optional note",
-			BodyPath: "note",
-		},
-	},
-	Action:          handleAccountsRequestSendMoney,
 	HideHelpCommand: true,
 }
 
@@ -218,48 +108,6 @@ func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 	}
 }
 
-func handleAccountsCreateTransaction(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.AccountNewTransactionParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		ApplicationJSON,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.NewTransaction(
-		ctx,
-		cmd.Value("account-id").(string),
-		params,
-		options...,
-	)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts create-transaction", obj, format, transform)
-}
-
 func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -293,46 +141,4 @@ func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts get", obj, format, transform)
-}
-
-func handleAccountsRequestSendMoney(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.AccountRequestSendMoneyParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		ApplicationJSON,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	var res []byte
-	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Accounts.RequestSendMoney(
-		ctx,
-		cmd.Value("account-id").(string),
-		params,
-		options...,
-	)
-	if err != nil {
-		return err
-	}
-
-	obj := gjson.ParseBytes(res)
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "accounts request-send-money", obj, format, transform)
 }
