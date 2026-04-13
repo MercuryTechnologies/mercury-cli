@@ -178,77 +178,6 @@ var accountsListStatements = cli.Command{
 	HideHelpCommand: true,
 }
 
-var accountsListTransactions = cli.Command{
-	Name:    "list-transactions",
-	Usage:   "Retrieve a paginated list of transactions for a specific account. Supports\nfiltering by date range, status, and search terms.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:      "category-id",
-			Usage:     "UUID of a custom category. Can be returned from /categories endpoint.",
-			QueryPath: "categoryId",
-		},
-		&requestflag.Flag[string]{
-			Name:      "end",
-			Usage:     "Latest date to filter transactions. If not provided, defaults to the current date. Format: YYYY-MM-DD or ISO 8601 string",
-			QueryPath: "end",
-		},
-		&requestflag.Flag[int64]{
-			Name:      "limit",
-			Usage:     "Maximum number of results to return. Allowed range: 1 to 1000. Defaults to 1000",
-			Default:   1000,
-			QueryPath: "limit",
-		},
-		&requestflag.Flag[string]{
-			Name:      "mercury-category",
-			Usage:     "Name of mercuryCategory you want to filter on. Merchant Type in the UI.",
-			QueryPath: "mercuryCategory",
-		},
-		&requestflag.Flag[int64]{
-			Name:      "offset",
-			Usage:     "Number of results to skip for pagination",
-			QueryPath: "offset",
-		},
-		&requestflag.Flag[string]{
-			Name:      "order",
-			Usage:     "Sort order. Can be 'asc' or 'desc'. Defaults to 'desc'",
-			Default:   "desc",
-			QueryPath: "order",
-		},
-		&requestflag.Flag[string]{
-			Name:      "request-id",
-			Usage:     "ID returned from /account/:id/request-send-money",
-			QueryPath: "requestId",
-		},
-		&requestflag.Flag[string]{
-			Name:      "search",
-			Usage:     "Search term to filter transactions by description or counterparty name",
-			QueryPath: "search",
-		},
-		&requestflag.Flag[string]{
-			Name:      "start",
-			Usage:     "Earliest date to filter transactions. If not provided, defaults to 30 days before the current date. Format: YYYY-MM-DD or ISO 8601 string",
-			QueryPath: "start",
-		},
-		&requestflag.Flag[string]{
-			Name:      "status",
-			Usage:     `Allowed values: "pending", "sent", "cancelled", "failed", "reversed", "blocked".`,
-			QueryPath: "status",
-		},
-		&requestflag.Flag[int64]{
-			Name:  "max-items",
-			Usage: "The maximum number of items to return (use -1 for unlimited).",
-		},
-	},
-	Action:          handleAccountsListTransactions,
-	HideHelpCommand: true,
-}
-
 var accountsRequestSendMoney = cli.Command{
 	Name:    "request-send-money",
 	Usage:   "Create a \"request to send money\" that will require approval based on your\norganization's approval policies.",
@@ -469,61 +398,6 @@ func handleAccountsListStatements(ctx context.Context, cmd *cli.Command) error {
 			maxItems = cmd.Value("max-items").(int64)
 		}
 		return ShowJSONIterator(os.Stdout, "accounts list-statements", iter, format, transform, maxItems)
-	}
-}
-
-func handleAccountsListTransactions(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.AccountListTransactionsParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	if format == "raw" {
-		var res []byte
-		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.Accounts.ListTransactions(
-			ctx,
-			cmd.Value("account-id").(string),
-			params,
-			options...,
-		)
-		if err != nil {
-			return err
-		}
-		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "accounts list-transactions", obj, format, transform)
-	} else {
-		iter := client.Accounts.ListTransactionsAutoPaging(
-			ctx,
-			cmd.Value("account-id").(string),
-			params,
-			options...,
-		)
-		maxItems := int64(-1)
-		if cmd.IsSet("max-items") {
-			maxItems = cmd.Value("max-items").(int64)
-		}
-		return ShowJSONIterator(os.Stdout, "accounts list-transactions", iter, format, transform, maxItems)
 	}
 }
 
