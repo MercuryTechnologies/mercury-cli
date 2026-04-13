@@ -14,7 +14,7 @@ func TestInvoicesAttachmentsList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"invoices:attachments", "list",
+			"invoices", "attachments", "list",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -26,7 +26,7 @@ func TestInvoicesAttachmentsGet(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"invoices:attachments", "get",
+			"invoices", "attachments", "get",
 			"--attachment-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
