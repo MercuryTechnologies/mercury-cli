@@ -51,8 +51,8 @@ var treasuryList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var treasuryRetrieveTransactions = cli.Command{
-	Name:    "retrieve-transactions",
+var treasuryTransactions = cli.Command{
+	Name:    "transactions",
 	Usage:   "Retrieve paginated treasury transactions for a specific treasury account.",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -79,7 +79,7 @@ var treasuryRetrieveTransactions = cli.Command{
 			QueryPath: "order",
 		},
 	},
-	Action:          handleTreasuryRetrieveTransactions,
+	Action:          handleTreasuryTransactions,
 	HideHelpCommand: true,
 }
 
@@ -125,7 +125,7 @@ func handleTreasuryList(ctx context.Context, cmd *cli.Command) error {
 	}
 }
 
-func handleTreasuryRetrieveTransactions(ctx context.Context, cmd *cli.Command) error {
+func handleTreasuryTransactions(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 	if !cmd.IsSet("treasury-id") && len(unusedArgs) > 0 {
@@ -136,7 +136,7 @@ func handleTreasuryRetrieveTransactions(ctx context.Context, cmd *cli.Command) e
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TreasuryGetTransactionsParams{}
+	params := mercury.TreasuryTransactionsParams{}
 
 	options, err := flagOptions(
 		cmd,
@@ -151,7 +151,7 @@ func handleTreasuryRetrieveTransactions(ctx context.Context, cmd *cli.Command) e
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Treasury.GetTransactions(
+	_, err = client.Treasury.Transactions(
 		ctx,
 		cmd.Value("treasury-id").(string),
 		params,
@@ -164,5 +164,5 @@ func handleTreasuryRetrieveTransactions(ctx context.Context, cmd *cli.Command) e
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "treasury retrieve-transactions", obj, format, transform)
+	return ShowJSON(os.Stdout, "treasury transactions", obj, format, transform)
 }

@@ -24,13 +24,13 @@ func TestTreasuryList(t *testing.T) {
 	})
 }
 
-func TestTreasuryRetrieveTransactions(t *testing.T) {
+func TestTreasuryTransactions(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"treasury", "retrieve-transactions",
+			"treasury", "transactions",
 			"--treasury-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--cursor", "0",
 			"--limit", "1",
