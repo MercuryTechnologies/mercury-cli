@@ -253,9 +253,16 @@ func init() {
 					&recipientsCreate,
 					&recipientsUpdate,
 					&recipientsList,
-					&recipientsAttach,
 					&recipientsGet,
-					&recipientsListAttachments,
+				},
+			},
+			{
+				Name:     "recipients:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&recipientsAttachmentsList,
+					&recipientsAttachmentsAttach,
 				},
 			},
 			{
@@ -265,8 +272,15 @@ func init() {
 				Commands: []*cli.Command{
 					&transactionsUpdate,
 					&transactionsList,
-					&transactionsAttach,
 					&transactionsGet,
+				},
+			},
+			{
+				Name:     "transactions:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&transactionsAttachmentsAttach,
 				},
 			},
 			{
