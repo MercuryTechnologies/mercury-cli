@@ -260,9 +260,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsList,
-					&accountsCreateTransaction,
 					&accountsGet,
-					&accountsRequestSendMoney,
 				},
 			},
 			{
@@ -335,6 +333,18 @@ func init() {
 				Name:   "hat",
 				Usage:  "Open the store in your browser",
 				Action: openHat,
+			},
+			{
+				Name:     "payments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&paymentsCreate,
+					&paymentsList,
+					&paymentsGet,
+					&paymentsRequest,
+					&paymentsTransfer,
+				},
 			},
 		},
 		HideHelpCommand: true,
