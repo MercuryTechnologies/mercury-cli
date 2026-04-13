@@ -15,7 +15,7 @@ func TestTransactionsAttachmentsAttach(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"transactions:attachments", "attach",
+			"transactions", "attachments", "attach",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--file", mocktest.TestFile(t, "Example data"),
 			"--attachment-type", "receipt",
@@ -33,7 +33,7 @@ func TestTransactionsAttachmentsAttach(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"transactions:attachments", "attach",
+			"transactions", "attachments", "attach",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

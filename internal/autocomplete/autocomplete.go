@@ -137,16 +137,6 @@ func (scb *shellCompletionBuilder) createFromCommand(input string, command *cli.
 		}
 	}
 
-	if scb.completionStyle == CompletionStyleBash {
-		index := strings.LastIndex(input, ":") + 1
-		if index > 0 {
-			for _, name := range matchingNames {
-				result = append(result, NewShellCompletion(name[index:], command.Usage))
-			}
-			return result
-		}
-	}
-
 	for _, name := range matchingNames {
 		result = append(result, NewShellCompletion(name, command.Usage))
 	}
@@ -182,33 +172,7 @@ func (scb *shellCompletionBuilder) createFromFlag(input string, flag *cli.Flag, 
 }
 
 func GetCompletions(completionStyle CompletionStyle, root *cli.Command, args []string) CompletionResult {
-	result := getAllPossibleCompletions(completionStyle, root, args)
-
-	// If the user has not put in a colon, filter out colon commands
-	if len(args) > 0 && !strings.Contains(args[len(args)-1], ":") {
-		// Nothing with anything after a colon. Create a single entry for groups with the same colon subset
-		foundNames := make([]string, 0, len(result.Completions))
-		filteredCompletions := make([]ShellCompletion, 0, len(result.Completions))
-
-		for _, completion := range result.Completions {
-			name := completion.Name
-			firstColonIndex := strings.Index(name, ":")
-			if firstColonIndex > -1 {
-				name = name[0:firstColonIndex]
-				completion.Name = name
-				completion.Usage = ""
-			}
-
-			if !slices.Contains(foundNames, name) {
-				foundNames = append(foundNames, name)
-				filteredCompletions = append(filteredCompletions, completion)
-			}
-		}
-
-		result.Completions = filteredCompletions
-	}
-
-	return result
+	return getAllPossibleCompletions(completionStyle, root, args)
 }
 
 func getAllPossibleCompletions(completionStyle CompletionStyle, root *cli.Command, args []string) CompletionResult {
@@ -283,7 +247,7 @@ func getAllPossibleCompletions(completionStyle CompletionStyle, root *cli.Comman
 
 func ExecuteShellCompletion(ctx context.Context, cmd *cli.Command) error {
 	root := cmd.Root()
-	args := rebuildColonSeparatedArgs(root.Args().Slice()[1:])
+	args := root.Args().Slice()[1:]
 
 	var completionStyle CompletionStyle
 	if style, ok := os.LookupEnv("COMPLETION_STYLE"); ok {
@@ -321,41 +285,3 @@ func ExecuteShellCompletion(ctx context.Context, cmd *cli.Command) error {
 	return cli.Exit("", int(result.Behavior))
 }
 
-// When CLI arguments are passed in, they are separated on word barriers.
-// Most commonly this is whitespace but in some cases that may also be colons.
-// We wish to allow arguments with colons. To handle this, we append/prepend colons to their neighboring
-// arguments.
-//
-// Example: `rebuildColonSeparatedArgs(["a", "b", ":", "c", "d"])` => `["a", "b:c", "d"]`
-func rebuildColonSeparatedArgs(args []string) []string {
-	if len(args) == 0 {
-		return args
-	}
-
-	result := []string{}
-	i := 0
-
-	for i < len(args) {
-		current := args[i]
-
-		// Keep joining while the next element is ":" or the current element ends with ":"
-		for i+1 < len(args) && (args[i+1] == ":" || strings.HasSuffix(current, ":")) {
-			if args[i+1] == ":" {
-				current += ":"
-				i++
-				// Check if there's a following element after the ":"
-				if i+1 < len(args) && args[i+1] != ":" {
-					current += args[i+1]
-					i++
-				}
-			} else {
-				break
-			}
-		}
-
-		result = append(result, current)
-		i++
-	}
-
-	return result
-}

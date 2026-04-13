@@ -86,7 +86,8 @@ func init() {
 		Commands: []*cli.Command{
 			{
 				Name:     "customers",
-				Category: "API RESOURCE",
+				Usage:    "Create, update, and manage customers",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&customersCreate,
@@ -98,7 +99,8 @@ func init() {
 			},
 			{
 				Name:     "invoices",
-				Category: "API RESOURCE",
+				Usage:    "Create, update, and manage invoices",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&invoicesCreate,
@@ -107,21 +109,21 @@ func init() {
 					&invoicesCancel,
 					&invoicesDownload,
 					&invoicesGet,
-				},
-			},
-			{
-				Name:     "invoices:attachments",
-        Usage:    "Get accounts receivable attachment details",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&invoicesAttachmentsList,
-					&invoicesAttachmentsGet,
+					{
+						Name:    "attachments",
+						Usage:   "Get accounts receivable attachment details",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&invoicesAttachmentsList,
+							&invoicesAttachmentsGet,
+						},
+					},
 				},
 			},
 			{
 				Name:     "cards",
-				Category: "API RESOURCE",
+				Usage:    "List debit and credit cards for an account",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&cardsList,
@@ -130,7 +132,7 @@ func init() {
 			{
 				Name:     "categories",
 				Usage:    "List expense categories",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&categoriesList,
@@ -139,7 +141,7 @@ func init() {
 			{
 				Name:     "credit",
 				Usage:    "List credit accounts",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&creditList,
@@ -148,7 +150,7 @@ func init() {
 			{
 				Name:     "events",
 				Usage:    "List and inspect API events",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&eventsList,
@@ -158,7 +160,7 @@ func init() {
 			{
 				Name:     "org",
 				Usage:    "View organization details",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&orgGet,
@@ -167,7 +169,7 @@ func init() {
 			{
 				Name:     "payments",
 				Usage:    "Send money, request approvals, and transfer between accounts",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&paymentsCreate,
@@ -180,7 +182,7 @@ func init() {
 			{
 				Name:     "safes",
 				Usage:    "List and download SAFE agreements",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&safesList,
@@ -191,32 +193,30 @@ func init() {
 			{
 				Name:     "statements",
 				Usage:    "Download account statements as PDF",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&statementsDownload,
-				},
-			},
-			{
-				Name:     "statements:accounts",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&statementsAccountsList,
-				},
-			},
-			{
-				Name:     "statements:treasury",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&statementsTreasuryList,
+					{
+						Name:    "accounts",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&statementsAccountsList,
+						},
+					},
+					{
+						Name:    "treasury",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&statementsTreasuryList,
+						},
+					},
 				},
 			},
 			{
 				Name:     "treasury",
 				Usage:    "View treasury accounts, statements, and transactions",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
@@ -226,7 +226,7 @@ func init() {
 			{
 				Name:     "users",
 				Usage:    "List and view organization team members",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&usersList,
@@ -236,7 +236,7 @@ func init() {
 			{
 				Name:     "webhooks",
 				Usage:    "Set up and manage webhook endpoints",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&webhooksCreate,
@@ -250,7 +250,7 @@ func init() {
 			{
 				Name:     "accounts",
         Usage:    "View accounts, cards, and transactions",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsList,
@@ -260,41 +260,39 @@ func init() {
 			{
 				Name:     "recipients",
 				Usage:    "Add, update, and manage payment recipients",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&recipientsCreate,
 					&recipientsUpdate,
 					&recipientsList,
 					&recipientsGet,
-				},
-			},
-			{
-				Name:     "recipients:attachments",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&recipientsAttachmentsList,
-					&recipientsAttachmentsAttach,
+					{
+						Name:    "attachments",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&recipientsAttachmentsList,
+							&recipientsAttachmentsAttach,
+						},
+					},
 				},
 			},
 			{
 				Name:     "transactions",
 				Usage:    "Search, update, and attach files to transactions",
-				Category: "API RESOURCE",
+				Category: "Resource",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&transactionsUpdate,
 					&transactionsList,
 					&transactionsGet,
-				},
-			},
-			{
-				Name:     "transactions:attachments",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&transactionsAttachmentsAttach,
+					{
+						Name:    "attachments",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&transactionsAttachmentsAttach,
+						},
+					},
 				},
 			},
 			{
@@ -338,9 +336,10 @@ func init() {
 				Action:          autocomplete.OutputCompletionScript,
 			},
 			{
-				Name:   "hat",
-				Usage:  "Open the store in your browser",
-				Action: openHat,
+				Name:     "hat",
+				Usage:    "Open the store in your browser",
+				Category: "Resource",
+				Action:   openHat,
 			},
 		},
 		HideHelpCommand: true,

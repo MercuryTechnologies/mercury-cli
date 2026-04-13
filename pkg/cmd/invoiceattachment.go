@@ -77,7 +77,7 @@ func handleInvoicesAttachmentsList(ctx context.Context, cmd *cli.Command) error 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "invoices:attachments list", obj, format, transform)
+	return ShowJSON(os.Stdout, "invoices attachments list", obj, format, transform)
 }
 
 func handleInvoicesAttachmentsGet(ctx context.Context, cmd *cli.Command) error {
@@ -112,5 +112,5 @@ func handleInvoicesAttachmentsGet(ctx context.Context, cmd *cli.Command) error {
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "invoices:attachments get", obj, format, transform)
+	return ShowJSON(os.Stdout, "invoices attachments get", obj, format, transform)
 }
