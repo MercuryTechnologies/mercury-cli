@@ -187,6 +187,22 @@ func init() {
 				},
 			},
 			{
+				Name:     "statements:accounts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsAccountsList,
+				},
+			},
+			{
+				Name:     "statements:treasury",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsTreasuryList,
+				},
+			},
+			{
 				Name:     "transfer",
 				Category: "API RESOURCE",
 				Suggest:  true,
@@ -200,7 +216,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
-					&treasuryRetrieveStatements,
 					&treasuryRetrieveTransactions,
 				},
 			},
@@ -234,7 +249,6 @@ func init() {
 					&accountsList,
 					&accountsCreateTransaction,
 					&accountsGet,
-					&accountsListStatements,
 					&accountsRequestSendMoney,
 				},
 			},

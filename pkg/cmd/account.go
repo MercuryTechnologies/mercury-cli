@@ -127,57 +127,6 @@ var accountsGet = cli.Command{
 	HideHelpCommand: true,
 }
 
-var accountsListStatements = cli.Command{
-	Name:    "list-statements",
-	Usage:   "Retrieve a paginated list of monthly statements for a specific account. Supports\ncursor-based pagination with limit, order, start_after, and end_before query\nparameters, as well as date range filtering with start and end parameters.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
-		},
-		&requestflag.Flag[string]{
-			Name:      "end",
-			Usage:     "Filter statements where the period start date is on or before this date. If the date is in the future, defaults to the current date. Format: YYYY-MM-DD",
-			QueryPath: "end",
-		},
-		&requestflag.Flag[string]{
-			Name:      "end-before",
-			Usage:     "The ID of the statement to end the page before (exclusive). When provided, results will end just before this ID and work backwards. Use this for reverse pagination or to retrieve previous pages. Cannot be combined with start_after.",
-			QueryPath: "end_before",
-		},
-		&requestflag.Flag[int64]{
-			Name:      "limit",
-			Usage:     "Maximum number of results to return. Allowed range: 1 to 1000. Defaults to 1000",
-			Default:   1000,
-			QueryPath: "limit",
-		},
-		&requestflag.Flag[string]{
-			Name:      "order",
-			Usage:     "Sort order. Can be 'asc' or 'desc'. Defaults to 'desc'",
-			Default:   "desc",
-			QueryPath: "order",
-		},
-		&requestflag.Flag[string]{
-			Name:      "start",
-			Usage:     "Filter statements where the period start date is on or after this date. Format: YYYY-MM-DD",
-			QueryPath: "start",
-		},
-		&requestflag.Flag[string]{
-			Name:      "start-after",
-			Usage:     "The ID of the statement to start the page after (exclusive). When provided, results will begin with the statement immediately following this ID. Use this for standard forward pagination to get the next page of results. Cannot be combined with end_before.",
-			QueryPath: "start_after",
-		},
-		&requestflag.Flag[int64]{
-			Name:  "max-items",
-			Usage: "The maximum number of items to return (use -1 for unlimited).",
-		},
-	},
-	Action:          handleAccountsListStatements,
-	HideHelpCommand: true,
-}
-
 var accountsRequestSendMoney = cli.Command{
 	Name:    "request-send-money",
 	Usage:   "Create a \"request to send money\" that will require approval based on your\norganization's approval policies.",
@@ -344,61 +293,6 @@ func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "accounts get", obj, format, transform)
-}
-
-func handleAccountsListStatements(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
-		cmd.Set("account-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.AccountListStatementsParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		EmptyBody,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	format := cmd.Root().String("format")
-	transform := cmd.Root().String("transform")
-	if format == "raw" {
-		var res []byte
-		options = append(options, option.WithResponseBodyInto(&res))
-		_, err = client.Accounts.ListStatements(
-			ctx,
-			cmd.Value("account-id").(string),
-			params,
-			options...,
-		)
-		if err != nil {
-			return err
-		}
-		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "accounts list-statements", obj, format, transform)
-	} else {
-		iter := client.Accounts.ListStatementsAutoPaging(
-			ctx,
-			cmd.Value("account-id").(string),
-			params,
-			options...,
-		)
-		maxItems := int64(-1)
-		if cmd.IsSet("max-items") {
-			maxItems = cmd.Value("max-items").(int64)
-		}
-		return ShowJSONIterator(os.Stdout, "accounts list-statements", iter, format, transform, maxItems)
-	}
 }
 
 func handleAccountsRequestSendMoney(ctx context.Context, cmd *cli.Command) error {
