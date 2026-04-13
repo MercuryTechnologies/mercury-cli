@@ -211,7 +211,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
-					&treasuryRetrieveTransactions,
+					&treasuryTransactions,
 				},
 			},
 			{
