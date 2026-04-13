@@ -253,9 +253,9 @@ func init() {
 					&recipientsCreate,
 					&recipientsUpdate,
 					&recipientsList,
+					&recipientsAttach,
 					&recipientsGet,
 					&recipientsListAttachments,
-					&recipientsUploadAttachment,
 				},
 			},
 			{
@@ -265,8 +265,8 @@ func init() {
 				Commands: []*cli.Command{
 					&transactionsUpdate,
 					&transactionsList,
+					&transactionsAttach,
 					&transactionsGet,
-					&transactionsUploadAttachment,
 				},
 			},
 			{

@@ -62,25 +62,13 @@ func TestTransactionsList(t *testing.T) {
 	})
 }
 
-func TestTransactionsGet(t *testing.T) {
+func TestTransactionsAttach(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"transactions", "get",
-			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
-func TestTransactionsUploadAttachment(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"transactions", "upload-attachment",
+			"transactions", "attach",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--file", mocktest.TestFile(t, "Example data"),
 			"--attachment-type", "receipt",
@@ -98,7 +86,19 @@ func TestTransactionsUploadAttachment(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"transactions", "upload-attachment",
+			"transactions", "attach",
+			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestTransactionsGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"transactions", "get",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

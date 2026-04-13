@@ -126,23 +126,8 @@ var transactionsList = cli.Command{
 	HideHelpCommand: true,
 }
 
-var transactionsGet = cli.Command{
-	Name:    "get",
-	Usage:   "Retrieve a single transaction by its ID. Returns full transaction details\nincluding attachments, check images, and related metadata.",
-	Suggest: true,
-	Flags: []cli.Flag{
-		&requestflag.Flag[string]{
-			Name:     "transaction-id",
-			Usage:    "ID for this transaction",
-			Required: true,
-		},
-	},
-	Action:          handleTransactionsGet,
-	HideHelpCommand: true,
-}
-
-var transactionsUploadAttachment = cli.Command{
-	Name:    "upload-attachment",
+var transactionsAttach = cli.Command{
+	Name:    "attach",
 	Usage:   "Upload a file attachment to a transaction. The file is uploaded via\nmultipart/form-data. Supported file types include PDF, images (PNG, JPG, GIF),\nand common document formats.",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -163,7 +148,22 @@ var transactionsUploadAttachment = cli.Command{
 			BodyPath: "attachmentType",
 		},
 	},
-	Action:          handleTransactionsUploadAttachment,
+	Action:          handleTransactionsAttach,
+	HideHelpCommand: true,
+}
+
+var transactionsGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve a single transaction by its ID. Returns full transaction details\nincluding attachments, check images, and related metadata.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "transaction-id",
+			Usage:    "ID for this transaction",
+			Required: true,
+		},
+	},
+	Action:          handleTransactionsGet,
 	HideHelpCommand: true,
 }
 
@@ -251,6 +251,38 @@ func handleTransactionsList(ctx context.Context, cmd *cli.Command) error {
 	}
 }
 
+func handleTransactionsAttach(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("transaction-id") && len(unusedArgs) > 0 {
+		cmd.Set("transaction-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	params := mercury.TransactionAttachParams{}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		MultipartFormEncoded,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return client.Transactions.Attach(
+		ctx,
+		cmd.Value("transaction-id").(string),
+		params,
+		options...,
+	)
+}
+
 func handleTransactionsGet(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -284,36 +316,4 @@ func handleTransactionsGet(ctx context.Context, cmd *cli.Command) error {
 	format := cmd.Root().String("format")
 	transform := cmd.Root().String("transform")
 	return ShowJSON(os.Stdout, "transactions get", obj, format, transform)
-}
-
-func handleTransactionsUploadAttachment(ctx context.Context, cmd *cli.Command) error {
-	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
-	unusedArgs := cmd.Args().Slice()
-	if !cmd.IsSet("transaction-id") && len(unusedArgs) > 0 {
-		cmd.Set("transaction-id", unusedArgs[0])
-		unusedArgs = unusedArgs[1:]
-	}
-	if len(unusedArgs) > 0 {
-		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
-	}
-
-	params := mercury.TransactionUploadAttachmentParams{}
-
-	options, err := flagOptions(
-		cmd,
-		apiquery.NestedQueryFormatBrackets,
-		apiquery.ArrayQueryFormatComma,
-		MultipartFormEncoded,
-		false,
-	)
-	if err != nil {
-		return err
-	}
-
-	return client.Transactions.UploadAttachment(
-		ctx,
-		cmd.Value("transaction-id").(string),
-		params,
-		options...,
-	)
 }
