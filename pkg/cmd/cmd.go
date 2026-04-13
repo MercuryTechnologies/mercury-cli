@@ -111,12 +111,13 @@ func init() {
 				},
 			},
 			{
-				Name:     "accounts-receivable:attachments",
+				Name:     "invoices:attachments",
         Usage:    "Get accounts receivable attachment details",
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&accountsReceivableAttachmentsGet,
+					&invoicesAttachmentsList,
+					&invoicesAttachmentsGet,
 				},
 			},
 			{
