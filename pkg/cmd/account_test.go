@@ -97,25 +97,6 @@ func TestAccountsGet(t *testing.T) {
 	})
 }
 
-func TestAccountsListStatements(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	t.Run("regular flags", func(t *testing.T) {
-		mocktest.TestRunMockTestWithFlags(
-			t,
-			"--api-key", "string",
-			"accounts", "list-statements",
-			"--max-items", "10",
-			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--end", "end",
-			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--limit", "1",
-			"--order", "asc",
-			"--start", "start",
-			"--start-after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		)
-	})
-}
-
 func TestAccountsRequestSendMoney(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {

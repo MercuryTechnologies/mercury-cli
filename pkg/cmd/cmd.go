@@ -195,6 +195,22 @@ func init() {
 				},
 			},
 			{
+				Name:     "statements:accounts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsAccountsList,
+				},
+			},
+			{
+				Name:     "statements:treasury",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsTreasuryList,
+				},
+			},
+			{
 				Name:     "transfer",
 				Usage:    "Initiate transfers between accounts",
 				Category: "API RESOURCE",
@@ -210,7 +226,6 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
-					&treasuryRetrieveStatements,
 					&treasuryRetrieveTransactions,
 				},
 			},
@@ -247,7 +262,6 @@ func init() {
 					&accountsList,
 					&accountsCreateTransaction,
 					&accountsGet,
-					&accountsListStatements,
 					&accountsRequestSendMoney,
 				},
 			},
