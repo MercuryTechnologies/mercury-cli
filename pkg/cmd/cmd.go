@@ -337,7 +337,7 @@ func init() {
 			},
 			{
 				Name:     "hat",
-				Usage:    "Open the store in your browser",
+				Usage:    "The most important command",
 				Category: "Resource",
 				Action:   openHat,
 			},
