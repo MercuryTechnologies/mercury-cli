@@ -305,6 +305,10 @@ func init() {
 					},
 				},
 			},
+			// CUSTOM: OAuth auth commands
+			&authLogin,
+			&authLogout,
+			&authStatus,
 			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
