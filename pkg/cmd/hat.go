@@ -21,9 +21,9 @@ const (
 )
 
 var (
-	hatBlue = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF"))
-	hatDim  = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	hatBold = lipgloss.NewStyle().Foreground(lipgloss.Color("252")).Bold(true)
+	hatBlue = lipgloss.NewStyle().Foreground(colorBlue)
+	hatDim  = lipgloss.NewStyle().Foreground(colorDim)
+	hatBold = lipgloss.NewStyle().Foreground(colorLight).Bold(true)
 )
 
 func promptField(scanner *bufio.Scanner, label string, required bool) (string, error) {
