@@ -38,6 +38,11 @@ func main() {
 			exitCode = exitErr.ExitCode()
 		}
 
+		// CUSTOM: silently exit on user cancellation (confirmation prompt)
+		if errors.Is(err, cmd.ErrCancelled) {
+			os.Exit(exitCode)
+		}
+
 		var apierr *mercury.Error
 		if errors.As(err, &apierr) {
 			fmt.Fprintf(os.Stderr, "%s %q: %d %s\n", apierr.Request.Method, apierr.Request.URL, apierr.Response.StatusCode, http.StatusText(apierr.Response.StatusCode))

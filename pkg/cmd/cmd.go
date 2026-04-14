@@ -35,6 +35,12 @@ func init() {
 				Name:  "debug",
 				Usage: "Enable debug logging",
 			},
+			// CUSTOM: confirmation prompt skip flag
+			&cli.BoolFlag{
+				Name:    "yes",
+				Aliases: []string{"y"},
+				Usage:   "Skip confirmation prompts for money movement commands",
+			},
 			&cli.StringFlag{
 				Name:        "base-url",
 				DefaultText: "url",
