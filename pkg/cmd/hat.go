@@ -118,6 +118,8 @@ func buildShopifyURL(addr *shippingAddress) string {
 	params.Set("checkout[shipping_address][province]", addr.State)
 	params.Set("checkout[shipping_address][zip]", addr.Zip)
 	params.Set("checkout[shipping_address][country]", "US")
+	params.Set("utm_source", "mercury-cli")
+	params.Set("utm_campaign", "agent-hat")
 
 	return hatCartURL + "?" + params.Encode()
 }
