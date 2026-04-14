@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	mercuryBlue = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF"))
+	mercuryBlue = lipgloss.NewStyle().Foreground(colorBlue)
 
-	helpTitle = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF")).Bold(true)
-	helpDim   = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	helpCmd   = lipgloss.NewStyle().Foreground(lipgloss.Color("#395AFF"))
-	helpFlag  = lipgloss.NewStyle().Foreground(lipgloss.Color("#5B7AFF"))
-	helpDesc  = lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
-	helpFrame = lipgloss.NewStyle().Foreground(lipgloss.Color("#1E3299"))
+	helpTitle = lipgloss.NewStyle().Foreground(colorBlue).Bold(true)
+	helpDim   = lipgloss.NewStyle().Foreground(colorDim)
+	helpCmd   = lipgloss.NewStyle().Foreground(colorBlue)
+	helpFlag  = lipgloss.NewStyle().Foreground(colorBlue)
+	helpDesc  = lipgloss.NewStyle().Foreground(colorLight)
+	helpFrame = lipgloss.NewStyle().Foreground(colorFrame)
 
 	logoLines = []string{
 		`⠀⠀⠀⠀⠀⠀⠀⣀⡤⠶⠒⠛⠛⠉⠛⠛⢶⡶⠤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`,
@@ -67,7 +67,7 @@ func banner(width int) string {
 func boxSection(title string, content string, width int) string {
 	border := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("#1E3299")).
+		BorderForeground(colorFrame).
 		Padding(0, 1).
 		Width(width - 4)
 
