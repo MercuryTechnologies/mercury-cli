@@ -241,6 +241,11 @@ func handlePaymentsCreate(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	// CUSTOM: confirmation prompt before sending money
+	if err := confirmMoneyMovement(cmd, "Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
+		return err
+	}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
 	_, err = client.Payments.New(
@@ -360,6 +365,11 @@ func handlePaymentsRequest(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	// CUSTOM: confirmation prompt before requesting to send money
+	if err := confirmMoneyMovement(cmd, "Request to Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
+		return err
+	}
+
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
 	_, err = client.Payments.Request(
@@ -396,6 +406,11 @@ func handlePaymentsTransfer(ctx context.Context, cmd *cli.Command) error {
 		false,
 	)
 	if err != nil {
+		return err
+	}
+
+	// CUSTOM: confirmation prompt before transferring funds
+	if err := confirmMoneyMovement(cmd, "Transfer Funds", buildTransferConfirmDetails(cmd)); err != nil {
 		return err
 	}
 
