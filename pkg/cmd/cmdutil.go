@@ -16,6 +16,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/MercuryTechnologies/mercury-cli/internal/auth"
 	"github.com/MercuryTechnologies/mercury-cli/internal/jsonview"
 	"github.com/MercuryTechnologies/mercury-go/option"
 
@@ -50,6 +51,10 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 	}
 	if cmd.IsSet("api-key") {
 		opts = append(opts, option.WithAPIKey(cmd.String("api-key")))
+	} else if token, err := auth.GetToken(auth.ResolveEnvironment(cmd)); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: %v\n", err)
+	} else if token != "" {
+		opts = append(opts, option.WithAPIKey(token))
 	}
 
 	// Override base URL if the --base-url flag is provided
