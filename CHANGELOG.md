@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 (2026-04-15)
+
+Full Changelog: [v0.2.9...v0.3.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.9...v0.3.0)
+
+### Features
+
+* **cli:** alias parameters in data with `x-stainless-cli-data-alias` ([563581a](https://github.com/MercuryTechnologies/mercury-cli/commit/563581aa53074a6c3ed84b9f5088cc748f3b909e))
+
+
+### Chores
+
+* add documentation for ./scripts/link ([9fe6012](https://github.com/MercuryTechnologies/mercury-cli/commit/9fe6012b9af83698404099dc2f63b3d932ccdf9f))
+* **cli:** fall back to JSON when using default "explore" with non-TTY ([3c69085](https://github.com/MercuryTechnologies/mercury-cli/commit/3c69085164c2666aa5b08be3eabc1c439438f5c3))
+
 ## 0.2.9 (2026-04-13)
 
 Full Changelog: [v0.2.8...v0.2.9](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.8...v0.2.9)
