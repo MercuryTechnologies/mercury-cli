@@ -333,8 +333,9 @@ func handleRecipientsCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "recipients create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "recipients create", obj, format, explicitFormat, transform)
 }
 
 func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -375,8 +376,9 @@ func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "recipients update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "recipients update", obj, format, explicitFormat, transform)
 }
 
 func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
@@ -401,6 +403,7 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -410,14 +413,14 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "recipients list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "recipients list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Recipients.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "recipients list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "recipients list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
@@ -452,6 +455,7 @@ func handleRecipientsGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "recipients get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "recipients get", obj, format, explicitFormat, transform)
 }

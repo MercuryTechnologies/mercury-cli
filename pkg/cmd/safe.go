@@ -87,8 +87,9 @@ func handleSafesList(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "safes list", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "safes list", obj, format, explicitFormat, transform)
 }
 
 func handleSafesDownload(ctx context.Context, cmd *cli.Command) error {
@@ -155,6 +156,7 @@ func handleSafesGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "safes get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "safes get", obj, format, explicitFormat, transform)
 }

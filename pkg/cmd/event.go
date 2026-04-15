@@ -97,6 +97,7 @@ func handleEventsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -106,14 +107,14 @@ func handleEventsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "events list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "events list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Events.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "events list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "events list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
@@ -148,6 +149,7 @@ func handleEventsGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "events get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "events get", obj, format, explicitFormat, transform)
 }
