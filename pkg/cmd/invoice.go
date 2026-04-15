@@ -477,7 +477,26 @@ func handleInvoicesCancel(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Invoices.Cancel(ctx, cmd.Value("invoice-id").(string), options...)
+	// CUSTOM: fetch invoice details and confirm before cancelling
+	invoiceID := cmd.Value("invoice-id").(string)
+	var res []byte
+	_, err = client.Invoices.Get(ctx, invoiceID, option.WithResponseBodyInto(&res))
+	if err != nil {
+		return err
+	}
+	obj := gjson.ParseBytes(res)
+	details := []ConfirmDetail{
+		{Label: "Invoice", Value: obj.Get("invoiceNumber").String()},
+		{Label: "Amount", Value: formatCurrency(obj.Get("amount").Float())},
+		{Label: "Status", Value: obj.Get("status").String()},
+		{Label: "Customer", Value: obj.Get("customerId").String()},
+		{Label: "Due Date", Value: obj.Get("dueDate").String()},
+	}
+	if err := confirmAction(cmd, "Cancel Invoice", details); err != nil {
+		return err
+	}
+
+	return client.Invoices.Cancel(ctx, invoiceID, options...)
 }
 
 func handleInvoicesDownload(ctx context.Context, cmd *cli.Command) error {

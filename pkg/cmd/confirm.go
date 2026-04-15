@@ -56,9 +56,9 @@ func formatCurrency(amount float64) string {
 	return "$" + intPart + "." + decPart
 }
 
-// confirmMoneyMovement prompts the user to confirm a money movement command.
+// confirmAction prompts the user to confirm a destructive or irreversible command.
 // If --yes is set or stdin is not a terminal, it either skips or errors accordingly.
-func confirmMoneyMovement(cmd *cli.Command, action string, details []ConfirmDetail) error {
+func confirmAction(cmd *cli.Command, action string, details []ConfirmDetail) error {
 	if cmd.Bool("yes") {
 		return nil
 	}
@@ -67,12 +67,12 @@ func confirmMoneyMovement(cmd *cli.Command, action string, details []ConfirmDeta
 		return fmt.Errorf("refusing to execute without confirmation in non-interactive mode\nUse --yes to skip confirmation prompts")
 	}
 
-	return confirmMoneyMovementIO(os.Stdin, os.Stderr, action, details)
+	return confirmActionIO(os.Stdin, os.Stderr, action, details)
 }
 
-// confirmMoneyMovementIO is the testable core of the confirmation prompt.
+// confirmActionIO is the testable core of the confirmation prompt.
 // It renders a styled summary to writer and reads Y/n from reader.
-func confirmMoneyMovementIO(reader io.Reader, writer io.Writer, action string, details []ConfirmDetail) error {
+func confirmActionIO(reader io.Reader, writer io.Writer, action string, details []ConfirmDetail) error {
 	titleStyle := lipgloss.NewStyle().Foreground(colorBlue).Bold(true)
 	labelStyle := lipgloss.NewStyle().Foreground(colorDim)
 	valueStyle := lipgloss.NewStyle().Foreground(colorLight)

@@ -36,7 +36,7 @@ func TestFormatCurrency(t *testing.T) {
 	}
 }
 
-func TestConfirmMoneyMovementIO_Confirm(t *testing.T) {
+func TestConfirmActionIO_Confirm(t *testing.T) {
 	t.Parallel()
 
 	details := []ConfirmDetail{
@@ -48,7 +48,7 @@ func TestConfirmMoneyMovementIO_Confirm(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.NoError(t, err)
 	})
 
@@ -56,7 +56,7 @@ func TestConfirmMoneyMovementIO_Confirm(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("y\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.NoError(t, err)
 	})
 
@@ -64,7 +64,7 @@ func TestConfirmMoneyMovementIO_Confirm(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("yes\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.NoError(t, err)
 	})
 
@@ -72,12 +72,12 @@ func TestConfirmMoneyMovementIO_Confirm(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("Y\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.NoError(t, err)
 	})
 }
 
-func TestConfirmMoneyMovementIO_Cancel(t *testing.T) {
+func TestConfirmActionIO_Cancel(t *testing.T) {
 	t.Parallel()
 
 	details := []ConfirmDetail{
@@ -88,7 +88,7 @@ func TestConfirmMoneyMovementIO_Cancel(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("n\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.Error(t, err)
 		assert.True(t, errors.Is(err, ErrCancelled))
 	})
@@ -97,7 +97,7 @@ func TestConfirmMoneyMovementIO_Cancel(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("N\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.Error(t, err)
 		assert.True(t, errors.Is(err, ErrCancelled))
 	})
@@ -106,7 +106,7 @@ func TestConfirmMoneyMovementIO_Cancel(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("no\n")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.Error(t, err)
 		assert.True(t, errors.Is(err, ErrCancelled))
 	})
@@ -115,13 +115,13 @@ func TestConfirmMoneyMovementIO_Cancel(t *testing.T) {
 		t.Parallel()
 		reader := strings.NewReader("")
 		var output bytes.Buffer
-		err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+		err := confirmActionIO(reader, &output, "Send Money", details)
 		require.Error(t, err)
 		assert.True(t, errors.Is(err, ErrCancelled))
 	})
 }
 
-func TestConfirmMoneyMovementIO_Output(t *testing.T) {
+func TestConfirmActionIO_Output(t *testing.T) {
 	t.Parallel()
 
 	details := []ConfirmDetail{
@@ -133,7 +133,7 @@ func TestConfirmMoneyMovementIO_Output(t *testing.T) {
 
 	reader := strings.NewReader("y\n")
 	var output bytes.Buffer
-	err := confirmMoneyMovementIO(reader, &output, "Send Money", details)
+	err := confirmActionIO(reader, &output, "Send Money", details)
 	require.NoError(t, err)
 
 	rendered := output.String()
@@ -146,4 +146,72 @@ func TestConfirmMoneyMovementIO_Output(t *testing.T) {
 	assert.Contains(t, rendered, "ach")
 	assert.Contains(t, rendered, "Proceed?")
 	assert.Contains(t, rendered, "[Y/n]")
+}
+
+func TestConfirmActionIO_DestructiveOutput(t *testing.T) {
+	t.Parallel()
+
+	t.Run("delete customer", func(t *testing.T) {
+		t.Parallel()
+		details := []ConfirmDetail{
+			{Label: "Name", Value: "Acme Corp"},
+			{Label: "Email", Value: "billing@acme.com"},
+			{Label: "ID", Value: "cust-789"},
+		}
+
+		reader := strings.NewReader("y\n")
+		var output bytes.Buffer
+		err := confirmActionIO(reader, &output, "Delete Customer", details)
+		require.NoError(t, err)
+
+		rendered := output.String()
+		assert.Contains(t, rendered, "Delete Customer")
+		assert.Contains(t, rendered, "Acme Corp")
+		assert.Contains(t, rendered, "billing@acme.com")
+		assert.Contains(t, rendered, "cust-789")
+		assert.Contains(t, rendered, "[Y/n]")
+	})
+
+	t.Run("cancel invoice", func(t *testing.T) {
+		t.Parallel()
+		details := []ConfirmDetail{
+			{Label: "Invoice", Value: "INV-001"},
+			{Label: "Amount", Value: "$5,000.00"},
+			{Label: "Status", Value: "Unpaid"},
+			{Label: "Customer", Value: "cust-789"},
+			{Label: "Due Date", Value: "2026-05-01"},
+		}
+
+		reader := strings.NewReader("n\n")
+		var output bytes.Buffer
+		err := confirmActionIO(reader, &output, "Cancel Invoice", details)
+		require.Error(t, err)
+		assert.True(t, errors.Is(err, ErrCancelled))
+
+		rendered := output.String()
+		assert.Contains(t, rendered, "Cancel Invoice")
+		assert.Contains(t, rendered, "INV-001")
+		assert.Contains(t, rendered, "$5,000.00")
+		assert.Contains(t, rendered, "Unpaid")
+	})
+
+	t.Run("delete webhook", func(t *testing.T) {
+		t.Parallel()
+		details := []ConfirmDetail{
+			{Label: "URL", Value: "https://example.com/hooks"},
+			{Label: "Events", Value: "transaction.created, transaction.updated"},
+			{Label: "Status", Value: "active"},
+		}
+
+		reader := strings.NewReader("y\n")
+		var output bytes.Buffer
+		err := confirmActionIO(reader, &output, "Delete Webhook", details)
+		require.NoError(t, err)
+
+		rendered := output.String()
+		assert.Contains(t, rendered, "Delete Webhook")
+		assert.Contains(t, rendered, "https://example.com/hooks")
+		assert.Contains(t, rendered, "transaction.created, transaction.updated")
+		assert.Contains(t, rendered, "active")
+	})
 }

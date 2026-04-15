@@ -365,7 +365,24 @@ func handleCustomersDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Customers.Delete(ctx, cmd.Value("customer-id").(string), options...)
+	// CUSTOM: fetch customer details and confirm before deleting
+	customerID := cmd.Value("customer-id").(string)
+	var res []byte
+	_, err = client.Customers.Get(ctx, customerID, option.WithResponseBodyInto(&res))
+	if err != nil {
+		return err
+	}
+	obj := gjson.ParseBytes(res)
+	details := []ConfirmDetail{
+		{Label: "Name", Value: obj.Get("name").String()},
+		{Label: "Email", Value: obj.Get("email").String()},
+		{Label: "ID", Value: obj.Get("id").String()},
+	}
+	if err := confirmAction(cmd, "Delete Customer", details); err != nil {
+		return err
+	}
+
+	return client.Customers.Delete(ctx, customerID, options...)
 }
 
 func handleCustomersGet(ctx context.Context, cmd *cli.Command) error {

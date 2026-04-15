@@ -242,7 +242,7 @@ func handlePaymentsCreate(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// CUSTOM: confirmation prompt before sending money
-	if err := confirmMoneyMovement(cmd, "Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
+	if err := confirmAction(cmd, "Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
 		return err
 	}
 
@@ -369,7 +369,7 @@ func handlePaymentsRequest(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// CUSTOM: confirmation prompt before requesting to send money
-	if err := confirmMoneyMovement(cmd, "Request to Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
+	if err := confirmAction(cmd, "Request to Send Money", buildPaymentConfirmDetails(cmd)); err != nil {
 		return err
 	}
 
@@ -414,7 +414,7 @@ func handlePaymentsTransfer(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// CUSTOM: confirmation prompt before transferring funds
-	if err := confirmMoneyMovement(cmd, "Transfer Funds", buildTransferConfirmDetails(cmd)); err != nil {
+	if err := confirmAction(cmd, "Transfer Funds", buildTransferConfirmDetails(cmd)); err != nil {
 		return err
 	}
 
