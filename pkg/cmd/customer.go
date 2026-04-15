@@ -252,8 +252,9 @@ func handleCustomersCreate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "customers create", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "customers create", obj, format, explicitFormat, transform)
 }
 
 func handleCustomersUpdate(ctx context.Context, cmd *cli.Command) error {
@@ -294,8 +295,9 @@ func handleCustomersUpdate(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "customers update", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "customers update", obj, format, explicitFormat, transform)
 }
 
 func handleCustomersList(ctx context.Context, cmd *cli.Command) error {
@@ -320,6 +322,7 @@ func handleCustomersList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -329,14 +332,14 @@ func handleCustomersList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "customers list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "customers list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Customers.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "customers list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "customers list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 
@@ -396,6 +399,7 @@ func handleCustomersGet(ctx context.Context, cmd *cli.Command) error {
 
 	obj := gjson.ParseBytes(res)
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
-	return ShowJSON(os.Stdout, "customers get", obj, format, transform)
+	return ShowJSON(os.Stdout, os.Stderr, "customers get", obj, format, explicitFormat, transform)
 }
