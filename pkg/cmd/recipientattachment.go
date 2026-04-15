@@ -94,6 +94,7 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -103,14 +104,14 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "recipients attachments list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "recipients attachments list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Recipients.Attachments.ListAutoPaging(ctx, params, options...)
 		maxItems := int64(-1)
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "recipients attachments list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "recipients attachments list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
 

@@ -91,6 +91,7 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
 	transform := cmd.Root().String("transform")
 	if format == "raw" {
 		var res []byte
@@ -105,7 +106,7 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, "statements accounts list", obj, format, transform)
+		return ShowJSON(os.Stdout, os.Stderr, "statements accounts list", obj, format, explicitFormat, transform)
 	} else {
 		iter := client.Statements.Accounts.ListAutoPaging(
 			ctx,
@@ -117,6 +118,6 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, "statements accounts list", iter, format, transform, maxItems)
+		return ShowJSONIterator(os.Stdout, os.Stderr, "statements accounts list", iter, format, explicitFormat, transform, maxItems)
 	}
 }
