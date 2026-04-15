@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
@@ -309,7 +310,34 @@ func handleWebhooksDelete(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	return client.Webhooks.Delete(ctx, cmd.Value("webhook-endpoint-id").(string), options...)
+	// CUSTOM: fetch webhook details and confirm before deleting
+	webhookID := cmd.Value("webhook-endpoint-id").(string)
+	var res []byte
+	_, err = client.Webhooks.Get(ctx, webhookID, option.WithResponseBodyInto(&res))
+	if err != nil {
+		return err
+	}
+	obj := gjson.ParseBytes(res)
+	events := "all"
+	if eventTypes := obj.Get("eventTypes"); eventTypes.Exists() && eventTypes.IsArray() {
+		var types []string
+		for _, et := range eventTypes.Array() {
+			types = append(types, et.String())
+		}
+		if len(types) > 0 {
+			events = strings.Join(types, ", ")
+		}
+	}
+	details := []ConfirmDetail{
+		{Label: "URL", Value: obj.Get("url").String()},
+		{Label: "Events", Value: events},
+		{Label: "Status", Value: obj.Get("status").String()},
+	}
+	if err := confirmAction(cmd, "Delete Webhook", details); err != nil {
+		return err
+	}
+
+	return client.Webhooks.Delete(ctx, webhookID, options...)
 }
 
 func handleWebhooksGet(ctx context.Context, cmd *cli.Command) error {

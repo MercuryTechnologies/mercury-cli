@@ -39,7 +39,7 @@ func init() {
 			&cli.BoolFlag{
 				Name:    "yes",
 				Aliases: []string{"y"},
-				Usage:   "Skip confirmation prompts for money movement commands",
+				Usage:   "Skip confirmation prompts",
 			},
 			&cli.StringFlag{
 				Name:        "base-url",

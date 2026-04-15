@@ -40,7 +40,7 @@ func main() {
 
 		// CUSTOM: silently exit on user cancellation (confirmation prompt)
 		if errors.Is(err, cmd.ErrCancelled) {
-			os.Exit(exitCode)
+			os.Exit(0)
 		}
 
 		var apierr *mercury.Error
