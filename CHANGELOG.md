@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 (2026-04-16)
+
+Full Changelog: [v0.3.0...v0.3.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.0...v0.3.1)
+
+### Chores
+
+* **cli:** switch long lists of positional args over to param structs ([20b5a98](https://github.com/MercuryTechnologies/mercury-cli/commit/20b5a98a8187bf6be83487d11da2c89997ca1136))
+
 ## 0.3.0 (2026-04-15)
 
 Full Changelog: [v0.2.9...v0.3.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.2.9...v0.3.0)
