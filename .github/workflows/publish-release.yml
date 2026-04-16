@@ -1,7 +1,5 @@
 ---
 name: Publish Release
-permissions:
-  contents: write
 
 concurrency:
   group: publish
@@ -13,6 +11,8 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Checkout
       uses: actions/checkout@v6
@@ -29,3 +29,36 @@ jobs:
         args: release --clean
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-to-cdn:
+    needs: goreleaser
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_CLI_DISTRIBUTION_ROLE_ARN }}
+        aws-region: us-east-1
+    - name: Download release assets
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        VERSION="${GITHUB_REF_NAME#v}"
+        mkdir -p release-assets
+        gh release download "$GITHUB_REF_NAME" -D release-assets
+    - name: Upload to S3
+      run: |
+        VERSION="${GITHUB_REF_NAME#v}"
+        aws s3 sync release-assets/ "s3://cli.mercury.com/v${VERSION}/"
+        echo -n "$VERSION" | aws s3 cp - "s3://cli.mercury.com/VERSION"
+        aws s3 cp scripts/install.sh "s3://cli.mercury.com/install.sh"
+    - name: Invalidate CloudFront cache
+      run: |
+        aws cloudfront create-invalidation \
+          --distribution-id "${{ secrets.CLOUDFRONT_CLI_DISTRIBUTION_ID }}" \
+          --paths "/VERSION" "/install.sh"
