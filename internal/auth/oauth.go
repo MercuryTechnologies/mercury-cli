@@ -20,12 +20,10 @@ import (
 
 const (
 	// OAuth client IDs per environment (public clients, no secret).
-	// TODO: Replace production client ID after creating the production OAuth client.
-	ProductionOAuthClientID = "TODO-production-client-id"
+	ProductionOAuthClientID = "d6a5310d-f441-4a36-b12a-2fc09c380936"
 	SandboxOAuthClientID    = "da707cac-28d3-4003-bbc6-c7384ca6557a"
 
 	// OAuth endpoints per environment.
-	// TODO: Replace production URLs after creating the production OAuth client.
 	ProductionAuthURL  = "https://oauth2.mercury.com/oauth2/auth"
 	ProductionTokenURL = "https://oauth2.mercury.com/oauth2/token"
 	SandboxAuthURL     = "https://oauth2-sandbox.mercury.com/oauth2/auth"
