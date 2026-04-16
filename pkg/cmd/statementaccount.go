@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
@@ -106,7 +105,12 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 		obj := gjson.ParseBytes(res)
-		return ShowJSON(os.Stdout, os.Stderr, "statements accounts list", obj, format, explicitFormat, transform)
+		return ShowJSON(obj, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			Title:          "statements accounts list",
+			Transform:      transform,
+		})
 	} else {
 		iter := client.Statements.Accounts.ListAutoPaging(
 			ctx,
@@ -118,6 +122,11 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 		if cmd.IsSet("max-items") {
 			maxItems = cmd.Value("max-items").(int64)
 		}
-		return ShowJSONIterator(os.Stdout, os.Stderr, "statements accounts list", iter, format, explicitFormat, transform, maxItems)
+		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
+			ExplicitFormat: explicitFormat,
+			Format:         format,
+			Title:          "statements accounts list",
+			Transform:      transform,
+		})
 	}
 }
