@@ -106,7 +106,7 @@ func formatFlags(flags []cli.Flag) string {
 			}
 		}
 
-		padded := fmt.Sprintf("  %-36s", flagStr)
+		padded := fmt.Sprintf("  %-24s", flagStr)
 		lines = append(lines, helpFlag.Render(padded)+helpDesc.Render(usage))
 	}
 	return strings.Join(lines, "\n")
@@ -152,7 +152,7 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 		if cat == "" {
 			cat = "Commands"
 		}
-		padded := fmt.Sprintf("  %-36s", sub.Name)
+		padded := fmt.Sprintf("  %-24s", sub.Name)
 		entry := helpCmd.Render(padded) + helpDesc.Render(sub.Usage)
 		if idx, ok := groupMap[cat]; ok {
 			groups[idx].commands = append(groups[idx].commands, entry)

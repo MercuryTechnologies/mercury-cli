@@ -27,6 +27,8 @@ func init() {
 		switch sub.Name {
 		case "accounts":
 			sub.Usage = "List and view bank accounts"
+		case "payments":
+			sub.Usage = "Send money, request approvals, and transfer between accounts"
 		case "treasury":
 			sub.Usage = "View treasury accounts and transactions"
 		}
@@ -37,15 +39,23 @@ func init() {
 		switch f.Names()[0] {
 		case "api-key":
 			if rf, ok := f.(*requestflag.Flag[string]); ok {
-				rf.Usage = "Mercury API token (generate at dashboard.mercury.com/settings)"
+				rf.Usage = "Mercury API token (from dashboard settings)"
+			}
+		case "format":
+			if sf, ok := f.(*cli.StringFlag); ok {
+				sf.Usage = "Output format (auto|json|jsonl|pretty|raw|yaml|explore)"
+			}
+		case "format-error":
+			if sf, ok := f.(*cli.StringFlag); ok {
+				sf.Usage = "Error format (auto|json|jsonl|pretty|raw|yaml|explore)"
 			}
 		case "transform":
 			if sf, ok := f.(*cli.StringFlag); ok {
-				sf.Usage = "Transform output using a GJSON expression"
+				sf.Usage = "Transform output with a GJSON expression"
 			}
 		case "transform-error":
 			if sf, ok := f.(*cli.StringFlag); ok {
-				sf.Usage = "Transform error output using a GJSON expression"
+				sf.Usage = "Transform error output with a GJSON expression"
 			}
 		}
 	}
