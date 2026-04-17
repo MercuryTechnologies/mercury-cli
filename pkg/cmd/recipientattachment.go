@@ -106,6 +106,7 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 		return ShowJSON(obj, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "recipients:attachments list",
 			Transform:      transform,
 		})
@@ -118,6 +119,7 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "recipients:attachments list",
 			Transform:      transform,
 		})

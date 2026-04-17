@@ -337,6 +337,7 @@ func handleRecipientsCreate(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "recipients create",
 		Transform:      transform,
 	})
@@ -385,6 +386,7 @@ func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "recipients update",
 		Transform:      transform,
 	})
@@ -425,6 +427,7 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(obj, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "recipients list",
 			Transform:      transform,
 		})
@@ -437,6 +440,7 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "recipients list",
 			Transform:      transform,
 		})
@@ -479,6 +483,7 @@ func handleRecipientsGet(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "recipients get",
 		Transform:      transform,
 	})
