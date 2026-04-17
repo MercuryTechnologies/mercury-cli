@@ -356,12 +356,6 @@ func init() {
 				HideHelpCommand: true,
 				Action:          autocomplete.OutputCompletionScript,
 			},
-			{
-				Name:     "hat",
-				Usage:    "The most important command",
-				Category: "Resource",
-				Action:   openHat,
-			},
 		},
 		HideHelpCommand: true,
 	}
