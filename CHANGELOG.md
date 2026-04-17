@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 (2026-04-17)
+
+Full Changelog: [v0.3.3...v0.4.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.3...v0.4.0)
+
+### Features
+
+* **cli:** add `--raw-output`/`-r` option to print raw (non-JSON) strings ([a991deb](https://github.com/MercuryTechnologies/mercury-cli/commit/a991deb8a557a00eef4446195d7ba60b881640a4))
+* **cli:** send filename and content type when reading input from files ([f4f47df](https://github.com/MercuryTechnologies/mercury-cli/commit/f4f47df738271ab0cecbf00a29aee50d1472f727))
+
+
+### Chores
+
+* **ci:** support manually triggering release workflow ([c0cf296](https://github.com/MercuryTechnologies/mercury-cli/commit/c0cf296c34722d27642bcb215fe8bfda798449c6))
+
 ## 0.3.3 (2026-04-17)
 
 Full Changelog: [v0.3.2...v0.3.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.2...v0.3.3)
