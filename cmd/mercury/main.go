@@ -10,6 +10,7 @@ import (
 	"os"
 	"slices"
 
+	"github.com/MercuryTechnologies/mercury-cli/internal/updatecheck"
 	"github.com/MercuryTechnologies/mercury-cli/pkg/cmd"
 	"github.com/MercuryTechnologies/mercury-go"
 	"github.com/tidwall/gjson"
@@ -30,6 +31,11 @@ func main() {
 		}
 	}
 
+	updater := updatecheck.Start(context.Background(), updatecheck.Options{
+		CurrentVersion: cmd.Version,
+		Args:           os.Args[1:],
+	})
+
 	if err := app.Run(context.Background(), os.Args); err != nil {
 		exitCode := 1
 
@@ -40,6 +46,7 @@ func main() {
 
 		// CUSTOM: silently exit on user cancellation (confirmation prompt)
 		if errors.Is(err, cmd.ErrCancelled) {
+			updater.Notify(os.Stderr)
 			os.Exit(0)
 		}
 
@@ -65,8 +72,11 @@ func main() {
 				fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 			}
 		}
+		updater.Notify(os.Stderr)
 		os.Exit(exitCode)
 	}
+
+	updater.Notify(os.Stderr)
 }
 
 func prepareForAutocomplete(cmd *cli.Command) {

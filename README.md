@@ -30,6 +30,23 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 
 <!-- x-release-please-end -->
 
+### Upgrading
+
+```sh
+mercury upgrade                  # latest
+mercury upgrade --version 0.3.1  # pin a version
+mercury upgrade --force          # reinstall current
+```
+
+Set `MERCURY_INSTALL_DIR` to override the install location.
+
+When a newer release is available, `mercury` prints a one-line notice on stderr
+after the command runs (at most once per day). To disable it:
+
+```sh
+export MERCURY_NO_UPDATE_CHECK=1
+```
+
 ### Running Locally
 
 After cloning the git repository for this project, you can use the

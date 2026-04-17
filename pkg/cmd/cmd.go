@@ -309,6 +309,8 @@ func init() {
 			&authLogin,
 			&authLogout,
 			&authStatus,
+			// CUSTOM: self-upgrade command
+			&upgrade,
 			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
