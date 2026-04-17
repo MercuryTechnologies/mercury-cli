@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.3 (2026-04-17)
+
+Full Changelog: [v0.3.2...v0.3.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.2...v0.3.3)
+
+### Bug Fixes
+
+* **cli:** notify when update is available and add upgrade command ([6b97848](https://github.com/MercuryTechnologies/mercury-cli/commit/6b978487628a649ed56c8f01b4be016189e63833))
+
 ## 0.3.2 (2026-04-17)
 
 Full Changelog: [v0.3.1...v0.3.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.1...v0.3.2)
