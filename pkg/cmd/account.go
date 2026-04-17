@@ -100,6 +100,7 @@ func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSON(obj, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "accounts list",
 			Transform:      transform,
 		})
@@ -112,6 +113,7 @@ func handleAccountsList(ctx context.Context, cmd *cli.Command) error {
 		return ShowJSONIterator(iter, maxItems, ShowJSONOpts{
 			ExplicitFormat: explicitFormat,
 			Format:         format,
+			RawOutput:      cmd.Root().Bool("raw-output"),
 			Title:          "accounts list",
 			Transform:      transform,
 		})
@@ -154,6 +156,7 @@ func handleAccountsGet(ctx context.Context, cmd *cli.Command) error {
 	return ShowJSON(obj, ShowJSONOpts{
 		ExplicitFormat: explicitFormat,
 		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "accounts get",
 		Transform:      transform,
 	})
