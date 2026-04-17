@@ -93,29 +93,29 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if errMsg := r.URL.Query().Get("error"); errMsg != "" {
 			desc := r.URL.Query().Get("error_description")
-			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprintf(w, "<html><body><h2>Login failed</h2><p>%s: %s</p><p>You can close this window.</p></body></html>", errMsg, desc)
+			detail := desc
+			if detail == "" {
+				detail = fmt.Sprintf("Mercury returned %q. Please try again from your terminal.", errMsg)
+			}
+			renderError(w, "Sign-in didn't complete", detail)
 			resultCh <- callbackResult{err: fmt.Errorf("OAuth error: %s - %s", errMsg, desc)}
 			return
 		}
 
 		if returnedState := r.URL.Query().Get("state"); returnedState != state {
-			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, "<html><body><h2>Login failed</h2><p>State mismatch.</p><p>You can close this window.</p></body></html>")
+			renderError(w, "That link didn't look right", "For security, the sign-in link couldn't be verified. Please try again from your terminal.")
 			resultCh <- callbackResult{err: fmt.Errorf("state mismatch")}
 			return
 		}
 
 		code := r.URL.Query().Get("code")
 		if code == "" {
-			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, "<html><body><h2>Login failed</h2><p>No authorization code received.</p><p>You can close this window.</p></body></html>")
+			renderError(w, "Something went wrong", "We didn't receive a sign-in code from Mercury. Please try again from your terminal.")
 			resultCh <- callbackResult{err: fmt.Errorf("no authorization code in callback")}
 			return
 		}
 
-		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprint(w, "<html><body><h2>Login successful!</h2><p>You can close this window and return to the terminal.</p></body></html>")
+		renderSuccess(w)
 		resultCh <- callbackResult{code: code}
 	})
 

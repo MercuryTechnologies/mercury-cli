@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Mercury CLI · Signed in</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Arcadia Text", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #ededf3;
+    color: #363644;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .page { min-height: 100%; display: flex; flex-direction: column; }
+  .nav { padding: 40px; }
+  .nav svg { display: block; height: 22px; width: auto; color: #363644; }
+  .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px 80px; }
+  .content { max-width: 440px; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .icon-wrapper { width: 48px; height: 48px; border-radius: 100px; background: #e8e8ee; padding: 8px; display: flex; align-items: center; justify-content: center; color: #188554; }
+  .icon-wrapper svg { width: 24px; height: 24px; display: block; }
+  h1 { font-size: 19px; font-weight: 400; line-height: 28px; color: #363644; margin: 20px 0 4px; }
+  .subheading { font-size: 15px; font-weight: 400; line-height: 24px; color: #70707d; margin: 0; }
+  @media (max-width: 640px) { .nav { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+  <div class="page">
+    <nav class="nav" aria-label="Mercury">
+      {{template "mercury_logo.svg"}}
+    </nav>
+    <main class="main">
+      <div class="content">
+        <div class="icon-wrapper" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="5 12.75 10 17.5 19 7.5"></polyline>
+          </svg>
+        </div>
+        <h1>You're signed in</h1>
+        <p class="subheading">You can close this window and return to your terminal.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
