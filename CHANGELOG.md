@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.1 (2026-04-17)
+
+Full Changelog: [v0.4.0...v0.4.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.0...v0.4.1)
+
+### Bug Fixes
+
+* **cli:** polish help output and auth command descriptions ([c9c7f19](https://github.com/MercuryTechnologies/mercury-cli/commit/c9c7f1970290bfc4c3003542113981b52a0d2e9d))
+
+
+### Chores
+
+* **cli:** remove hat command ([5e8f20c](https://github.com/MercuryTechnologies/mercury-cli/commit/5e8f20c8d105b9e6557d2c2e00f9e1eb9dbc5fb2))
+
 ## 0.4.0 (2026-04-17)
 
 Full Changelog: [v0.3.3...v0.4.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.3...v0.4.0)
