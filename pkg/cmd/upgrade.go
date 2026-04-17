@@ -18,7 +18,7 @@ var upgrade = cli.Command{
 	Usage:    "Upgrade mercury to the latest release",
 	Category: "Utility",
 	Description: "Downloads and installs the latest mercury CLI release using the official install script.\n\n" +
-		"Honours the env vars MERCURY_INSTALL_DIR (to override the install location) and\n" +
+		"Honors the env vars MERCURY_INSTALL_DIR (to override the install location) and\n" +
 		"MERCURY_VERSION (to pin a specific version). The --version flag sets MERCURY_VERSION.",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{
