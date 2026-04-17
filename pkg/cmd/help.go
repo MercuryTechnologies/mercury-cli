@@ -137,6 +137,10 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 	}
 	groups := []group{}
 	groupMap := map[string]int{}
+	for _, cat := range []string{"Auth", "Resources", "Utility"} {
+		groupMap[cat] = len(groups)
+		groups = append(groups, group{title: cat})
+	}
 
 	sorted := make([]*cli.Command, len(cmd.Commands))
 	copy(sorted, cmd.Commands)
@@ -163,6 +167,9 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 	}
 
 	for _, g := range groups {
+		if len(g.commands) == 0 {
+			continue
+		}
 		sb.WriteString(boxSection(g.title, strings.Join(g.commands, "\n"), width))
 		sb.WriteString("\n")
 	}

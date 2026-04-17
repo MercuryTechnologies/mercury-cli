@@ -19,21 +19,21 @@ var (
 
 var authLogin = cli.Command{
 	Name:     "login",
-	Usage:    "Authenticate with Mercury via browser",
+	Usage:    "Sign in to Mercury in your browser",
 	Category: "Auth",
 	Action:   handleLogin,
 }
 
 var authLogout = cli.Command{
 	Name:     "logout",
-	Usage:    "Clear stored credentials",
+	Usage:    "Sign out and delete saved tokens",
 	Category: "Auth",
 	Action:   handleLogout,
 }
 
 var authStatus = cli.Command{
 	Name:     "status",
-	Usage:    "Show current authentication state",
+	Usage:    "Show Mercury sign-in status per environment",
 	Category: "Auth",
 	Action:   handleStatus,
 }

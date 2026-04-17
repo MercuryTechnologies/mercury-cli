@@ -98,7 +98,7 @@ func init() {
 			{
 				Name:     "customers",
 				Usage:    "Create, update, and manage customers",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&customersCreate,
@@ -111,7 +111,7 @@ func init() {
 			{
 				Name:     "invoices",
 				Usage:    "Create, update, and manage invoices",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&invoicesCreate,
@@ -134,7 +134,7 @@ func init() {
 			{
 				Name:     "cards",
 				Usage:    "List debit and credit cards for an account",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&cardsList,
@@ -143,7 +143,7 @@ func init() {
 			{
 				Name:     "categories",
 				Usage:    "List expense categories",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&categoriesList,
@@ -152,7 +152,7 @@ func init() {
 			{
 				Name:     "credit",
 				Usage:    "List credit accounts",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&creditList,
@@ -161,7 +161,7 @@ func init() {
 			{
 				Name:     "events",
 				Usage:    "List and inspect API events",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&eventsList,
@@ -171,7 +171,7 @@ func init() {
 			{
 				Name:     "org",
 				Usage:    "View organization details",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&orgGet,
@@ -180,7 +180,7 @@ func init() {
 			{
 				Name:     "payments",
 				Usage:    "Send money, request approvals, and transfer between accounts",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&paymentsCreate,
@@ -193,7 +193,7 @@ func init() {
 			{
 				Name:     "safes",
 				Usage:    "List and download SAFE agreements",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&safesList,
@@ -204,7 +204,7 @@ func init() {
 			{
 				Name:     "statements",
 				Usage:    "Download account statements as PDF",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&statementsDownload,
@@ -229,7 +229,7 @@ func init() {
 			{
 				Name:     "treasury",
 				Usage:    "View treasury accounts, statements, and transactions",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
@@ -239,7 +239,7 @@ func init() {
 			{
 				Name:     "users",
 				Usage:    "List and view organization team members",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&usersList,
@@ -249,7 +249,7 @@ func init() {
 			{
 				Name:     "webhooks",
 				Usage:    "Set up and manage webhook endpoints",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&webhooksCreate,
@@ -263,7 +263,7 @@ func init() {
 			{
 				Name:     "accounts",
         Usage:    "View accounts, cards, and transactions",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsList,
@@ -273,7 +273,7 @@ func init() {
 			{
 				Name:     "recipients",
 				Usage:    "Add, update, and manage payment recipients",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&recipientsCreate,
@@ -294,7 +294,7 @@ func init() {
 			{
 				Name:     "transactions",
 				Usage:    "Search, update, and attach files to transactions",
-				Category: "Resource",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&transactionsUpdate,
