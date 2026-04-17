@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.2 (2026-04-17)
+
+Full Changelog: [v0.3.1...v0.3.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.1...v0.3.2)
+
+### Bug Fixes
+
+* **auth:** style oauth success and error screens ([3b69d0f](https://github.com/MercuryTechnologies/mercury-cli/commit/3b69d0ff54b33404a4228192a168fede6dad729a))
+
 ## 0.3.1 (2026-04-16)
 
 Full Changelog: [v0.3.0...v0.3.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.3.0...v0.3.1)
