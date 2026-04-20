@@ -1,20 +1,46 @@
-# Mercury CLI
+<div align="center">
 
-The official CLI for the [Mercury REST API](https://docs.mercury.com/).
+⠀⠀⠀⠀⠀⠀⠀⣀⡤⠶⠒⠛⠛⠉⠛⠛⢶⡶⠤⣄⡀⠀⠀⠀⠀⠀⠀<br>
+⠀⠀⠀⠀⣠⠔⠋⠁⠀⣀⡤⢤⡴⠶⠦⡄⠀⠹⡄⠀⠉⠳⣄⠀⠀⠀⠀<br>
+⠀⠀⢠⠞⠁⠀⣠⠖⢻⡁⠀⢾⠀⠀⠀⣹⠀⠀⡿⠓⢤⡀⠀⠱⣄⠀⠀<br>
+⠀⣰⠋⠀⢠⠞⠁⠀⠈⢧⡀⠈⠓⠲⠶⠧⢄⣰⠃⠀⠀⠙⢆⠀⠈⢧⠀<br>
+⢠⣇⡴⠒⠛⠛⠓⠲⡴⠋⠙⢦⣤⣤⣄⡀⠀⠈⢳⠴⠒⠛⠙⢧⠀⠈⣇<br>
+⣾⠋⠀⣠⠴⠶⢤⡼⠁⠀⡴⠋⠀⠀⠀⠉⢳⣴⠃⠀⣠⠴⠶⢼⡆⠀⢹<br>
+⣿⠀⠀⡇⠀⠀⢀⡇⠀⢸⡇⠀⠀⠀⠀⠀⠀⡇⠀⢰⡇⠀⠀⢈⡇⠀⢸<br>
+⢿⠀⠀⣟⠒⠒⠋⠀⢀⡼⠳⣄⠀⠀⠀⢀⡼⠁⠀⡼⠙⠒⠒⠋⠀⢀⣾<br>
+⠘⡆⠀⠸⣦⣤⡤⠴⠻⣄⠀⠈⠉⠛⠛⠻⢤⣀⠞⠳⢤⣤⣤⡤⠖⢋⡏<br>
+⠀⠹⣄⠀⠘⢦⡀⠀⢀⡞⠙⢒⡶⠶⢤⡀⠀⠹⡄⠀⠀⣠⠎⠀⢀⡞⠀<br>
+⠀⠀⠘⢦⡀⠀⠙⠦⣼⡁⠀⢼⠀⠀⠀⣹⠀⠀⣷⡤⠞⠁⠀⡰⠋⠀⠀<br>
+⠀⠀⠀⠀⠙⠢⣄⡀⠈⢧⠀⠈⠓⠶⠶⠛⠚⠋⠁⠀⣀⠴⠋⠀⠀⠀⠀<br>
+⠀⠀⠀⠀⠀⠀⠀⠉⠓⠶⠷⣦⣤⣀⣠⣤⠤⠴⠒⠋⠁⠀⠀⠀⠀⠀⠀
 
-It is generated with [Stainless](https://www.stainless.com/).
+</div>
 
-<!-- x-release-please-start-version -->
+# Mercury CLI – Run your bank* from the terminal
 
-## Installation
+The official command-line interface for Mercury.
 
-### Installing with Go
+Manage your Mercury account from the terminal — cards, transactions, accounts, and more.
+
+## Install
+
+### curl
+
+```sh
+curl -sSf https://cli.mercury.com/install.sh | sh
+```
+
+### Install with Go
 
 To test or install the CLI locally, you need [Go](https://go.dev/doc/install) version 1.22 or later installed.
+
+<!-- x-release-please-start-version -->
 
 ```sh
 go install 'github.com/MercuryTechnologies/mercury-cli/cmd/mercury@latest'
 ```
+
+<!-- x-release-please-end -->
 
 Once you have run `go install`, the binary is placed in your Go bin directory:
 
@@ -28,9 +54,31 @@ If commands aren't found after installation, add the Go bin directory to your PA
 export PATH="$PATH:$(go env GOPATH)/bin"
 ```
 
-<!-- x-release-please-end -->
+## Quick start
 
-### Upgrading
+```sh
+mercury auth login
+mercury accounts list
+mercury payments create \
+  --account-id acc_xxx \
+  --recipient-id rcp_xxx \
+  --amount 5000 \
+  --payment-method ach \
+  --idempotency-key $(uuidgen)
+```
+
+## What you can do
+
+- View accounts and balances (`mercury accounts`)
+- Send payments and transfer funds between accounts (`mercury payments`)
+- List, search, and update transactions (`mercury transactions`)
+- Manage cards (`mercury cards`)
+- Manage recipients, customers, and invoices (`mercury recipients`, `mercury customers`, `mercury invoices`)
+- Download statements and SAFE documents (`mercury statements`, `mercury safes`)
+- Manage treasury accounts (`mercury treasury`)
+- Create and verify webhook endpoints (`mercury webhooks`)
+
+## Upgrading
 
 ```sh
 mercury upgrade                  # latest
@@ -74,34 +122,26 @@ For details about specific commands, use the `--help` flag.
 
 ### Environment variables
 
-| Environment variable | Description                                  | Required | Default value |
-| -------------------- | -------------------------------------------- | -------- | ------------- |
+| Environment variable | Description                                  |
+| -------------------- | -------------------------------------------- |
 | `MERCURY_API_KEY`    | Bearer token authentication for Mercury API. |
 
-Use your API token in the Authorization header:
-`Authorization: Bearer TOKEN`
+Create and manage API tokens here: https://app.mercury.com/settings/tokens
 
-Example:
-`Authorization: Bearer secret-token:mercury_<TOKEN>`
+Your Mercury API token should include the `secret-token:` prefix. Use it in the
+`Authorization` header:
 
-Your Mercury API token should include the 'secret-token:' prefix.
-Tokens can be generated from your Mercury dashboard settings.
-| no | `null` |
+```
+Authorization: Bearer secret-token:mercury_<TOKEN>
+```
+
+If `--api-key` or `MERCURY_API_KEY` is set, the API token takes precedence over
+any OAuth session from `mercury auth login`. Run `mercury auth status` to see
+which credential is active.
 
 ### Global flags
 
-- `--api-key` - Bearer token authentication for Mercury API.
-
-Use your API token in the Authorization header:
-`Authorization: Bearer TOKEN`
-
-Example:
-`Authorization: Bearer secret-token:mercury_<TOKEN>`
-
-Your Mercury API token should include the 'secret-token:' prefix.
-Tokens can be generated from your Mercury dashboard settings.
-(can also be set with `MERCURY_API_KEY` env var)
-
+- `--api-key` - Bearer token for Mercury API
 - `--help` - Show command line usage
 - `--debug` - Enable debug logging (includes HTTP request/response details)
 - `--version`, `-v` - Show the CLI version
@@ -151,22 +191,6 @@ base64-encoding). Note that absolute paths will begin with `@file://` or
 mercury <command> --arg @data://file.txt
 ```
 
-## Linking different Go SDK versions
+---
 
-You can link the CLI against a different version of the Mercury Go SDK
-for development purposes using the `./scripts/link` script.
-
-To link to a specific version from a repository (version can be a branch,
-git tag, or commit hash):
-
-```bash
-./scripts/link github.com/org/repo@version
-```
-
-To link to a local copy of the SDK:
-
-```bash
-./scripts/link ../path/to/mercury-go
-```
-
-If you run the link script without any arguments, it will default to `../mercury-go`.
+*Mercury is a fintech company, not an FDIC-insured bank. Banking services provided through Choice Financial Group and Column N.A., Members FDIC.
