@@ -77,6 +77,8 @@ mercury payments create \
 - Download statements and SAFE documents (`mercury statements`, `mercury safes`)
 - Manage treasury accounts (`mercury treasury`)
 - Create and verify webhook endpoints (`mercury webhooks`)
+- View organization details and team members (`mercury org`, `mercury users`)
+- Browse API events (`mercury events`)
 
 ## Upgrading
 
@@ -114,8 +116,7 @@ mercury [resource] <command> [flags...]
 
 ```sh
 mercury accounts get \
-  --api-key 'My API Key' \
-  --account-id REPLACE_ME
+  --account-id acc_xxx
 ```
 
 For details about specific commands, use the `--help` flag.
