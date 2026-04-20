@@ -11,9 +11,34 @@ package cmd
 // If Stainless renames a variable, the compiler will tell you here.
 
 import (
+	"reflect"
+
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 	"github.com/urfave/cli/v3"
 )
+
+// setFlagUsage overwrites the Usage text of a named flag on a command. It uses
+// reflection so one helper works across all generic `requestflag.Flag[T]`
+// instantiations without a per-type switch. Silently no-ops if the flag is
+// missing (e.g. renamed by a Stainless update) — run `go build ./...` after
+// codegen to catch any drift via the surrounding compile-checked references.
+func setFlagUsage(cmd *cli.Command, name, usage string) {
+	for _, f := range cmd.Flags {
+		names := f.Names()
+		if len(names) == 0 || names[0] != name {
+			continue
+		}
+		v := reflect.ValueOf(f)
+		if v.Kind() == reflect.Ptr {
+			v = v.Elem()
+		}
+		u := v.FieldByName("Usage")
+		if u.IsValid() && u.CanSet() && u.Kind() == reflect.String {
+			u.SetString(usage)
+		}
+		return
+	}
+}
 
 func init() {
 	// ── Top-level resource descriptions (shown in `mercury --help` box) ──────
@@ -108,6 +133,37 @@ func init() {
 	paymentsGet.Usage = "Get a payment approval request by ID"
 	paymentsRequest.Usage = "Request approval to send money"
 	paymentsTransfer.Usage = "Transfer funds between accounts in your organization"
+
+	// payments create flags
+	setFlagUsage(&paymentsCreate, "account-id", "Account to send from")
+	setFlagUsage(&paymentsCreate, "recipient-id", "Recipient to pay (use 'recipients list' to find)")
+	setFlagUsage(&paymentsCreate, "amount", "Amount in dollars, e.g. 5000.00")
+	setFlagUsage(&paymentsCreate, "payment-method", "One of: ach, check, domesticWire, internationalWire")
+	setFlagUsage(&paymentsCreate, "idempotency-key", "Unique key to prevent duplicate payments")
+	setFlagUsage(&paymentsCreate, "external-memo", "Memo visible to the recipient")
+	setFlagUsage(&paymentsCreate, "note", "Internal note (visible to your team only)")
+	setFlagUsage(&paymentsCreate, "purpose", "Wire transfer purpose (required for domesticWire)")
+
+	// payments request flags
+	setFlagUsage(&paymentsRequest, "account-id", "Account to send from")
+	setFlagUsage(&paymentsRequest, "recipient-id", "Recipient to pay (use 'recipients list' to find)")
+	setFlagUsage(&paymentsRequest, "amount", "Amount in dollars, e.g. 5000.00")
+	setFlagUsage(&paymentsRequest, "idempotency-key", "Unique key to prevent duplicate payments")
+	setFlagUsage(&paymentsRequest, "external-memo", "Memo visible to the recipient")
+	setFlagUsage(&paymentsRequest, "note", "Internal note (visible to your team only)")
+
+	// payments transfer flags
+	setFlagUsage(&paymentsTransfer, "source-account-id", "Account to transfer from")
+	setFlagUsage(&paymentsTransfer, "destination-account-id", "Account to transfer to")
+	setFlagUsage(&paymentsTransfer, "amount", "Amount in dollars, e.g. 5000.00")
+	setFlagUsage(&paymentsTransfer, "idempotency-key", "Unique key to prevent duplicate transfers")
+	setFlagUsage(&paymentsTransfer, "note", "Internal note")
+
+	// payments list flags
+	setFlagUsage(&paymentsList, "account-id", "Filter by account")
+	setFlagUsage(&paymentsList, "end-before", "Paginate backwards from this request ID")
+	setFlagUsage(&paymentsList, "start-after", "Paginate forwards from this request ID")
+	setFlagUsage(&paymentsList, "status", "Filter by status (pendingApproval, approved, rejected, cancelled)")
 
 	// recipients
 	recipientsList.Usage = "List payment recipients (supports pagination)"
