@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.3 (2026-04-20)
+
+Full Changelog: [v0.4.2...v0.4.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.2...v0.4.3)
+
+### Documentation
+
+* README rewrite ([13d1922](https://github.com/MercuryTechnologies/mercury-cli/commit/13d1922beefb46291665fd7493324fcb3bb0466b))
+* rewrite payments flag descriptions for clarity ([011c321](https://github.com/MercuryTechnologies/mercury-cli/commit/011c3218ac489d2f6d7dcbdc25e4b774dfac5879))
+
 ## 0.4.2 (2026-04-20)
 
 Full Changelog: [v0.4.1...v0.4.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.1...v0.4.2)
