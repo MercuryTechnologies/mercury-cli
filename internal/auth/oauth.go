@@ -24,10 +24,12 @@ const (
 	SandboxOAuthClientID    = "da707cac-28d3-4003-bbc6-c7384ca6557a"
 
 	// OAuth endpoints per environment.
-	ProductionAuthURL  = "https://oauth2.mercury.com/oauth2/auth"
-	ProductionTokenURL = "https://oauth2.mercury.com/oauth2/token"
-	SandboxAuthURL     = "https://oauth2-sandbox.mercury.com/oauth2/auth"
-	SandboxTokenURL    = "https://oauth2-sandbox.mercury.com/oauth2/token"
+	ProductionAuthURL   = "https://oauth2.mercury.com/oauth2/auth"
+	ProductionTokenURL  = "https://oauth2.mercury.com/oauth2/token"
+	ProductionRevokeURL = "https://oauth2.mercury.com/oauth2/revoke"
+	SandboxAuthURL      = "https://oauth2-sandbox.mercury.com/oauth2/auth"
+	SandboxTokenURL     = "https://oauth2-sandbox.mercury.com/oauth2/token"
+	SandboxRevokeURL    = "https://oauth2-sandbox.mercury.com/oauth2/revoke"
 
 	// OAuthScopes requested during login.
 	OAuthScopes = "offline_access openid read write"
@@ -35,9 +37,10 @@ const (
 
 // OAuthConfig holds the OAuth configuration for a specific environment.
 type OAuthConfig struct {
-	ClientID string
-	AuthURL  string
-	TokenURL string
+	ClientID  string
+	AuthURL   string
+	TokenURL  string
+	RevokeURL string
 }
 
 // DefaultOAuthConfig returns the OAuth configuration for the given environment.
@@ -45,15 +48,17 @@ func DefaultOAuthConfig(environment string) *OAuthConfig {
 	switch environment {
 	case "sandbox":
 		return &OAuthConfig{
-			ClientID: SandboxOAuthClientID,
-			AuthURL:  SandboxAuthURL,
-			TokenURL: SandboxTokenURL,
+			ClientID:  SandboxOAuthClientID,
+			AuthURL:   SandboxAuthURL,
+			TokenURL:  SandboxTokenURL,
+			RevokeURL: SandboxRevokeURL,
 		}
 	default:
 		return &OAuthConfig{
-			ClientID: ProductionOAuthClientID,
-			AuthURL:  ProductionAuthURL,
-			TokenURL: ProductionTokenURL,
+			ClientID:  ProductionOAuthClientID,
+			AuthURL:   ProductionAuthURL,
+			TokenURL:  ProductionTokenURL,
+			RevokeURL: ProductionRevokeURL,
 		}
 	}
 }
@@ -152,6 +157,32 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 
 	// Exchange authorization code for tokens.
 	return exchangeCode(config, result.code, redirectURI, verifier)
+}
+
+// Revoke revokes a token per RFC 7009. Revoking a refresh token cascades to
+// access tokens derived from it, so callers should prefer the refresh token.
+func Revoke(config *OAuthConfig, token, tokenTypeHint string) error {
+	data := url.Values{
+		"token":     {token},
+		"client_id": {config.ClientID},
+	}
+	if tokenTypeHint != "" {
+		data.Set("token_type_hint", tokenTypeHint)
+	}
+
+	resp, err := http.Post(config.RevokeURL, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+	if err != nil {
+		return fmt.Errorf("revoke request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Per RFC 7009 §2.2, an unknown/expired token is already-revoked and
+	// should be treated as success.
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	}
+	body, _ := io.ReadAll(resp.Body)
+	return fmt.Errorf("revoke returned %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
 }
 
 // RefreshToken exchanges a refresh token for new tokens.
