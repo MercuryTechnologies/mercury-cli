@@ -73,9 +73,7 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 		opts = append(opts, option.WithBaseURL(baseURL))
 	}
 
-	// Set environment if the --environment flag is provided. Value is already
-	// validated by the flag's Validator (see cmd.go), so we only need to handle
-	// the recognized cases here.
+	// Set environment if the --environment flag is provided
 	if environment := cmd.String("environment"); environment != "" {
 		switch environment {
 		case "production":
