@@ -30,6 +30,8 @@
           pname = "mercury";
           inherit version;
           src = self;
+          # When go.sum changes: set to pkgs.lib.fakeHash, run `nix build`,
+          # copy the sha256 from the error, paste it here.
           vendorHash = "sha256-EsuUFFNjBpOuas+DUmO83wGLvW5F/MgwFQXSspb+QVU=";
           subPackages = [ "cmd/mercury" ];
           env.CGO_ENABLED = "0";
