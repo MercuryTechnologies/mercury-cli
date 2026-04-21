@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.2 (2026-04-21)
+
+Full Changelog: [v0.5.1...v0.5.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.1...v0.5.2)
+
+### Chores
+
+* **cli:** use `ShowJSONOpts` as argument to `formatJSON` instead of many positionals ([bb8b823](https://github.com/MercuryTechnologies/mercury-cli/commit/bb8b823739e6b09ad50d381ac37bc906c882588f))
+* **internal:** version bump ([314e628](https://github.com/MercuryTechnologies/mercury-cli/commit/314e6281aebe96d9fe3663c70b79fe6be91c6d0f))
+
 ## 0.5.1 (2026-04-21)
 
 Full Changelog: [v0.5.0...v0.5.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.0...v0.5.1)
