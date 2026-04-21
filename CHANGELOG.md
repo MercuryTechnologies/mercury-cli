@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 (2026-04-21)
+
+Full Changelog: [v0.5.4...v0.6.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.4...v0.6.0)
+
+### Features
+
+* **auth:** store OAuth tokens in system keyring ([#35](https://github.com/MercuryTechnologies/mercury-cli/issues/35)) ([f870af5](https://github.com/MercuryTechnologies/mercury-cli/commit/f870af537ec82d96759ab6efe729f7de43cb2133))
+
 ## 0.5.4 (2026-04-21)
 
 Full Changelog: [v0.5.3...v0.5.4](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.3...v0.5.4)
