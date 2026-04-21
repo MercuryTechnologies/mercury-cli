@@ -152,6 +152,43 @@ func TestValidateBaseURL(t *testing.T) {
 	})
 }
 
+func TestValidateEnvironment(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Valid", func(t *testing.T) {
+		t.Parallel()
+
+		require.NoError(t, ValidateEnvironment("production", "--environment"))
+		require.NoError(t, ValidateEnvironment("sandbox", "--environment"))
+	})
+
+
+	t.Run("Empty", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("", "--environment")
+		require.Error(t, err)
+	})
+
+	t.Run("Unknown", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("xyz", "--environment")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "--environment")
+		assert.Contains(t, err.Error(), "xyz")
+		assert.Contains(t, err.Error(), "production")
+		assert.Contains(t, err.Error(), "sandbox")
+	})
+
+	t.Run("CaseMismatch", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("Production", "--environment")
+		require.Error(t, err)
+	})
+}
+
 func TestFormatJSON(t *testing.T) {
 	t.Parallel()
 
