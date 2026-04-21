@@ -162,7 +162,7 @@ func RefreshToken(config *OAuthConfig, refreshToken string) (*TokenSet, error) {
 		"client_id":     {config.ClientID},
 	}
 
-	return doTokenRequest(config.TokenURL, data)
+	return doTokenRequest(config.TokenURL, data, refreshToken)
 }
 
 // generatePKCE creates a PKCE code verifier and its S256 challenge.
@@ -214,7 +214,7 @@ func exchangeCode(config *OAuthConfig, code, redirectURI, verifier string) (*Tok
 		"code_verifier": {verifier},
 	}
 
-	return doTokenRequest(config.TokenURL, data)
+	return doTokenRequest(config.TokenURL, data, "")
 }
 
 // tokenResponse is the raw response from the token endpoint.
@@ -228,7 +228,7 @@ type tokenResponse struct {
 }
 
 // doTokenRequest makes a POST to the token endpoint and parses the response.
-func doTokenRequest(tokenURL string, data url.Values) (*TokenSet, error) {
+func doTokenRequest(tokenURL string, data url.Values, fallbackRefreshToken string) (*TokenSet, error) {
 	resp, err := http.Post(tokenURL, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
 	if err != nil {
 		return nil, fmt.Errorf("token request failed: %w", err)
@@ -255,9 +255,14 @@ func doTokenRequest(tokenURL string, data url.Values) (*TokenSet, error) {
 
 	expiry := time.Now().Add(time.Duration(tok.ExpiresIn) * time.Second)
 
+	refreshToken := tok.RefreshToken
+	if refreshToken == "" {
+		refreshToken = fallbackRefreshToken
+	}
+
 	return &TokenSet{
 		AccessToken:  tok.AccessToken,
-		RefreshToken: tok.RefreshToken,
+		RefreshToken: refreshToken,
 		TokenType:    tok.TokenType,
 		Expiry:       expiry,
 	}, nil
