@@ -78,3 +78,19 @@ func TestColorEmpty(t *testing.T) {
 		t.Errorf("expected empty output for nil input, got %q", got)
 	}
 }
+
+func TestColorPreservesTrailingNewline(t *testing.T) {
+	src := []byte("---\nkey: value\n")
+	got := Color(src)
+	if len(got) == 0 || got[len(got)-1] != '\n' {
+		t.Errorf("expected output to end with newline, got %q", got)
+	}
+}
+
+func TestColorNoSpuriousTrailingNewline(t *testing.T) {
+	src := []byte("---\nkey: value")
+	got := Color(src)
+	if len(got) > 0 && got[len(got)-1] == '\n' {
+		t.Errorf("did not expect trailing newline when input had none, got %q", got)
+	}
+}

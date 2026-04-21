@@ -32,5 +32,12 @@ func Color(src []byte) []byte {
 		Number: func() *printer.Property { return prop(ansiYellow) },
 		Bool:   func() *printer.Property { return prop(ansiCyan) },
 	}
-	return []byte(p.PrintTokens(lexer.Tokenize(string(src))))
+	out := []byte(p.PrintTokens(lexer.Tokenize(string(src))))
+	// goccy's printer drops the trailing newline of its input.
+	// We'd prefer to preserve it, since callers concatenate multiple
+	// YAML docs and rely on newline separation between them.
+	if len(src) > 0 && src[len(src)-1] == '\n' && (len(out) == 0 || out[len(out)-1] != '\n') {
+		out = append(out, '\n')
+	}
+	return out
 }
