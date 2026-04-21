@@ -285,8 +285,8 @@ func TestShowJSONIterator(t *testing.T) {
 			{"id": "def", "name": "second"},
 		}}
 		captured := captureShowJSONIterator(t, iter, "yaml", "", -1)
-		// Each doc prefixed with "---" so the concatenation is a valid
-		// multi-document YAML stream (yaml.safe_load_all).
+		// Ensure each doc is prefixed with "---" so the concatenation is a valid
+		// multi-document YAML stream.
 		assert.Equal(t,
 			"---\nid: abc\nname: first\n"+
 				"---\nid: def\nname: second\n",
