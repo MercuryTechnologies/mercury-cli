@@ -93,21 +93,21 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		if errMsg := r.URL.Query().Get("error"); errMsg != "" {
 			desc := r.URL.Query().Get("error_description")
-			title, detail := friendlyOAuthError(errMsg, desc)
-			renderError(w, title, detail)
+			title, detail, link := friendlyOAuthError(errMsg, desc)
+			renderError(w, title, detail, link)
 			resultCh <- callbackResult{err: fmt.Errorf("OAuth error: %s - %s", errMsg, desc)}
 			return
 		}
 
 		if returnedState := r.URL.Query().Get("state"); returnedState != state {
-			renderError(w, "That link didn't look right", "For security, the sign-in link couldn't be verified. Please try again from your terminal.")
+			renderError(w, "That link didn't look right", "For security, the sign-in link couldn't be verified. Please try again from your terminal.", nil)
 			resultCh <- callbackResult{err: fmt.Errorf("state mismatch")}
 			return
 		}
 
 		code := r.URL.Query().Get("code")
 		if code == "" {
-			renderError(w, "Something went wrong", "We didn't receive a sign-in code from Mercury. Please try again from your terminal.")
+			renderError(w, "Something went wrong", "We didn't receive a sign-in code from Mercury. Please try again from your terminal.", nil)
 			resultCh <- callbackResult{err: fmt.Errorf("no authorization code in callback")}
 			return
 		}
@@ -165,15 +165,16 @@ func RefreshToken(config *OAuthConfig, refreshToken string) (*TokenSet, error) {
 // friendlyOAuthError maps OAuth error codes and descriptions to user-facing
 // copy for the callback error page. Unknown errors fall back to the provider's
 // description.
-func friendlyOAuthError(errCode, desc string) (title, detail string) {
+func friendlyOAuthError(errCode, desc string) (title, detail string, link *errorLink) {
 	if strings.Contains(strings.ToLower(desc), "scope is not allowed") {
 		return "Your Mercury account doesn't have API access",
-			"This account isn't permitted to use the Mercury API. Sign in with an admin account, or run `mercury login --environment sandbox` to explore the CLI with a test account."
+			"Employee accounts can't use the Mercury API. Ask an admin on your team to change your role to Admin or Custom User in Mercury's Team Settings, then try again.",
+			&errorLink{URL: "https://app.mercury.com/settings/users", Text: "Open Team Settings"}
 	}
 	if desc != "" {
-		return "Sign-in didn't complete", desc
+		return "Sign-in didn't complete", desc, nil
 	}
-	return "Sign-in didn't complete", fmt.Sprintf("Mercury returned %q. Please try again from your terminal.", errCode)
+	return "Sign-in didn't complete", fmt.Sprintf("Mercury returned %q. Please try again from your terminal.", errCode), nil
 }
 
 // generatePKCE creates a PKCE code verifier and its S256 challenge.

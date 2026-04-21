@@ -19,13 +19,19 @@ func renderSuccess(w http.ResponseWriter) {
 	}
 }
 
-func renderError(w http.ResponseWriter, title, detail string) {
+func renderError(w http.ResponseWriter, title, detail string, link *errorLink) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	data := struct {
 		Title  string
 		Detail string
-	}{Title: title, Detail: detail}
+		Link   *errorLink
+	}{Title: title, Detail: detail, Link: link}
 	if err := callbackTemplates.ExecuteTemplate(w, "error.html", data); err != nil {
 		fmt.Fprintf(w, "%s. %s", title, detail)
 	}
+}
+
+type errorLink struct {
+	URL  string
+	Text string
 }
