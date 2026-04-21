@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 
@@ -30,6 +31,8 @@ import (
 
 var OutputFormats = []string{"auto", "explore", "json", "jsonl", "pretty", "raw", "yaml"}
 
+var Environments = []string{"production", "sandbox"}
+
 const noResultsMessage = "No results."
 
 // ValidateBaseURL checks that a base URL is correctly prefixed with a protocol scheme and produces a better
@@ -39,6 +42,14 @@ func ValidateBaseURL(value, source string) error {
 		return fmt.Errorf("%s %q is missing a scheme (expected http:// or https://)", source, value)
 	}
 	return nil
+}
+
+// ValidateEnvironment checks that a value is a recognized Mercury API environment.
+func ValidateEnvironment(value, source string) error {
+	if slices.Contains(Environments, value) {
+		return nil
+	}
+	return fmt.Errorf("%s %q is not a valid environment (expected one of: %s)", source, value, strings.Join(Environments, ", "))
 }
 
 func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
@@ -69,8 +80,6 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 			opts = append(opts, option.WithEnvironmentProduction())
 		case "sandbox":
 			opts = append(opts, option.WithEnvironmentSandbox())
-		default:
-			log.Fatalf("Unknown environment: %s. Valid environments are %s", environment, "production, sandbox")
 		}
 	}
 
@@ -369,13 +378,15 @@ func formatJSON(res gjson.Result, opts ShowJSONOpts) ([]byte, error) {
 	case "raw":
 		return []byte(res.Raw + "\n"), nil
 	case "yaml":
-		input := strings.NewReader(res.Raw)
+		// Prefix every document with "---" so concatenated outputs (e.g. list
+		// commands streaming one item at a time) form a valid multi-document
+		// YAML stream.
 		var yaml strings.Builder
-		if err := json2yaml.Convert(&yaml, input); err != nil {
+		yaml.WriteString("---\n")
+		if err := json2yaml.Convert(&yaml, strings.NewReader(res.Raw)); err != nil {
 			return nil, err
 		}
-		_, err := opts.Stdout.Write([]byte(yaml.String()))
-		return nil, err
+		return []byte(yaml.String()), nil
 	default:
 		return nil, fmt.Errorf("Invalid format: %s, valid formats are: %s", opts.Format, strings.Join(OutputFormats, ", "))
 	}

@@ -152,6 +152,43 @@ func TestValidateBaseURL(t *testing.T) {
 	})
 }
 
+func TestValidateEnvironment(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Valid", func(t *testing.T) {
+		t.Parallel()
+
+		require.NoError(t, ValidateEnvironment("production", "--environment"))
+		require.NoError(t, ValidateEnvironment("sandbox", "--environment"))
+	})
+
+
+	t.Run("Empty", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("", "--environment")
+		require.Error(t, err)
+	})
+
+	t.Run("Unknown", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("xyz", "--environment")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "--environment")
+		assert.Contains(t, err.Error(), "xyz")
+		assert.Contains(t, err.Error(), "production")
+		assert.Contains(t, err.Error(), "sandbox")
+	})
+
+	t.Run("CaseMismatch", func(t *testing.T) {
+		t.Parallel()
+
+		err := ValidateEnvironment("Production", "--environment")
+		require.Error(t, err)
+	})
+}
+
 func TestFormatJSON(t *testing.T) {
 	t.Parallel()
 
@@ -220,6 +257,24 @@ func TestFormatJSON(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, `{"a":1}`+"\n", string(formatted))
 	})
+
+	t.Run("YAML", func(t *testing.T) {
+		t.Parallel()
+
+		res := gjson.Parse(`{"id":"abc","name":"first"}`)
+		formatted, err := formatJSON(res, ShowJSONOpts{Format: "yaml", Stdout: os.Stdout})
+		require.NoError(t, err)
+		require.Equal(t, "---\nid: abc\nname: first\n", string(formatted))
+	})
+
+	t.Run("YAMLWithTransform", func(t *testing.T) {
+		t.Parallel()
+
+		res := gjson.Parse(`{"data":{"items":[1,2,3]}}`)
+		formatted, err := formatJSON(res, ShowJSONOpts{Format: "yaml", Stdout: os.Stdout, Transform: "data.items"})
+		require.NoError(t, err)
+		require.Equal(t, "---\n- 1\n- 2\n- 3\n", string(formatted))
+	})
 }
 
 func TestShowJSONIterator(t *testing.T) {
@@ -257,6 +312,33 @@ func TestShowJSONIterator(t *testing.T) {
 		}}
 		captured := captureShowJSONIterator(t, iter, "raw", "", 2)
 		assert.Equal(t, `{"id":"abc"}`+"\n"+`{"id":"def"}`+"\n", captured)
+	})
+
+	t.Run("YAMLMultipleItems", func(t *testing.T) {
+		t.Parallel()
+
+		iter := &sliceIterator[map[string]any]{items: []map[string]any{
+			{"id": "abc", "name": "first"},
+			{"id": "def", "name": "second"},
+		}}
+		captured := captureShowJSONIterator(t, iter, "yaml", "", -1)
+		// Ensure each doc is prefixed with "---" so the concatenation is a valid
+		// multi-document YAML stream.
+		assert.Equal(t,
+			"---\nid: abc\nname: first\n"+
+				"---\nid: def\nname: second\n",
+			captured)
+	})
+
+	t.Run("YAMLWithTransform", func(t *testing.T) {
+		t.Parallel()
+
+		iter := &sliceIterator[map[string]any]{items: []map[string]any{
+			{"id": "abc", "name": "first"},
+			{"id": "def", "name": "second"},
+		}}
+		captured := captureShowJSONIterator(t, iter, "yaml", "id", -1)
+		assert.Equal(t, "---\nabc\n---\ndef\n", captured)
 	})
 }
 
