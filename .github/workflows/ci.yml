@@ -114,3 +114,44 @@ jobs:
 
       - name: Run tests
         run: ./scripts/test
+
+  nix:
+    timeout-minutes: 15
+    name: nix build
+    runs-on: ${{ github.repository == 'stainless-sdks/mercury-cli' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Build flake
+        id: build
+        run: |
+          set -o pipefail
+          nix build .#default --print-build-logs 2>&1 | tee build.log
+
+      - name: Surface vendorHash fix on mismatch
+        if: failure() && steps.build.outcome == 'failure'
+        run: |
+          if ! grep -q "hash mismatch in fixed-output derivation" build.log; then
+            exit 0
+          fi
+          NEW_HASH=$(grep -oE 'got:[[:space:]]+sha256-[A-Za-z0-9+/=]+' build.log | head -1 | awk '{print $NF}')
+          {
+            echo "## :warning: Flake \`vendorHash\` is stale"
+            echo ""
+            echo "Go dependencies changed (likely a \`mercury-go\` bump from Stainless) but \`flake.nix\`'s \`vendorHash\` was not updated."
+            echo ""
+            echo "**Fix:** replace the \`vendorHash\` line in \`flake.nix\` with:"
+            echo ""
+            echo '```nix'
+            echo "vendorHash = \"${NEW_HASH}\";"
+            echo '```'
+            echo ""
+            echo "Commit the change and push; CI will re-run."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error file=flake.nix::vendorHash is stale — update to ${NEW_HASH}"

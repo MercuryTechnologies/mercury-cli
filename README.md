@@ -30,6 +30,22 @@ Manage your Mercury account from the terminal — cards, transactions, accounts,
 curl -sSf https://cli.mercury.com/install.sh | sh
 ```
 
+### Nix
+
+Run without installing:
+
+```sh
+nix run github:MercuryTechnologies/mercury-cli -- accounts list
+```
+
+Install into your profile:
+
+```sh
+nix profile install github:MercuryTechnologies/mercury-cli
+```
+
+Requires [Nix](https://nixos.org/download) (or [Lix](https://lix.systems/install/)) with flakes enabled.
+
 ### Install with Go
 
 To test or install the CLI locally, you need [Go](https://go.dev/doc/install) version 1.22 or later installed.
@@ -57,7 +73,7 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 ## Quick start
 
 ```sh
-mercury auth login
+mercury login
 mercury accounts list
 mercury payments create \
   --account-id acc_xxx \
@@ -136,7 +152,7 @@ Authorization: Bearer secret-token:mercury_<TOKEN>
 ```
 
 If `--api-key` or `MERCURY_API_KEY` is set, the API token takes precedence over
-any OAuth session from `mercury auth login`. Run `mercury auth status` to see
+any OAuth session from `mercury login`. Run `mercury status` to see
 which credential is active.
 
 ### Global flags
