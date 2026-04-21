@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2026-04-21)
+
+Full Changelog: [v0.4.3...v0.5.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.3...v0.5.0)
+
+### Features
+
+* add nix flake to enable `nix run github:MercuryTechnologies/mercury-cli` ([692baee](https://github.com/MercuryTechnologies/mercury-cli/commit/692baee1a9a96606426bbb685d5fcfed34b8f583))
+
 ## 0.4.3 (2026-04-20)
 
 Full Changelog: [v0.4.2...v0.4.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.2...v0.4.3)
