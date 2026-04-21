@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 (2026-04-21)
+
+Full Changelog: [v0.5.0...v0.5.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.0...v0.5.1)
+
 ## 0.5.0 (2026-04-21)
 
 Full Changelog: [v0.4.3...v0.5.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.4.3...v0.5.0)
