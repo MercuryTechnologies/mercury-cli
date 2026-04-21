@@ -10,39 +10,31 @@ import (
 // Returns ("", nil) if no credentials are stored (no-op — the API will return 401).
 // Automatically refreshes expired tokens when a refresh token is available.
 func GetToken(environment string) (string, error) {
-	creds, err := LoadCredentials()
+	tokens, err := LoadToken(environment)
 	if err != nil {
 		return "", fmt.Errorf("loading credentials: %w", err)
 	}
-
-	tokens, ok := creds[environment]
-	if !ok || tokens == nil {
+	if tokens == nil {
 		return "", nil
 	}
 
-	// Token is still valid.
 	if !tokens.IsExpired() {
 		return tokens.AccessToken, nil
 	}
 
-	// Token is expired — try to refresh.
 	if tokens.RefreshToken == "" {
-		// No refresh token; clear stale credentials.
-		_ = ClearCredentials(environment)
+		_ = ClearToken(environment)
 		return "", fmt.Errorf("session expired, please run 'mercury login' to re-authenticate")
 	}
 
 	config := DefaultOAuthConfig(environment)
 	newTokens, err := RefreshToken(config, tokens.RefreshToken)
 	if err != nil {
-		// Refresh failed; clear stale credentials.
-		_ = ClearCredentials(environment)
+		_ = ClearToken(environment)
 		return "", fmt.Errorf("session expired (refresh failed: %v), please run 'mercury login' to re-authenticate", err)
 	}
 
-	// Save the refreshed tokens.
-	creds[environment] = newTokens
-	if err := SaveCredentials(creds); err != nil {
+	if _, err := SaveToken(environment, newTokens); err != nil {
 		// Non-fatal — we still have the new token in memory.
 		fmt.Printf("Warning: could not save refreshed credentials: %v\n", err)
 	}
