@@ -76,6 +76,19 @@ func handleLogin(ctx context.Context, cmd *cli.Command) error {
 func handleLogout(ctx context.Context, cmd *cli.Command) error {
 	environment := auth.ResolveEnvironment(cmd)
 
+	if tokens, _ := auth.LoadToken(environment); tokens != nil {
+		config := auth.DefaultOAuthConfig(environment)
+		token, hint := tokens.RefreshToken, "refresh_token"
+		if token == "" {
+			token, hint = tokens.AccessToken, "access_token"
+		}
+		if token != "" {
+			if err := auth.Revoke(ctx, config, token, hint); err != nil && cmd.Bool("debug") {
+				fmt.Fprintln(os.Stderr, authDim.Render("  Warning: token revocation failed: "+err.Error()))
+			}
+		}
+	}
+
 	if err := auth.ClearToken(environment); err != nil {
 		return fmt.Errorf("clearing credentials: %w", err)
 	}
