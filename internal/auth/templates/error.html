@@ -25,6 +25,9 @@
   h1 { font-size: 19px; font-weight: 400; line-height: 28px; color: #363644; margin: 20px 0 4px; }
   .subheading { font-size: 15px; font-weight: 400; line-height: 24px; color: #70707d; margin: 0; }
   .subheading + .subheading { margin-top: 16px; }
+  .cta { margin-top: 20px; font-size: 15px; line-height: 24px; }
+  .cta a { color: #363644; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+  .cta a:hover { color: #b0175f; }
   @media (max-width: 640px) { .nav { padding: 24px 20px; } }
 </style>
 </head>
@@ -43,6 +46,7 @@
         </div>
         <h1>{{.Title}}</h1>
         <p class="subheading">{{.Detail}}</p>
+        {{if .Link}}<p class="cta"><a href="{{.Link.URL}}">{{.Link.Text}}</a></p>{{end}}
       </div>
     </main>
   </div>

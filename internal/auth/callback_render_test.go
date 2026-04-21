@@ -57,7 +57,7 @@ func TestRenderError(t *testing.T) {
 			t.Parallel()
 
 			w := httptest.NewRecorder()
-			renderError(w, tc.title, tc.detail)
+			renderError(w, tc.title, tc.detail, nil)
 
 			resp := w.Result()
 			assert.Equal(t, 200, resp.StatusCode)
@@ -67,15 +67,30 @@ func TestRenderError(t *testing.T) {
 			assert.Contains(t, body, tc.title)
 			assert.Contains(t, body, tc.detail)
 			assert.Contains(t, body, `aria-label="Mercury"`)
+			assert.NotContains(t, body, `class="cta"`, "no link should be rendered when link is nil")
 		})
 	}
+}
+
+func TestRenderError_WithLink(t *testing.T) {
+	t.Parallel()
+
+	w := httptest.NewRecorder()
+	renderError(w, "Title", "Detail.", &errorLink{
+		URL:  "https://app.mercury.com/settings/users",
+		Text: "Open Team Settings",
+	})
+
+	body := w.Body.String()
+	assert.Contains(t, body, `href="https://app.mercury.com/settings/users"`)
+	assert.Contains(t, body, "Open Team Settings")
 }
 
 func TestRenderError_EscapesDetail(t *testing.T) {
 	t.Parallel()
 
 	w := httptest.NewRecorder()
-	renderError(w, "Bad", `<script>alert("xss")</script>`)
+	renderError(w, "Bad", `<script>alert("xss")</script>`, nil)
 
 	body := w.Body.String()
 	assert.NotContains(t, body, `<script>alert("xss")</script>`)

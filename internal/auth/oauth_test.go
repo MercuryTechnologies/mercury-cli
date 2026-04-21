@@ -43,26 +43,32 @@ func TestRefreshToken_PreservesRefreshTokenWhenServerOmitsIt(t *testing.T) {
 func TestFriendlyOAuthError(t *testing.T) {
 	t.Parallel()
 
+	scopeDetail := "Employee accounts can't use the Mercury API. Ask an admin on your team to change your role to Admin or Custom User in Mercury's Team Settings, then try again."
+	scopeLink := &errorLink{URL: "https://app.mercury.com/settings/users", Text: "Open Team Settings"}
+
 	cases := []struct {
 		name       string
 		errCode    string
 		desc       string
 		wantTitle  string
 		wantDetail string
+		wantLink   *errorLink
 	}{
 		{
 			name:       "scope not allowed maps to API access message",
 			errCode:    "login_request_denied",
 			desc:       "The requested scope is not allowed",
 			wantTitle:  "Your Mercury account doesn't have API access",
-			wantDetail: "This account isn't permitted to use the Mercury API. Sign in with an admin account, or run `mercury login --environment sandbox` to explore the CLI with a test account.",
+			wantDetail: scopeDetail,
+			wantLink:   scopeLink,
 		},
 		{
 			name:       "scope not allowed is case-insensitive",
 			errCode:    "login_request_denied",
 			desc:       "the requested SCOPE IS NOT ALLOWED here",
 			wantTitle:  "Your Mercury account doesn't have API access",
-			wantDetail: "This account isn't permitted to use the Mercury API. Sign in with an admin account, or run `mercury login --environment sandbox` to explore the CLI with a test account.",
+			wantDetail: scopeDetail,
+			wantLink:   scopeLink,
 		},
 		{
 			name:       "unknown error with description falls through",
@@ -70,6 +76,7 @@ func TestFriendlyOAuthError(t *testing.T) {
 			desc:       "User denied consent.",
 			wantTitle:  "Sign-in didn't complete",
 			wantDetail: "User denied consent.",
+			wantLink:   nil,
 		},
 		{
 			name:       "unknown error with no description shows code",
@@ -77,6 +84,7 @@ func TestFriendlyOAuthError(t *testing.T) {
 			desc:       "",
 			wantTitle:  "Sign-in didn't complete",
 			wantDetail: `Mercury returned "server_error". Please try again from your terminal.`,
+			wantLink:   nil,
 		},
 	}
 
@@ -85,9 +93,10 @@ func TestFriendlyOAuthError(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			title, detail := friendlyOAuthError(tc.errCode, tc.desc)
+			title, detail, link := friendlyOAuthError(tc.errCode, tc.desc)
 			assert.Equal(t, tc.wantTitle, title)
 			assert.Equal(t, tc.wantDetail, detail)
+			assert.Equal(t, tc.wantLink, link)
 		})
 	}
 }
