@@ -73,7 +73,7 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 ## Quick start
 
 ```sh
-mercury auth login
+mercury login
 mercury accounts list
 mercury payments create \
   --account-id acc_xxx \
@@ -152,7 +152,7 @@ Authorization: Bearer secret-token:mercury_<TOKEN>
 ```
 
 If `--api-key` or `MERCURY_API_KEY` is set, the API token takes precedence over
-any OAuth session from `mercury auth login`. Run `mercury auth status` to see
+any OAuth session from `mercury login`. Run `mercury status` to see
 which credential is active.
 
 ### Global flags
