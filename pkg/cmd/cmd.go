@@ -92,6 +92,9 @@ func init() {
 			&cli.StringFlag{
 				Name:  "environment",
 				Usage: "API environment: sandbox or production",
+				Validator: func(environment string) error {
+					return ValidateEnvironment(environment, "--environment")
+				},
 			},
 		},
 		Commands: []*cli.Command{

@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"slices"
 	"strings"
 	"syscall"
 
@@ -30,6 +31,8 @@ import (
 
 var OutputFormats = []string{"auto", "explore", "json", "jsonl", "pretty", "raw", "yaml"}
 
+var Environments = []string{"production", "sandbox"}
+
 const noResultsMessage = "No results."
 
 // ValidateBaseURL checks that a base URL is correctly prefixed with a protocol scheme and produces a better
@@ -39,6 +42,14 @@ func ValidateBaseURL(value, source string) error {
 		return fmt.Errorf("%s %q is missing a scheme (expected http:// or https://)", source, value)
 	}
 	return nil
+}
+
+// ValidateEnvironment checks that a value is a recognized Mercury API environment.
+func ValidateEnvironment(value, source string) error {
+	if slices.Contains(Environments, value) {
+		return nil
+	}
+	return fmt.Errorf("%s %q is not a valid environment (expected one of: %s)", source, value, strings.Join(Environments, ", "))
 }
 
 func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
@@ -62,15 +73,15 @@ func getDefaultRequestOptions(cmd *cli.Command) []option.RequestOption {
 		opts = append(opts, option.WithBaseURL(baseURL))
 	}
 
-	// Set environment if the --environment flag is provided
+	// Set environment if the --environment flag is provided. Value is already
+	// validated by the flag's Validator (see cmd.go), so we only need to handle
+	// the recognized cases here.
 	if environment := cmd.String("environment"); environment != "" {
 		switch environment {
 		case "production":
 			opts = append(opts, option.WithEnvironmentProduction())
 		case "sandbox":
 			opts = append(opts, option.WithEnvironmentSandbox())
-		default:
-			log.Fatalf("Unknown environment: %s. Valid environments are %s", environment, "production, sandbox")
 		}
 	}
 
