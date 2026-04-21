@@ -71,6 +71,10 @@ func SaveToken(environment string, tokens *TokenSet) (insecure bool, err error) 
 		return false, nil
 	}
 
+	// Keyring write failed — best-effort purge of any prior keyring entry so
+	// a successful keyringGet later can't shadow the fresh fallback value.
+	_ = keyringDelete(keyringService, environment)
+
 	file, err := loadCredentialsFile()
 	if err != nil {
 		return false, fmt.Errorf("reading fallback credentials: %w", err)
@@ -83,14 +87,18 @@ func SaveToken(environment string, tokens *TokenSet) (insecure bool, err error) 
 }
 
 // ClearToken removes stored tokens for the given environment from both the
-// keyring and the plaintext fallback. Missing entries are not an error, and
-// keyring failures are tolerated — the file cleanup still runs.
+// keyring and the plaintext fallback. A missing keyring entry is not an
+// error; other keyring failures propagate so a failed logout does not look
+// successful while the tokens remain readable on the next LoadToken.
 func ClearToken(environment string) error {
-	_ = keyringDelete(keyringService, environment)
-	if err := clearCredentialsFileEntry(environment); err != nil {
-		return fmt.Errorf("clearing fallback credentials: %w", err)
+	var errs []error
+	if err := keyringDelete(keyringService, environment); err != nil && !errors.Is(err, keyring.ErrNotFound) {
+		errs = append(errs, fmt.Errorf("clearing keyring credentials: %w", err))
 	}
-	return nil
+	if err := clearCredentialsFileEntry(environment); err != nil {
+		errs = append(errs, fmt.Errorf("clearing fallback credentials: %w", err))
+	}
+	return errors.Join(errs...)
 }
 
 // Timeouts protect against Secret Service / kwalletd hangs on Linux.
