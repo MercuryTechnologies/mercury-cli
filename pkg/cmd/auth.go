@@ -15,6 +15,7 @@ var (
 	authDim   = lipgloss.NewStyle().Foreground(colorDim)
 	authValue = lipgloss.NewStyle().Foreground(colorLight)
 	authRule  = lipgloss.NewStyle().Foreground(colorFrame)
+	authWarn  = lipgloss.NewStyle().Foreground(lipgloss.Color("215")).Bold(true)
 )
 
 var authLogin = cli.Command{
@@ -50,13 +51,8 @@ func handleLogin(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("login failed: %w", err)
 	}
 
-	// Save credentials.
-	creds, err := auth.LoadCredentials()
+	insecure, err := auth.SaveToken(environment, tokens)
 	if err != nil {
-		creds = auth.Credentials{}
-	}
-	creds[environment] = tokens
-	if err := auth.SaveCredentials(creds); err != nil {
 		return fmt.Errorf("saving credentials: %w", err)
 	}
 
@@ -65,6 +61,13 @@ func handleLogin(ctx context.Context, cmd *cli.Command) error {
 	fmt.Fprintln(os.Stderr)
 	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Environment  ")+authValue.Render(environment))
 	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Expires      ")+authValue.Render(tokens.Expiry.Local().Format("Jan 02, 2006 3:04 PM")))
+	if insecure {
+		path, _ := auth.CredentialsPath()
+		fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Storage      ")+authWarn.Render("plaintext file")+authDim.Render(" — system keyring unavailable"))
+		if path != "" {
+			fmt.Fprintln(os.Stderr, "  "+authDim.Render("               "+path))
+		}
+	}
 	fmt.Fprintln(os.Stderr)
 
 	return nil
@@ -73,7 +76,7 @@ func handleLogin(ctx context.Context, cmd *cli.Command) error {
 func handleLogout(ctx context.Context, cmd *cli.Command) error {
 	environment := auth.ResolveEnvironment(cmd)
 
-	if err := auth.ClearCredentials(environment); err != nil {
+	if err := auth.ClearToken(environment); err != nil {
 		return fmt.Errorf("clearing credentials: %w", err)
 	}
 
@@ -98,7 +101,11 @@ func envTokenStatus(tokens *auth.TokenSet) string {
 }
 
 func handleStatus(ctx context.Context, cmd *cli.Command) error {
-	creds, err := auth.LoadCredentials()
+	prod, err := auth.LoadToken("production")
+	if err != nil {
+		return fmt.Errorf("loading credentials: %w", err)
+	}
+	sandbox, err := auth.LoadToken("sandbox")
 	if err != nil {
 		return fmt.Errorf("loading credentials: %w", err)
 	}
@@ -111,8 +118,8 @@ func handleStatus(ctx context.Context, cmd *cli.Command) error {
 		fmt.Fprintln(os.Stderr, "  "+authDim.Render("  API Key      ")+authValue.Render("set (takes precedence)"))
 	}
 
-	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Production   ")+authValue.Render(envTokenStatus(creds["production"])))
-	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Sandbox      ")+authValue.Render(envTokenStatus(creds["sandbox"])))
+	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Production   ")+authValue.Render(envTokenStatus(prod)))
+	fmt.Fprintln(os.Stderr, "  "+authDim.Render("  Sandbox      ")+authValue.Render(envTokenStatus(sandbox)))
 	fmt.Fprintln(os.Stderr)
 
 	return nil
