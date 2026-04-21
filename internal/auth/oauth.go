@@ -161,7 +161,7 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 
 // Revoke revokes a token per RFC 7009. Revoking a refresh token cascades to
 // access tokens derived from it, so callers should prefer the refresh token.
-func Revoke(config *OAuthConfig, token, tokenTypeHint string) error {
+func Revoke(ctx context.Context, config *OAuthConfig, token, tokenTypeHint string) error {
 	data := url.Values{
 		"token":     {token},
 		"client_id": {config.ClientID},
@@ -170,7 +170,16 @@ func Revoke(config *OAuthConfig, token, tokenTypeHint string) error {
 		data.Set("token_type_hint", tokenTypeHint)
 	}
 
-	resp, err := http.Post(config.RevokeURL, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+	reqCtx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, config.RevokeURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return fmt.Errorf("building revoke request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("revoke request failed: %w", err)
 	}

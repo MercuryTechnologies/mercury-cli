@@ -81,7 +81,7 @@ func handleLogout(ctx context.Context, cmd *cli.Command) error {
 			token, hint = tokens.AccessToken, "access_token"
 		}
 		if token != "" {
-			if err := auth.Revoke(config, token, hint); err != nil && cmd.Bool("debug") {
+			if err := auth.Revoke(ctx, config, token, hint); err != nil && cmd.Bool("debug") {
 				fmt.Fprintln(os.Stderr, authDim.Render("  Warning: token revocation failed: "+err.Error()))
 			}
 		}
