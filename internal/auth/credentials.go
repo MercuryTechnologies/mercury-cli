@@ -2,10 +2,21 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/zalando/go-keyring"
 )
+
+const (
+	keyringService = "mercury-cli"
+	keyringTimeout = 3 * time.Second
+)
+
+var errKeyringTimeout = errors.New("keyring operation timed out")
 
 // TokenSet holds OAuth tokens for a single environment.
 type TokenSet struct {
@@ -20,86 +31,179 @@ func (t *TokenSet) IsExpired() bool {
 	return time.Now().After(t.Expiry.Add(-30 * time.Second))
 }
 
-// Credentials maps environment names to their token sets.
-type Credentials map[string]*TokenSet
-
-// credentialsDir returns the directory for storing Mercury CLI config.
-func credentialsDir() (string, error) {
-	configDir, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
+// LoadToken returns the stored token set for the given environment. It
+// checks the system keyring first, then the plaintext fallback file.
+// Returns (nil, nil) if no tokens are stored in either location.
+func LoadToken(environment string) (*TokenSet, error) {
+	if secret, err := keyringGet(keyringService, environment); err == nil {
+		var tokens TokenSet
+		if jerr := json.Unmarshal([]byte(secret), &tokens); jerr != nil {
+			return nil, fmt.Errorf("parsing stored credentials: %w", jerr)
+		}
+		return &tokens, nil
 	}
-	return filepath.Join(configDir, "mercury"), nil
+
+	file, err := loadCredentialsFile()
+	if err != nil {
+		return nil, fmt.Errorf("reading fallback credentials: %w", err)
+	}
+	tokens := file[environment]
+	if tokens == nil {
+		return nil, nil
+	}
+	return tokens, nil
 }
 
-// CredentialsPath returns the path to the credentials file.
+// SaveToken persists tokens for the given environment. It tries the system
+// keyring first; if that fails or times out, it writes to a plaintext file
+// at ~/.config/mercury/credentials.json with 0600 permissions. The returned
+// bool is true when the plaintext fallback was used.
+func SaveToken(environment string, tokens *TokenSet) (insecure bool, err error) {
+	data, err := json.Marshal(tokens)
+	if err != nil {
+		return false, err
+	}
+
+	if kerr := keyringSet(keyringService, environment, string(data)); kerr == nil {
+		// Keyring write succeeded — clean up any stale plaintext entry so
+		// keyring is unambiguously the source of truth.
+		_ = clearCredentialsFileEntry(environment)
+		return false, nil
+	}
+
+	file, err := loadCredentialsFile()
+	if err != nil {
+		return false, fmt.Errorf("reading fallback credentials: %w", err)
+	}
+	file[environment] = tokens
+	if err := saveCredentialsFile(file); err != nil {
+		return false, fmt.Errorf("writing fallback credentials: %w", err)
+	}
+	return true, nil
+}
+
+// ClearToken removes stored tokens for the given environment from both the
+// keyring and the plaintext fallback. Missing entries are not an error, and
+// keyring failures are tolerated — the file cleanup still runs.
+func ClearToken(environment string) error {
+	_ = keyringDelete(keyringService, environment)
+	if err := clearCredentialsFileEntry(environment); err != nil {
+		return fmt.Errorf("clearing fallback credentials: %w", err)
+	}
+	return nil
+}
+
+// Timeouts protect against Secret Service / kwalletd hangs on Linux.
+
+func keyringSet(service, user, secret string) error {
+	ch := make(chan error, 1)
+	go func() { ch <- keyring.Set(service, user, secret) }()
+	select {
+	case err := <-ch:
+		return err
+	case <-time.After(keyringTimeout):
+		return errKeyringTimeout
+	}
+}
+
+func keyringGet(service, user string) (string, error) {
+	type result struct {
+		val string
+		err error
+	}
+	ch := make(chan result, 1)
+	go func() {
+		v, e := keyring.Get(service, user)
+		ch <- result{v, e}
+	}()
+	select {
+	case r := <-ch:
+		return r.val, r.err
+	case <-time.After(keyringTimeout):
+		return "", errKeyringTimeout
+	}
+}
+
+func keyringDelete(service, user string) error {
+	ch := make(chan error, 1)
+	go func() { ch <- keyring.Delete(service, user) }()
+	select {
+	case err := <-ch:
+		return err
+	case <-time.After(keyringTimeout):
+		return errKeyringTimeout
+	}
+}
+
+type credentialsFile map[string]*TokenSet
+
+// credentialsPathFunc resolves the fallback file path. Tests swap it to
+// redirect writes into a t.TempDir() so they don't touch ~/.config/mercury.
+var credentialsPathFunc = defaultCredentialsPath
+
 func CredentialsPath() (string, error) {
-	dir, err := credentialsDir()
+	return credentialsPathFunc()
+}
+
+func defaultCredentialsPath() (string, error) {
+	dir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(dir, "credentials.json"), nil
+	return filepath.Join(dir, "mercury", "credentials.json"), nil
 }
 
-// LoadCredentials reads credentials from disk. Returns empty credentials if the file doesn't exist.
-func LoadCredentials() (Credentials, error) {
+func loadCredentialsFile() (credentialsFile, error) {
 	path, err := CredentialsPath()
 	if err != nil {
 		return nil, err
 	}
-
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return Credentials{}, nil
+			return credentialsFile{}, nil
 		}
 		return nil, err
 	}
-
-	var creds Credentials
-	if err := json.Unmarshal(data, &creds); err != nil {
+	var file credentialsFile
+	if err := json.Unmarshal(data, &file); err != nil {
 		return nil, err
 	}
-	return creds, nil
+	if file == nil {
+		file = credentialsFile{}
+	}
+	return file, nil
 }
 
-// SaveCredentials writes credentials to disk with secure permissions.
-func SaveCredentials(creds Credentials) error {
-	dir, err := credentialsDir()
+func saveCredentialsFile(file credentialsFile) error {
+	path, err := CredentialsPath()
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(dir, 0700); err != nil {
+	if len(file) == 0 {
+		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 		return err
 	}
-
-	data, err := json.MarshalIndent(creds, "", "  ")
+	data, err := json.MarshalIndent(file, "", "  ")
 	if err != nil {
 		return err
 	}
-
-	path := filepath.Join(dir, "credentials.json")
 	return os.WriteFile(path, data, 0600)
 }
 
-// ClearCredentials removes the token set for a specific environment.
-func ClearCredentials(environment string) error {
-	creds, err := LoadCredentials()
+func clearCredentialsFileEntry(environment string) error {
+	file, err := loadCredentialsFile()
 	if err != nil {
 		return err
 	}
-	delete(creds, environment)
-	if len(creds) == 0 {
-		// Remove the file entirely if no credentials remain.
-		path, err := CredentialsPath()
-		if err != nil {
-			return err
-		}
-		err = os.Remove(path)
-		if os.IsNotExist(err) {
-			return nil
-		}
-		return err
+	if _, ok := file[environment]; !ok {
+		return nil
 	}
-	return SaveCredentials(creds)
+	delete(file, environment)
+	return saveCredentialsFile(file)
 }
