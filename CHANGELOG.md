@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2026-04-21)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.0...v0.6.1)
+
+### Bug Fixes
+
+* **auth:** clarify oauth error when account lacks API access ([d53a5a4](https://github.com/MercuryTechnologies/mercury-cli/commit/d53a5a4a73316a99d5ec83f11b697e3c3371183f))
+
 ## 0.6.0 (2026-04-21)
 
 Full Changelog: [v0.5.4...v0.6.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.5.4...v0.6.0)
