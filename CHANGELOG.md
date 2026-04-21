@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.2 (2026-04-21)
+
+Full Changelog: [v0.6.1...v0.6.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.1...v0.6.2)
+
+### Bug Fixes
+
+* **auth:** revoke tokens on logout ([#32](https://github.com/MercuryTechnologies/mercury-cli/issues/32)) ([dd314ed](https://github.com/MercuryTechnologies/mercury-cli/commit/dd314ed390d470185931de66eef46c10d7da6654))
+
+
+### Chores
+
+* **auth:** link to team settings from oauth scope-denied error ([b748567](https://github.com/MercuryTechnologies/mercury-cli/commit/b7485670fc09ca9a4a2e62ac827723d758d6285d))
+
 ## 0.6.1 (2026-04-21)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.0...v0.6.1)
