@@ -369,13 +369,15 @@ func formatJSON(res gjson.Result, opts ShowJSONOpts) ([]byte, error) {
 	case "raw":
 		return []byte(res.Raw + "\n"), nil
 	case "yaml":
-		input := strings.NewReader(res.Raw)
+		// Prefix every document with "---" so concatenated outputs (e.g. list
+		// commands streaming one item at a time) form a valid multi-document
+		// YAML stream.
 		var yaml strings.Builder
-		if err := json2yaml.Convert(&yaml, input); err != nil {
+		yaml.WriteString("---\n")
+		if err := json2yaml.Convert(&yaml, strings.NewReader(res.Raw)); err != nil {
 			return nil, err
 		}
-		_, err := opts.Stdout.Write([]byte(yaml.String()))
-		return nil, err
+		return []byte(yaml.String()), nil
 	default:
 		return nil, fmt.Errorf("Invalid format: %s, valid formats are: %s", opts.Format, strings.Join(OutputFormats, ", "))
 	}
