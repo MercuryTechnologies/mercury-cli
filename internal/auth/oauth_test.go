@@ -40,6 +40,58 @@ func TestRefreshToken_PreservesRefreshTokenWhenServerOmitsIt(t *testing.T) {
 		"when the server omits refresh_token, the client must reuse the original (RFC 6749 §6)")
 }
 
+func TestFriendlyOAuthError(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name       string
+		errCode    string
+		desc       string
+		wantTitle  string
+		wantDetail string
+	}{
+		{
+			name:       "scope not allowed maps to API access message",
+			errCode:    "login_request_denied",
+			desc:       "The requested scope is not allowed",
+			wantTitle:  "Your Mercury account doesn't have API access",
+			wantDetail: "This account isn't permitted to use the Mercury API. Sign in with an admin account, or run `mercury login --environment sandbox` to explore the CLI with a test account.",
+		},
+		{
+			name:       "scope not allowed is case-insensitive",
+			errCode:    "login_request_denied",
+			desc:       "the requested SCOPE IS NOT ALLOWED here",
+			wantTitle:  "Your Mercury account doesn't have API access",
+			wantDetail: "This account isn't permitted to use the Mercury API. Sign in with an admin account, or run `mercury login --environment sandbox` to explore the CLI with a test account.",
+		},
+		{
+			name:       "unknown error with description falls through",
+			errCode:    "access_denied",
+			desc:       "User denied consent.",
+			wantTitle:  "Sign-in didn't complete",
+			wantDetail: "User denied consent.",
+		},
+		{
+			name:       "unknown error with no description shows code",
+			errCode:    "server_error",
+			desc:       "",
+			wantTitle:  "Sign-in didn't complete",
+			wantDetail: `Mercury returned "server_error". Please try again from your terminal.`,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			title, detail := friendlyOAuthError(tc.errCode, tc.desc)
+			assert.Equal(t, tc.wantTitle, title)
+			assert.Equal(t, tc.wantDetail, detail)
+		})
+	}
+}
+
 // When the server does rotate the refresh token, we should adopt the new one.
 func TestRefreshToken_AdoptsRotatedRefreshToken(t *testing.T) {
 	t.Parallel()
