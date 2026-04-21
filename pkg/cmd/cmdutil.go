@@ -19,6 +19,7 @@ import (
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/auth"
 	"github.com/MercuryTechnologies/mercury-cli/internal/jsonview"
+	"github.com/MercuryTechnologies/mercury-cli/internal/yamlcolor"
 	"github.com/MercuryTechnologies/mercury-go/option"
 
 	"github.com/charmbracelet/x/term"
@@ -386,7 +387,12 @@ func formatJSON(res gjson.Result, opts ShowJSONOpts) ([]byte, error) {
 		if err := json2yaml.Convert(&yaml, strings.NewReader(res.Raw)); err != nil {
 			return nil, err
 		}
-		return []byte(yaml.String()), nil
+
+		if shouldUseColors(opts.Stdout) {
+			return yamlcolor.Color([]byte(yaml.String())), nil
+		} else {
+			return []byte(yaml.String()), nil
+		}
 	default:
 		return nil, fmt.Errorf("Invalid format: %s, valid formats are: %s", opts.Format, strings.Join(OutputFormats, ", "))
 	}
