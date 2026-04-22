@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.3 (2026-04-22)
+
+Full Changelog: [v0.6.2...v0.6.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.2...v0.6.3)
+
+### Chores
+
+* **internal:** more robust bootstrap script ([17ed010](https://github.com/MercuryTechnologies/mercury-cli/commit/17ed01033e360ebad9202d478ccf16edb1b3e912))
+
 ## 0.6.2 (2026-04-21)
 
 Full Changelog: [v0.6.1...v0.6.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.1...v0.6.2)
