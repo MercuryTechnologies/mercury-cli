@@ -23,7 +23,7 @@ func prop(prefix string) *printer.Property {
 }
 
 // Returns src with ANSI escape codes wrapping YAML map keys and scalar
-// values. Colorizes unconditionally, tt's the caller's job to decide
+// values. Colorizes unconditionally, it's the caller's job to decide
 // whether the terminal actually supports color.
 func Color(src []byte) []byte {
 	p := printer.Printer{

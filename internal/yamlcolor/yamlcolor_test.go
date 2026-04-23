@@ -94,3 +94,14 @@ func TestColorNoSpuriousTrailingNewline(t *testing.T) {
 		t.Errorf("did not expect trailing newline when input had none, got %q", got)
 	}
 }
+
+// goccy/go-yaml does not have special printing for nulls.
+// If this changes in a future version, we'd like to know about it _before_ we ship!
+func TestColorLeavesNullUnwrapped(t *testing.T) {
+	got := string(Color([]byte("---\nkey: null\n")))                                                                                                                                                                 
+	for _, prefix := range []string{ansiBoldBlue, ansiGreen, ansiYellow, ansiCyan} {
+		if wrapped(prefix, "null").MatchString(got) {                                                                                                                                                            
+			t.Errorf("expected null value not to be wrapped, got %q. full output:\n%s", prefix, got)
+		}                                                                                                                                                                                                        
+	}         
+}
