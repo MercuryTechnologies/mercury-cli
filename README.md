@@ -16,7 +16,7 @@
 
 </div>
 
-# Mercury CLI – Run your bank* from the terminal
+# Mercury CLI – Run your banking* from the terminal
 
 The official command-line interface for Mercury.
 
