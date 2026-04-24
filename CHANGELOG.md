@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.5 (2026-04-24)
+
+Full Changelog: [v0.6.4...v0.6.5](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.4...v0.6.5)
+
+### Chores
+
+* restore hat ([25f03b4](https://github.com/MercuryTechnologies/mercury-cli/commit/25f03b4ef24a8844fa245c5bdf0b9d181a407255))
+
 ## 0.6.4 (2026-04-23)
 
 Full Changelog: [v0.6.3...v0.6.4](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.3...v0.6.4)
