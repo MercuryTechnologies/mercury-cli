@@ -3,7 +3,7 @@ module github.com/MercuryTechnologies/mercury-cli
 go 1.25
 
 require (
-	github.com/MercuryTechnologies/mercury-go v0.4.4
+	github.com/MercuryTechnologies/mercury-go v0.4.5
 	github.com/charmbracelet/bubbles v0.21.0
 	github.com/charmbracelet/bubbletea v1.3.6
 	github.com/charmbracelet/lipgloss v1.1.0
