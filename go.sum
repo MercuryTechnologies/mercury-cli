@@ -1,7 +1,7 @@
 al.essio.dev/pkg/shellescape v1.5.1 h1:86HrALUujYS/h+GtqoB26SBEdkWfmMI6FubjXlsXyho=
 al.essio.dev/pkg/shellescape v1.5.1/go.mod h1:6sIqp7X2P6mThCQ7twERpZTuigpr6KbZWtls1U8I890=
-github.com/MercuryTechnologies/mercury-go v0.4.3 h1:5SIUbDMRgtCgBlQ0ppQ9Bp7mLv8ZywABvf0r5GFIfZ4=
-github.com/MercuryTechnologies/mercury-go v0.4.3/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.4.5 h1:KfrAcLxY3/OB6S5tizn5Q96njNjrVAm0/Hyin7I5lkc=
+github.com/MercuryTechnologies/mercury-go v0.4.5/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=
