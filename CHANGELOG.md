@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.6 (2026-04-28)
+
+Full Changelog: [v0.6.5...v0.6.6](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.5...v0.6.6)
+
+### Bug Fixes
+
+* shorten --raw-output help description to fit on one line ([e9a1a1d](https://github.com/MercuryTechnologies/mercury-cli/commit/e9a1a1d601ec02898deca0bf6a161f4d6f8f37c6))
+* update flake vendorHash for go.sum changes ([fd78f55](https://github.com/MercuryTechnologies/mercury-cli/commit/fd78f554ae1f1f790864a5a27cd4903e1bec2846))
+
+
+### Chores
+
+* **internal:** codegen related update ([0fc96ef](https://github.com/MercuryTechnologies/mercury-cli/commit/0fc96ef917d1e4a7b2b483b8afec5e2893b785c3))
+* **internal:** codegen related update ([1de7c80](https://github.com/MercuryTechnologies/mercury-cli/commit/1de7c8027a9e9c6ce6e05e3d60c0f728031392b5))
+* **internal:** version bump ([f58323a](https://github.com/MercuryTechnologies/mercury-cli/commit/f58323aa43cd78259dc9bf16170d6a08e3fb1724))
+
 ## 0.6.5 (2026-04-24)
 
 Full Changelog: [v0.6.4...v0.6.5](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.4...v0.6.5)
