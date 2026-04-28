@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.10 (2026-04-28)
+
+Full Changelog: [v0.6.9...v0.6.10](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.9...v0.6.10)
+
+### Bug Fixes
+
+* **auth:** set timeouts on the OAuth callback HTTP server ([#50](https://github.com/MercuryTechnologies/mercury-cli/issues/50)) ([f6327b1](https://github.com/MercuryTechnologies/mercury-cli/commit/f6327b1bdcf8eac3463a8c7ef7204fbc6627904f))
+
 ## 0.6.9 (2026-04-28)
 
 Full Changelog: [v0.6.8...v0.6.9](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.8...v0.6.9)
