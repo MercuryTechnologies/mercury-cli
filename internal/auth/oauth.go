@@ -153,7 +153,7 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 	}
 
 	// Exchange authorization code for tokens.
-	return exchangeCode(config, result.code, redirectURI, verifier)
+	return exchangeCode(ctx, config, result.code, redirectURI, verifier)
 }
 
 // Revoke revokes a token per RFC 7009. Revoking a refresh token cascades to
@@ -191,15 +191,17 @@ func Revoke(ctx context.Context, config *OAuthConfig, token, tokenTypeHint strin
 	return fmt.Errorf("revoke returned %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
 }
 
-// RefreshToken exchanges a refresh token for new tokens.
-func RefreshToken(config *OAuthConfig, refreshToken string) (*TokenSet, error) {
+// RefreshToken exchanges a refresh token for new tokens. The caller controls
+// cancellation via ctx; doTokenRequest also imposes a hard per-request cap so
+// a stalled token endpoint can't hang the CLI indefinitely.
+func RefreshToken(ctx context.Context, config *OAuthConfig, refreshToken string) (*TokenSet, error) {
 	data := url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"client_id":     {config.ClientID},
 	}
 
-	return doTokenRequest(config.TokenURL, data, refreshToken)
+	return doTokenRequest(ctx, config.TokenURL, data, refreshToken)
 }
 
 // friendlyOAuthError maps OAuth error codes and descriptions to user-facing
@@ -257,7 +259,7 @@ func buildAuthURL(config *OAuthConfig, redirectURI, state, challenge string) (st
 }
 
 // exchangeCode exchanges an authorization code for tokens.
-func exchangeCode(config *OAuthConfig, code, redirectURI, verifier string) (*TokenSet, error) {
+func exchangeCode(ctx context.Context, config *OAuthConfig, code, redirectURI, verifier string) (*TokenSet, error) {
 	data := url.Values{
 		"grant_type":    {"authorization_code"},
 		"code":          {code},
@@ -266,7 +268,7 @@ func exchangeCode(config *OAuthConfig, code, redirectURI, verifier string) (*Tok
 		"code_verifier": {verifier},
 	}
 
-	return doTokenRequest(config.TokenURL, data, "")
+	return doTokenRequest(ctx, config.TokenURL, data, "")
 }
 
 // tokenResponse is the raw response from the token endpoint.
@@ -279,9 +281,24 @@ type tokenResponse struct {
 	ErrorDesc    string `json:"error_description"`
 }
 
+// tokenRequestTimeout caps the time we'll wait for the OAuth token endpoint.
+// It's intentionally tighter than a typical API call: a stalled token server
+// must not block `mercury login` or any command that triggers a refresh for
+// minutes on end. The caller's ctx still applies — whichever fires first wins.
+const tokenRequestTimeout = 10 * time.Second
+
 // doTokenRequest makes a POST to the token endpoint and parses the response.
-func doTokenRequest(tokenURL string, data url.Values, fallbackRefreshToken string) (*TokenSet, error) {
-	resp, err := http.Post(tokenURL, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+func doTokenRequest(ctx context.Context, tokenURL string, data url.Values, fallbackRefreshToken string) (*TokenSet, error) {
+	reqCtx, cancel := context.WithTimeout(ctx, tokenRequestTimeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, tokenURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, fmt.Errorf("building token request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("token request failed: %w", err)
 	}
