@@ -62,7 +62,7 @@ func promptShippingAddress() (*shippingAddress, error) {
 		return nil, err
 	}
 
-	address1, err := promptField(scanner, "Address:", true)
+	address1, err := promptField(scanner, "Address line 1:", true)
 	if err != nil {
 		return nil, err
 	}
