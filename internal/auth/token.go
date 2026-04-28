@@ -1,10 +1,17 @@
 package auth
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/urfave/cli/v3"
 )
+
+// getTokenRefreshTimeout bounds GetToken's silent refresh attempt. doTokenRequest
+// imposes a tighter per-request cap; this value just prevents wedged retries
+// from holding up the calling command.
+const getTokenRefreshTimeout = 15 * time.Second
 
 // GetToken returns a valid OAuth access token for the given environment.
 // Returns ("", nil) if no credentials are stored (no-op — the API will return 401).
@@ -28,7 +35,13 @@ func GetToken(environment string) (string, error) {
 	}
 
 	config := DefaultOAuthConfig(environment)
-	newTokens, err := RefreshToken(config, tokens.RefreshToken)
+	// GetToken is invoked from getDefaultRequestOptions(cmd), which is called
+	// from Stainless-generated handlers and does not propagate the request
+	// context. Build a local deadline so a stalled OAuth backend can't hang
+	// every CLI invocation.
+	ctx, cancel := context.WithTimeout(context.Background(), getTokenRefreshTimeout)
+	defer cancel()
+	newTokens, err := RefreshToken(ctx, config, tokens.RefreshToken)
 	if err != nil {
 		_ = ClearToken(environment)
 		return "", fmt.Errorf("session expired (refresh failed: %v), please run 'mercury login' to re-authenticate", err)
