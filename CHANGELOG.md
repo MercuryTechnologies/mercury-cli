@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.7 (2026-04-28)
+
+Full Changelog: [v0.6.6...v0.6.7](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.6...v0.6.7)
+
+### Chores
+
+* revert custom mercury-go pin ([573cbbc](https://github.com/MercuryTechnologies/mercury-cli/commit/573cbbcf27c70bc75567bceb2d5bb0f74fb32a05))
+* update flake vendorHash for go.sum changes ([eecb9ca](https://github.com/MercuryTechnologies/mercury-cli/commit/eecb9cafe4d3fffc416f2e866c690843475e75e4))
+* update OpenAPI spec from 915a0ba3e3f52bbd165420618396b2fd674694d6 ([72d127d](https://github.com/MercuryTechnologies/mercury-cli/commit/72d127d02e27d73918ffbe8d21c01b08114b9871))
+
 ## 0.6.6 (2026-04-28)
 
 Full Changelog: [v0.6.5...v0.6.6](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.5...v0.6.6)
