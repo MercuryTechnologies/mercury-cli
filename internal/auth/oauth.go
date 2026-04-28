@@ -121,7 +121,7 @@ func Login(ctx context.Context, config *OAuthConfig) (*TokenSet, error) {
 		resultCh <- callbackResult{code: code}
 	})
 
-	server := &http.Server{Handler: mux}
+	server := newCallbackServer(mux)
 	go server.Serve(listener)
 	defer server.Close()
 
@@ -318,6 +318,38 @@ func doTokenRequest(tokenURL string, data url.Values, fallbackRefreshToken strin
 		TokenType:    tok.TokenType,
 		Expiry:       expiry,
 	}, nil
+}
+
+// Callback server timeouts. The localhost server only ever serves one short
+// GET /callback from the user's browser; values are sized for that flow:
+//
+//   - ReadHeaderTimeout: bounds slow-header attacks while leaving plenty of
+//     slack for slow loopback (browser sends headers in milliseconds).
+//   - ReadTimeout / WriteTimeout: cap a single request/response. The success
+//     and error pages are both small static templates rendered in <1ms.
+//   - IdleTimeout: a co-resident process cannot keep idle keep-alive
+//     connections pinned to the server beyond this window.
+//
+// All four are recommended by the net/http documentation; an http.Server with
+// no timeouts is what gosec rule G112 flags.
+const (
+	callbackReadHeaderTimeout = 5 * time.Second
+	callbackReadTimeout       = 10 * time.Second
+	callbackWriteTimeout      = 10 * time.Second
+	callbackIdleTimeout       = 30 * time.Second
+)
+
+// newCallbackServer returns the http.Server used to receive the OAuth
+// authorization-code redirect on localhost. Extracted so the timeout
+// configuration is testable in isolation without driving a full Login flow.
+func newCallbackServer(handler http.Handler) *http.Server {
+	return &http.Server{
+		Handler:           handler,
+		ReadHeaderTimeout: callbackReadHeaderTimeout,
+		ReadTimeout:       callbackReadTimeout,
+		WriteTimeout:      callbackWriteTimeout,
+		IdleTimeout:       callbackIdleTimeout,
+	}
 }
 
 // openBrowser opens the given URL in the user's default browser.
