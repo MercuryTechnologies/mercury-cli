@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.9 (2026-04-28)
+
+Full Changelog: [v0.6.8...v0.6.9](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.8...v0.6.9)
+
+### Bug Fixes
+
+* **auth:** respect context deadline in OAuth token requests ([#49](https://github.com/MercuryTechnologies/mercury-cli/issues/49)) ([10f630b](https://github.com/MercuryTechnologies/mercury-cli/commit/10f630b915a76139fd28b93b5bf83842af863177))
+
 ## 0.6.8 (2026-04-28)
 
 Full Changelog: [v0.6.7...v0.6.8](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.7...v0.6.8)
