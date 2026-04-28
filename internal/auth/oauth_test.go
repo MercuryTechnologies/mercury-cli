@@ -1,9 +1,11 @@
 package auth
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +34,7 @@ func TestRefreshToken_PreservesRefreshTokenWhenServerOmitsIt(t *testing.T) {
 	}
 
 	const originalRefresh = "original-refresh-token"
-	newTokens, err := RefreshToken(config, originalRefresh)
+	newTokens, err := RefreshToken(context.Background(), config, originalRefresh)
 	require.NoError(t, err)
 
 	assert.Equal(t, "new-access-token", newTokens.AccessToken)
@@ -121,8 +123,79 @@ func TestRefreshToken_AdoptsRotatedRefreshToken(t *testing.T) {
 		TokenURL: server.URL,
 	}
 
-	newTokens, err := RefreshToken(config, "original-refresh-token")
+	newTokens, err := RefreshToken(context.Background(), config, "original-refresh-token")
 	require.NoError(t, err)
 
 	assert.Equal(t, "rotated-refresh-token", newTokens.RefreshToken)
+}
+
+// A stalled token endpoint must not hang the CLI: the caller's context
+// deadline must propagate down to the HTTP request. Before this guard was
+// added, doTokenRequest used http.Post with http.DefaultClient (no Timeout
+// and no context), so login + refresh would block until the kernel TCP
+// timeout — minutes, not seconds.
+func TestRefreshToken_RespectsCallerContextDeadline(t *testing.T) {
+	t.Parallel()
+
+	// Server that holds the connection open until the test tears it down.
+	stop := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		select {
+		case <-stop:
+		case <-r.Context().Done():
+		}
+	}))
+	t.Cleanup(func() {
+		close(stop)
+		server.Close()
+	})
+
+	config := &OAuthConfig{ClientID: "test-client", TokenURL: server.URL}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+
+	start := time.Now()
+	_, err := RefreshToken(ctx, config, "any-refresh-token")
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	assert.Less(t, elapsed, 2*time.Second,
+		"RefreshToken must abort within the caller's context deadline; elapsed=%s", elapsed)
+}
+
+// Even when the caller passes context.Background() (no deadline), the
+// per-request cap inside doTokenRequest must fire so a degraded token
+// endpoint can't block indefinitely. Skipped in -short mode because it
+// burns the full tokenRequestTimeout window.
+func TestRefreshToken_PerRequestTimeoutAppliesWithoutCallerDeadline(t *testing.T) {
+	t.Parallel()
+
+	if testing.Short() {
+		t.Skip("relies on the per-request cap; skipping in -short mode")
+	}
+
+	stop := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		select {
+		case <-stop:
+		case <-r.Context().Done():
+		}
+	}))
+	t.Cleanup(func() {
+		close(stop)
+		server.Close()
+	})
+
+	config := &OAuthConfig{ClientID: "test-client", TokenURL: server.URL}
+
+	start := time.Now()
+	_, err := RefreshToken(context.Background(), config, "any-refresh-token")
+	elapsed := time.Since(start)
+
+	require.Error(t, err)
+	// The cap is tokenRequestTimeout (10s). Allow generous slack for slow CI
+	// but assert we're nowhere near the kernel TCP timeout (which is minutes).
+	assert.Less(t, elapsed, tokenRequestTimeout+5*time.Second,
+		"per-request timeout must bound RefreshToken; elapsed=%s", elapsed)
 }
