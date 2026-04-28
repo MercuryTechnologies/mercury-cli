@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.8 (2026-04-28)
+
+Full Changelog: [v0.6.7...v0.6.8](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.7...v0.6.8)
+
+### Bug Fixes
+
+* clarify shipping address prompt as line 1 ([2a53a3f](https://github.com/MercuryTechnologies/mercury-cli/commit/2a53a3f3ce4eb08eb48d19956918100b759ffeb2))
+
 ## 0.6.7 (2026-04-28)
 
 Full Changelog: [v0.6.6...v0.6.7](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.6...v0.6.7)
