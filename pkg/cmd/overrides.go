@@ -82,6 +82,10 @@ func init() {
 			if sf, ok := f.(*cli.StringFlag); ok {
 				sf.Usage = "Transform error output with a GJSON expression"
 			}
+		case "raw-output":
+			if bf, ok := f.(*cli.BoolFlag); ok {
+				bf.Usage = "If the result is a string, print it without JSON quotes."
+			}
 		}
 	}
 
