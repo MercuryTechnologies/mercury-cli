@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.12 (2026-04-29)
+
+Full Changelog: [v0.6.11...v0.6.12](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.11...v0.6.12)
+
+### Bug Fixes
+
+* sorry, sold out ([96b583e](https://github.com/MercuryTechnologies/mercury-cli/commit/96b583edc12d7e7220cd13af625ad79556e50437))
+
 ## 0.6.11 (2026-04-29)
 
 Full Changelog: [v0.6.10...v0.6.11](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.10...v0.6.11)
