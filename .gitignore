@@ -3,9 +3,3 @@
 dist/
 /mercury
 *.exe
-
-# VibeShield: keep local secrets out of git
-.env
-.env.*
-.env*.local
-!.env.example
