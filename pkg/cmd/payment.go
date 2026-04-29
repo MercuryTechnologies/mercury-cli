@@ -207,7 +207,7 @@ var paymentsTransfer = cli.Command{
 			Required: true,
 			BodyPath: "sourceAccountId",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "note",
 			BodyPath: "note",
 		},

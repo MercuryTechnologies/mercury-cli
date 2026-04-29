@@ -74,27 +74,27 @@ var invoicesCreate = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "useRealAccountNumber",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "internal-note",
 			Usage:    " Internal note for the invoice, visible by users in the organization but not visible to payers.",
 			BodyPath: "internalNote",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "invoice-number",
 			Usage:    " The payer facing invoice number/identifier.",
 			BodyPath: "invoiceNumber",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "payer-memo",
 			Usage:    " Memo for the payer of the invoice.",
 			BodyPath: "payerMemo",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "po-number",
 			Usage:    " Purchase order number for the invoice, if applicable.",
 			BodyPath: "poNumber",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "send-email-option",
 			Usage:    ` Rules for emailing the new invoice to payers. Can be "DontSend" to skip sending or "SendNow" to send immediately. If omitted, defaults to sending immediately.`,
 			BodyPath: "sendEmailOption",
@@ -129,7 +129,7 @@ var invoicesCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "A dollar amount",
 			InnerField: "unitPrice",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*float64]{
 			Name:       "line-item.sales-tax-rate",
 			Usage:      " the sales tax applied to this item",
 			InnerField: "salesTaxRate",
@@ -195,17 +195,17 @@ var invoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "useRealAccountNumber",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "internal-note",
 			Usage:    " Internal note for the invoice, visible by users in the organization but not visible to payers.",
 			BodyPath: "internalNote",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "payer-memo",
 			Usage:    " Memo for the payer of the invoice.",
 			BodyPath: "payerMemo",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "po-number",
 			Usage:    " The purchase order number for the invoice if applicable.",
 			BodyPath: "poNumber",
@@ -240,7 +240,7 @@ var invoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      "A dollar amount",
 			InnerField: "unitPrice",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*float64]{
 			Name:       "line-item.sales-tax-rate",
 			Usage:      " the sales tax applied to this item",
 			InnerField: "salesTaxRate",
