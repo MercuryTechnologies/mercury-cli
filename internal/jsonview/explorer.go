@@ -8,6 +8,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -275,7 +276,9 @@ func (tv *TextView) Resize(width, height int) {
 	h := height - heightOffset
 	if !tv.ready {
 		tv.viewport = viewport.New(width, h)
-		tv.viewport.SetContent(wordwrap.String(tv.data.String(), width))
+		// Strip control bytes before the viewport renders the string to the
+		// terminal — see stripControlBytes for rationale.
+		tv.viewport.SetContent(wordwrap.String(stripControlBytes(tv.data.String()), width))
 		tv.ready = true
 		return
 	}
@@ -464,6 +467,9 @@ func (v *JSONViewer) buildNavigationPath(tableView *TableView, cursor int) strin
 }
 
 func quoteString(s string) string {
+	// Strip control bytes so they don't execute as terminal escapes when the
+	// breadcrumb/title is rendered. See stripControlBytes for rationale.
+	s = stripControlBytes(s)
 	// Replace backslashes and quotes with escaped versions
 	s = strings.ReplaceAll(s, "\\", "\\\\")
 	s = strings.ReplaceAll(s, "\"", "\\\"")
@@ -689,6 +695,39 @@ func createTable(columns []table.Column, rows []table.Row, bgColor lipgloss.Colo
 	return t
 }
 
+// stripControlBytes returns s with C0 control characters (U+0000..U+001F),
+// DEL (U+007F), and C1 control characters (U+0080..U+009F) removed, while
+// preserving \t (U+0009) and \n (U+000A) as legitimate text formatting.
+//
+// The JSON explorer renders string values from API responses into a
+// terminal TUI. A control byte that survives the render pipeline executes
+// in the user's terminal emulator: ESC[2J clears the screen, OSC 52
+// writes to the system clipboard, OSC 8 wraps text in a clickable link.
+// We strip at the render boundary so raw output (--format=json, --transform
+// pipelines, the JSON returned when the user selects a value to copy) keeps
+// data fidelity, while the bytes that would otherwise reach the terminal
+// inside explore mode are neutralised.
+func stripControlBytes(s string) string {
+	hasControl := false
+	for _, r := range s {
+		if r != '\t' && r != '\n' && unicode.IsControl(r) {
+			hasControl = true
+			break
+		}
+	}
+	if !hasControl {
+		return s
+	}
+	var b strings.Builder
+	b.Grow(len(s))
+	for _, r := range s {
+		if r == '\t' || r == '\n' || !unicode.IsControl(r) {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
+
 func formatValue(value gjson.Result, raw bool) string {
 	if raw {
 		return value.Get("@ugly").Raw
@@ -700,7 +739,7 @@ func formatValue(value gjson.Result, raw bool) string {
 	case value.IsArray():
 		return formatArray(value)
 	case value.Type == gjson.String:
-		return value.Str
+		return stripControlBytes(value.Str)
 	default:
 		return value.Raw
 	}
@@ -719,13 +758,16 @@ func formatObject(value gjson.Result) string {
 }
 
 func formatObjectKey(key string, val gjson.Result) string {
+	// Object keys themselves come from the API and may carry escape bytes;
+	// strip before rendering. See stripControlBytes for rationale.
+	key = stripControlBytes(key)
 	switch {
 	case val.IsObject():
 		return key + ":{…}"
 	case val.IsArray():
 		return key + ":[…]"
 	case val.Type == gjson.String:
-		str := val.Str
+		str := stripControlBytes(val.Str)
 		if lipgloss.Width(str) <= maxPreviewLength {
 			return fmt.Sprintf(`%s:"%s"`, key, str)
 		}
