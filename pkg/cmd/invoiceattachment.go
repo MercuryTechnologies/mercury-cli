@@ -20,9 +20,10 @@ var invoicesAttachmentsList = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
 		},
 	},
 	Action:          handleInvoicesAttachmentsList,
@@ -35,9 +36,10 @@ var invoicesAttachmentsGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "attachment-id",
-			Usage:    "ID for the attachment.",
-			Required: true,
+			Name:      "attachment-id",
+			Usage:     "ID for the attachment.",
+			Required:  true,
+			PathParam: "attachmentId",
 		},
 	},
 	Action:          handleInvoicesAttachmentsGet,

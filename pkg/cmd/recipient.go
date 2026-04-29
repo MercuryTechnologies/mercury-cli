@@ -137,9 +137,10 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "recipient-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "recipientId",
 		},
 		&requestflag.Flag[map[string]any]{
 			Name:     "address",
@@ -293,9 +294,10 @@ var recipientsGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "recipient-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "recipientId",
 		},
 	},
 	Action:          handleRecipientsGet,
@@ -310,8 +312,6 @@ func handleRecipientsCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RecipientNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -322,6 +322,8 @@ func handleRecipientsCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.RecipientNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -354,8 +356,6 @@ func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RecipientUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -366,6 +366,8 @@ func handleRecipientsUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.RecipientUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -400,8 +402,6 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RecipientListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -412,6 +412,8 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.RecipientListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")

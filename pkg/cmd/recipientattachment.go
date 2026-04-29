@@ -56,8 +56,9 @@ var recipientsAttachmentsAttach = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "recipient-id",
-			Required: true,
+			Name:      "recipient-id",
+			Required:  true,
+			PathParam: "recipientId",
 		},
 		&requestflag.Flag[string]{
 			Name:      "file",
@@ -79,8 +80,6 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RecipientAttachmentListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -91,6 +90,8 @@ func handleRecipientsAttachmentsList(ctx context.Context, cmd *cli.Command) erro
 	if err != nil {
 		return err
 	}
+
+	params := mercury.RecipientAttachmentListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -137,8 +138,6 @@ func handleRecipientsAttachmentsAttach(ctx context.Context, cmd *cli.Command) er
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.RecipientAttachmentAttachParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -149,6 +148,8 @@ func handleRecipientsAttachmentsAttach(ctx context.Context, cmd *cli.Command) er
 	if err != nil {
 		return err
 	}
+
+	params := mercury.RecipientAttachmentAttachParams{}
 
 	return client.Recipients.Attachments.Attach(
 		ctx,

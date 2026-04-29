@@ -20,9 +20,10 @@ var cardsList = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "account-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "accountId",
 		},
 	},
 	Action:          handleCardsList,
