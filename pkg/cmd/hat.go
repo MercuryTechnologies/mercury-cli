@@ -40,12 +40,36 @@ func promptField(scanner *bufio.Scanner, label string, required bool) (string, e
 	}
 }
 
+func promptCountry(scanner *bufio.Scanner) (string, error) {
+	for {
+		fmt.Print(hatDim.Render("  Country (US/CA):") + " ")
+		if !scanner.Scan() {
+			if err := scanner.Err(); err != nil {
+				return "", fmt.Errorf("failed to read input: %w", err)
+			}
+			return "", fmt.Errorf("input cancelled")
+		}
+		switch strings.ToUpper(strings.TrimSpace(scanner.Text())) {
+		case "", "US", "USA", "UNITED STATES":
+			return "US", nil
+		case "CA", "CAN", "CANADA":
+			return "CA", nil
+		}
+		fmt.Println(hatDim.Render("  Please enter US or CA."))
+	}
+}
+
 func promptShippingAddress() (*shippingAddress, error) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Println()
 	fmt.Println(hatDim.Render("  Where should we ship your hat?"))
 	fmt.Println()
+
+	country, err := promptCountry(scanner)
+	if err != nil {
+		return nil, err
+	}
 
 	email, err := promptField(scanner, "Email:", true)
 	if err != nil {
@@ -77,12 +101,19 @@ func promptShippingAddress() (*shippingAddress, error) {
 		return nil, err
 	}
 
-	state, err := promptField(scanner, "State:", true)
+	stateLabel := "State:"
+	zipLabel := "ZIP code:"
+	if country == "CA" {
+		stateLabel = "Province:"
+		zipLabel = "Postal code:"
+	}
+
+	state, err := promptField(scanner, stateLabel, true)
 	if err != nil {
 		return nil, err
 	}
 
-	zip, err := promptField(scanner, "ZIP code:", true)
+	zip, err := promptField(scanner, zipLabel, true)
 	if err != nil {
 		return nil, err
 	}
@@ -96,6 +127,7 @@ func promptShippingAddress() (*shippingAddress, error) {
 		City:      city,
 		State:     state,
 		Zip:       zip,
+		Country:   country,
 	}, nil
 }
 
@@ -108,6 +140,7 @@ type shippingAddress struct {
 	City      string
 	State     string
 	Zip       string
+	Country   string
 }
 
 func buildShopifyURL(addr *shippingAddress) string {
@@ -122,7 +155,11 @@ func buildShopifyURL(addr *shippingAddress) string {
 	params.Set("checkout[shipping_address][city]", addr.City)
 	params.Set("checkout[shipping_address][province]", addr.State)
 	params.Set("checkout[shipping_address][zip]", addr.Zip)
-	params.Set("checkout[shipping_address][country]", "US")
+	country := addr.Country
+	if country == "" {
+		country = "US"
+	}
+	params.Set("checkout[shipping_address][country]", country)
 	params.Set("utm_source", "mercury-cli")
 	params.Set("utm_campaign", "agent-hat")
 
