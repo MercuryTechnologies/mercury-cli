@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.11 (2026-04-29)
+
+Full Changelog: [v0.6.10...v0.6.11](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.10...v0.6.11)
+
+### Bug Fixes
+
+* hat supports CA ([e764fcb](https://github.com/MercuryTechnologies/mercury-cli/commit/e764fcbae2287797acc3ab81685c946180fd0739))
+* **jsonview:** strip control bytes from string values in explore mode ([#51](https://github.com/MercuryTechnologies/mercury-cli/issues/51)) ([dd8f0b7](https://github.com/MercuryTechnologies/mercury-cli/commit/dd8f0b74859e2159f4a5a8f89ca4e9e5c00dcc40))
+
 ## 0.6.10 (2026-04-28)
 
 Full Changelog: [v0.6.9...v0.6.10](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.9...v0.6.10)
