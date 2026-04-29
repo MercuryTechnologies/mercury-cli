@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 (2026-04-29)
+
+Full Changelog: [v0.6.14...v0.7.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.14...v0.7.0)
+
+### Features
+
+* support passing path and query params over stdin ([373d25c](https://github.com/MercuryTechnologies/mercury-cli/commit/373d25cd62978f8f4f5d57ff336e6b0370a753f0))
+
 ## 0.6.14 (2026-04-29)
 
 Full Changelog: [v0.6.13...v0.6.14](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.13...v0.6.14)
