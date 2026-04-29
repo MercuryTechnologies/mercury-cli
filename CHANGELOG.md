@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.13 (2026-04-29)
+
+Full Changelog: [v0.6.12...v0.6.13](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.12...v0.6.13)
+
+### Bug Fixes
+
+* **cli:** correctly load zsh autocompletion ([96f1fe6](https://github.com/MercuryTechnologies/mercury-cli/commit/96f1fe61c1c8ebea91c5d2186c95b5e9c1022859))
+
 ## 0.6.12 (2026-04-29)
 
 Full Changelog: [v0.6.11...v0.6.12](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.11...v0.6.12)
