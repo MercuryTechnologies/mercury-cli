@@ -30,9 +30,10 @@ var safesDownload = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "safe-request-id",
-			Usage:    "ID for the SAFE request",
-			Required: true,
+			Name:      "safe-request-id",
+			Usage:     "ID for the SAFE request",
+			Required:  true,
+			PathParam: "safeRequestId",
 		},
 		&requestflag.Flag[string]{
 			Name:    "output",
@@ -50,9 +51,10 @@ var safesGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "safe-request-id",
-			Usage:    "ID for the SAFE request",
-			Required: true,
+			Name:      "safe-request-id",
+			Usage:     "ID for the SAFE request",
+			Required:  true,
+			PathParam: "safeRequestId",
 		},
 	},
 	Action:          handleSafesGet,

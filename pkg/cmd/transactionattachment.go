@@ -18,8 +18,9 @@ var transactionsAttachmentsAttach = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "transaction-id",
-			Required: true,
+			Name:      "transaction-id",
+			Required:  true,
+			PathParam: "transactionId",
 		},
 		&requestflag.Flag[string]{
 			Name:      "file",
@@ -49,8 +50,6 @@ func handleTransactionsAttachmentsAttach(ctx context.Context, cmd *cli.Command) 
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TransactionAttachmentAttachParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -61,6 +60,8 @@ func handleTransactionsAttachmentsAttach(ctx context.Context, cmd *cli.Command) 
 	if err != nil {
 		return err
 	}
+
+	params := mercury.TransactionAttachmentAttachParams{}
 
 	return client.Transactions.Attachments.Attach(
 		ctx,
