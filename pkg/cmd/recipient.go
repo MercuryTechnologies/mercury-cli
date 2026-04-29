@@ -71,11 +71,11 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 			Name:       "address.postal-code",
 			InnerField: "postalCode",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.address2",
 			InnerField: "address2",
 		},
-		&requestflag.InnerFlag[string]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.state",
 			Usage:      `Allowed values: "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY".`,
 			InnerField: "state",
@@ -102,7 +102,7 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      " The routing number of the bank account to use for domestic wire payments.",
 			InnerField: "routingNumber",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "domestic-wire-routing-info.default-for-benefit-of",
 			Usage:      " The name of the beneficiary of the domestic wire. This is the name of the entity that will receive the domestic wire.",
 			InnerField: "defaultForBenefitOf",
@@ -191,11 +191,11 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 			Name:       "address.postal-code",
 			InnerField: "postalCode",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.address2",
 			InnerField: "address2",
 		},
-		&requestflag.InnerFlag[string]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.state",
 			Usage:      `Allowed values: "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY".`,
 			InnerField: "state",
@@ -222,7 +222,7 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      " The routing number of the bank account to use for domestic wire payments.",
 			InnerField: "routingNumber",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "domestic-wire-routing-info.default-for-benefit-of",
 			Usage:      " The name of the beneficiary of the domestic wire. This is the name of the entity that will receive the domestic wire.",
 			InnerField: "defaultForBenefitOf",
