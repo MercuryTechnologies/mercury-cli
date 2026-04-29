@@ -20,9 +20,10 @@ var paymentsCreate = requestflag.WithInnerFlags(cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "account-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "accountId",
 		},
 		&requestflag.Flag[float64]{
 			Name:     "amount",
@@ -121,9 +122,10 @@ var paymentsGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "request-id",
-			Usage:    "ID for the send money approval request",
-			Required: true,
+			Name:      "request-id",
+			Usage:     "ID for the send money approval request",
+			Required:  true,
+			PathParam: "requestId",
 		},
 	},
 	Action:          handlePaymentsGet,
@@ -136,9 +138,10 @@ var paymentsRequest = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "account-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "accountId",
 		},
 		&requestflag.Flag[float64]{
 			Name:     "amount",
@@ -227,8 +230,6 @@ func handlePaymentsCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.PaymentNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -239,6 +240,8 @@ func handlePaymentsCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.PaymentNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -273,8 +276,6 @@ func handlePaymentsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.PaymentListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -285,6 +286,8 @@ func handlePaymentsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.PaymentListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -373,8 +376,6 @@ func handlePaymentsRequest(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.PaymentRequestParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -385,6 +386,8 @@ func handlePaymentsRequest(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.PaymentRequestParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -419,8 +422,6 @@ func handlePaymentsTransfer(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.PaymentTransferParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -431,6 +432,8 @@ func handlePaymentsTransfer(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.PaymentTransferParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

@@ -19,9 +19,10 @@ var statementsDownload = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "statement-id",
-			Usage:    "ID for the account statement",
-			Required: true,
+			Name:      "statement-id",
+			Usage:     "ID for the account statement",
+			Required:  true,
+			PathParam: "statementId",
 		},
 		&requestflag.Flag[string]{
 			Name:    "output",

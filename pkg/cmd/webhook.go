@@ -46,9 +46,10 @@ var webhooksUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "webhook-endpoint-id",
-			Usage:    "ID for the webhook",
-			Required: true,
+			Name:      "webhook-endpoint-id",
+			Usage:     "ID for the webhook",
+			Required:  true,
+			PathParam: "webhookEndpointId",
 		},
 		&requestflag.Flag[any]{
 			Name:     "event-type",
@@ -121,9 +122,10 @@ var webhooksDelete = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "webhook-endpoint-id",
-			Usage:    "ID for the webhook",
-			Required: true,
+			Name:      "webhook-endpoint-id",
+			Usage:     "ID for the webhook",
+			Required:  true,
+			PathParam: "webhookEndpointId",
 		},
 	},
 	Action:          handleWebhooksDelete,
@@ -136,9 +138,10 @@ var webhooksGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "webhook-endpoint-id",
-			Usage:    "ID for the webhook",
-			Required: true,
+			Name:      "webhook-endpoint-id",
+			Usage:     "ID for the webhook",
+			Required:  true,
+			PathParam: "webhookEndpointId",
 		},
 	},
 	Action:          handleWebhooksGet,
@@ -151,9 +154,10 @@ var webhooksVerify = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "webhook-endpoint-id",
-			Usage:    "ID for the webhook",
-			Required: true,
+			Name:      "webhook-endpoint-id",
+			Usage:     "ID for the webhook",
+			Required:  true,
+			PathParam: "webhookEndpointId",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "event-type",
@@ -173,8 +177,6 @@ func handleWebhooksCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.WebhookNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -185,6 +187,8 @@ func handleWebhooksCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.WebhookNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -217,8 +221,6 @@ func handleWebhooksUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.WebhookUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -229,6 +231,8 @@ func handleWebhooksUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.WebhookUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -263,8 +267,6 @@ func handleWebhooksList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.WebhookListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -275,6 +277,8 @@ func handleWebhooksList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.WebhookListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -388,8 +392,6 @@ func handleWebhooksVerify(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.WebhookVerifyParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -400,6 +402,8 @@ func handleWebhooksVerify(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.WebhookVerifyParams{}
 
 	return client.Webhooks.Verify(
 		ctx,

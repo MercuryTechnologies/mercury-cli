@@ -143,9 +143,10 @@ var invoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
 		},
 		&requestflag.Flag[bool]{
 			Name:     "ach-debit-enabled",
@@ -290,9 +291,10 @@ var invoicesCancel = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
 		},
 	},
 	Action:          handleInvoicesCancel,
@@ -305,9 +307,10 @@ var invoicesDownload = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
 		},
 		&requestflag.Flag[string]{
 			Name:    "output",
@@ -325,9 +328,10 @@ var invoicesGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "invoice-id",
-			Usage:    "ID for the invoice.",
-			Required: true,
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
 		},
 	},
 	Action:          handleInvoicesGet,
@@ -342,8 +346,6 @@ func handleInvoicesCreate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.InvoiceNewParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -354,6 +356,8 @@ func handleInvoicesCreate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.InvoiceNewParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -386,8 +390,6 @@ func handleInvoicesUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.InvoiceUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -398,6 +400,8 @@ func handleInvoicesUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.InvoiceUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -432,8 +436,6 @@ func handleInvoicesList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.InvoiceListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -444,6 +446,8 @@ func handleInvoicesList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.InvoiceListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")

@@ -20,9 +20,10 @@ var transactionsUpdate = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "transaction-id",
-			Usage:    "ID for this transaction",
-			Required: true,
+			Name:      "transaction-id",
+			Usage:     "ID for this transaction",
+			Required:  true,
+			PathParam: "transactionId",
 		},
 		&requestflag.Flag[string]{
 			Name:     "category-id",
@@ -131,9 +132,10 @@ var transactionsGet = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "transaction-id",
-			Usage:    "ID for this transaction",
-			Required: true,
+			Name:      "transaction-id",
+			Usage:     "ID for this transaction",
+			Required:  true,
+			PathParam: "transactionId",
 		},
 	},
 	Action:          handleTransactionsGet,
@@ -151,8 +153,6 @@ func handleTransactionsUpdate(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TransactionUpdateParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -163,6 +163,8 @@ func handleTransactionsUpdate(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.TransactionUpdateParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
@@ -197,8 +199,6 @@ func handleTransactionsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TransactionListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -209,6 +209,8 @@ func handleTransactionsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.TransactionListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")

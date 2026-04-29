@@ -56,9 +56,10 @@ var treasuryTransactions = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "treasury-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "treasury-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "treasuryId",
 		},
 		&requestflag.Flag[int64]{
 			Name:      "cursor",
@@ -90,8 +91,6 @@ func handleTreasuryList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TreasuryListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -102,6 +101,8 @@ func handleTreasuryList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.TreasuryListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
@@ -148,8 +149,6 @@ func handleTreasuryTransactions(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.TreasuryTransactionsParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -160,6 +159,8 @@ func handleTreasuryTransactions(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.TreasuryTransactionsParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))

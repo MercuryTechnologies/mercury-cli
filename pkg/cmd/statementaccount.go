@@ -20,9 +20,10 @@ var statementsAccountsList = cli.Command{
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
-			Name:     "account-id",
-			Usage:    "ID for a Mercury account.",
-			Required: true,
+			Name:      "account-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "accountId",
 		},
 		&requestflag.Flag[string]{
 			Name:      "end",
@@ -76,8 +77,6 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
 	}
 
-	params := mercury.StatementAccountListParams{}
-
 	options, err := flagOptions(
 		cmd,
 		apiquery.NestedQueryFormatBrackets,
@@ -88,6 +87,8 @@ func handleStatementsAccountsList(ctx context.Context, cmd *cli.Command) error {
 	if err != nil {
 		return err
 	}
+
+	params := mercury.StatementAccountListParams{}
 
 	format := cmd.Root().String("format")
 	explicitFormat := cmd.Root().IsSet("format")
