@@ -30,7 +30,7 @@ var transactionsUpdate = cli.Command{
 			Required: true,
 			BodyPath: "categoryId",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "note",
 			Usage:    "Note update action. Omit field to keep current note, send null or empty string to clear note, send text to set note.",
 			Required: true,

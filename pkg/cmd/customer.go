@@ -71,7 +71,7 @@ var customersCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      ` Either a two-letter US state code i.e. "CA" for California or a free-form identification of a particular region worldwide.`,
 			InnerField: "region",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.address2",
 			Usage:      " Secondary street address line (optional).",
 			InnerField: "address2",
@@ -147,7 +147,7 @@ var customersUpdate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      ` Either a two-letter US state code i.e. "CA" for California or a free-form identification of a particular region worldwide.`,
 			InnerField: "region",
 		},
-		&requestflag.InnerFlag[any]{
+		&requestflag.InnerFlag[*string]{
 			Name:       "address.address2",
 			Usage:      " Secondary street address line (optional).",
 			InnerField: "address2",

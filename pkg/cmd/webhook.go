@@ -60,12 +60,12 @@ var webhooksUpdate = cli.Command{
 			Usage:    " Resource field paths to filter events by. When specified, webhook events will only be sent when one of these fields changes. Send null for no filtering. Send an array to filter by specific fields. Omit to leave unchanged.",
 			BodyPath: "filterPaths",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "status",
 			Usage:    " Webhook status. Only 'active' and 'paused' values are allowed. Omit to leave unchanged.",
 			BodyPath: "status",
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "url",
 			Usage:    " The URL to which webhook events will be delivered. Omit to leave unchanged.",
 			BodyPath: "url",
@@ -155,7 +155,7 @@ var webhooksVerify = cli.Command{
 			Usage:    "ID for the webhook",
 			Required: true,
 		},
-		&requestflag.Flag[any]{
+		&requestflag.Flag[*string]{
 			Name:     "event-type",
 			Usage:    " Optional event type to test. If not specified, defaults to transaction.created.",
 			BodyPath: "eventType",
