@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.14 (2026-04-29)
+
+Full Changelog: [v0.6.13...v0.6.14](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.13...v0.6.14)
+
+### Bug Fixes
+
+* flags for nullable body scalar fields are strictly typed ([629d130](https://github.com/MercuryTechnologies/mercury-cli/commit/629d1301bcfc4317e9a45e5d867cbba16cf54075))
+
 ## 0.6.13 (2026-04-29)
 
 Full Changelog: [v0.6.12...v0.6.13](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.12...v0.6.13)
