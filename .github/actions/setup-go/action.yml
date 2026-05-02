@@ -7,7 +7,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: stainless-api/retrieve-github-access-token@v1
+    - uses: stainless-api/retrieve-github-access-token@1f03f929b746c5b03dcdafa2bebbb18ca5672e1a # v1
       if: github.repository == 'stainless-sdks/mercury-cli'
       id: get_token
       with:
