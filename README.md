@@ -44,6 +44,29 @@ Install into your profile:
 nix profile install github:MercuryTechnologies/mercury-cli
 ```
 
+Use as a Nixpkgs overlay:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mercury-cli.url = "github:MercuryTechnologies/mercury-cli";
+  };
+
+  outputs = { nixpkgs, mercury-cli, ... }: {
+    nixosConfigurations.example = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ({ pkgs, ... }: {
+          nixpkgs.overlays = [ mercury-cli.overlays.default ];
+          environment.systemPackages = [ pkgs.mercury-cli ];
+        })
+      ];
+    };
+  };
+}
+```
+
 Requires [Nix](https://nixos.org/download) (or [Lix](https://lix.systems/install/)) with flakes enabled.
 
 ### Install with Go
