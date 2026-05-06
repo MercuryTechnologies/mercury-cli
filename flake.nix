@@ -14,19 +14,13 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachSystem [
-      "x86_64-linux"
-      "aarch64-linux"
-      "x86_64-darwin"
-      "aarch64-darwin"
-    ] (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-        version = self.shortRev or self.dirtyShortRev or "dev";
-        commit = self.rev or self.dirtyRev or "unknown";
-      in
-      {
-        packages.default = pkgs.buildGoModule {
+    let
+      mkMercury = pkgs:
+        let
+          version = self.shortRev or self.dirtyShortRev or "dev";
+          commit = self.rev or self.dirtyRev or "unknown";
+        in
+        pkgs.buildGoModule {
           pname = "mercury";
           inherit version;
           src = self;
@@ -47,6 +41,26 @@
             license = licenses.asl20;
             mainProgram = "mercury";
           };
+        };
+    in
+    {
+      overlays.default = final: _prev: {
+        mercury-cli = mkMercury final;
+      };
+    } // flake-utils.lib.eachSystem [
+      "x86_64-linux"
+      "aarch64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ] (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        mercury = mkMercury pkgs;
+      in
+      {
+        packages = {
+          default = mercury;
+          mercury-cli = mercury;
         };
 
         devShells.default = pkgs.mkShell {
