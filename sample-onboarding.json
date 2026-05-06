@@ -1,0 +1,41 @@
+{
+  "partner": "Mercury Integrations",
+  "beneficialOwners": [
+    {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane.doe@example.com",
+      "dateOfBirth": "1990-01-15",
+      "address1": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA",
+      "postalCode": "94105",
+      "country": "US"
+    }
+  ],
+  "about": {
+    "legalBusinessName": "Test Corp Inc",
+    "description": "A test company for API validation",
+    "industry": "Technology",
+    "website": "https://testcorp.example.com",
+    "countryOfOperation": "US",
+    "countriesOfOperations": ["US"]
+  },
+  "applicationType": "DefaultApplication",
+  "inviteEmail": "admin@testcorp.example.com",
+  "businessContactDetails": {
+    "address1": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "postalCode": "94105",
+    "country": "US",
+    "phoneNumber": "+14155551234"
+  },
+  "businessLegalAddress": {
+    "address1": "123 Main St",
+    "city": "San Francisco",
+    "postalCode": "94105",
+    "region": "CA",
+    "country": "US"
+  }
+}

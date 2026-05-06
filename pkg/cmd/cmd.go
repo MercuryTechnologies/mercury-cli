@@ -313,6 +313,15 @@ func init() {
 					},
 				},
 			},
+			{
+				Name:     "onboarding",
+				Usage:    "Submit onboarding data for partner applications",
+				Category: "Resources",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&onboardingSubmit,
+				},
+			},
 			// CUSTOM: OAuth auth commands
 			&authLogin,
 			&authLogout,
