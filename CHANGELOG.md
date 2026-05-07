@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.1 (2026-05-07)
+
+Full Changelog: [v0.7.0...v0.7.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.0...v0.7.1)
+
+### Chores
+
+* **internal:** codegen related update ([eedb81c](https://github.com/MercuryTechnologies/mercury-cli/commit/eedb81c13f976d6b33a9e967b6fe05b53447d702))
+* **nix:** add Nix overlay ([#59](https://github.com/MercuryTechnologies/mercury-cli/issues/59)) ([6c16ea1](https://github.com/MercuryTechnologies/mercury-cli/commit/6c16ea1e77ed0b038b45ae16b95b9071d644bf90))
+* redact api-key headers in debug logs ([379473f](https://github.com/MercuryTechnologies/mercury-cli/commit/379473fd5e565cf76d4a86a95c590630a27b7ed4))
+
 ## 0.7.0 (2026-04-29)
 
 Full Changelog: [v0.6.14...v0.7.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.6.14...v0.7.0)
