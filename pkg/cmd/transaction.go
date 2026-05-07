@@ -51,6 +51,10 @@ var transactionsList = cli.Command{
 			Name:      "account-id",
 			QueryPath: "accountId",
 		},
+		&requestflag.Flag[[]string]{
+			Name:      "card-id",
+			QueryPath: "cardId",
+		},
 		&requestflag.Flag[string]{
 			Name:      "category-id",
 			Usage:     "UUID of a custom category. Can be returned from /categories endpoint.",
