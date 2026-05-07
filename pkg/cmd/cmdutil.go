@@ -388,11 +388,11 @@ func formatJSON(res gjson.Result, opts ShowJSONOpts) ([]byte, error) {
 			return nil, err
 		}
 
-      yamlBytes := []byte(yaml.String())
-      if shouldUseColors(opts.Stdout) {                                                                                                                                                                                  
-          return yamlcolor.Color(yamlBytes), nil
-      }                                                                                                                                                                                                                  
-      return yamlBytes, nil
+		yamlBytes := []byte(yaml.String())
+		if shouldUseColors(opts.Stdout) {
+			return yamlcolor.Color(yamlBytes), nil
+		}
+		return yamlBytes, nil
 	default:
 		return nil, fmt.Errorf("Invalid format: %s, valid formats are: %s", opts.Format, strings.Join(OutputFormats, ", "))
 	}

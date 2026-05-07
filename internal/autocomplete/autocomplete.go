@@ -284,4 +284,3 @@ func ExecuteShellCompletion(ctx context.Context, cmd *cli.Command) error {
 	}
 	return cli.Exit("", int(result.Behavior))
 }
-

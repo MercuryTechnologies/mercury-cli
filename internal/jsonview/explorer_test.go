@@ -130,7 +130,7 @@ func TestFormatObjectKey_StripsControlBytesFromKeyAndValue(t *testing.T) {
 	t.Parallel()
 
 	jsonBlob := mustEncodeJSON(t, map[string]string{
-		"key\x1b[2Jhost":  "value\x1b]52;c;evil\a",
+		"key\x1b[2Jhost": "value\x1b]52;c;evil\a",
 	})
 	root := gjson.ParseBytes(jsonBlob)
 	out := formatValue(root, false) // root is an object, hits formatObject → formatObjectKey

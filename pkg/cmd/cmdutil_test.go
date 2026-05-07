@@ -162,7 +162,6 @@ func TestValidateEnvironment(t *testing.T) {
 		require.NoError(t, ValidateEnvironment("sandbox", "--environment"))
 	})
 
-
 	t.Run("Empty", func(t *testing.T) {
 		t.Parallel()
 

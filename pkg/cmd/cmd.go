@@ -265,7 +265,7 @@ func init() {
 			},
 			{
 				Name:     "accounts",
-        Usage:    "View accounts, cards, and transactions",
+				Usage:    "View accounts, cards, and transactions",
 				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
