@@ -44,6 +44,7 @@ func TestTransactionsList(t *testing.T) {
 			"transactions", "list",
 			"--max-items", "10",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--card-id", "string",
 			"--category-id", "categoryId",
 			"--end", "end",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
