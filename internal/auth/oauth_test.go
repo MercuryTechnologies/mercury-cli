@@ -2,7 +2,7 @@ package auth
 
 import (
 	"bufio"
-  "context"
+	"context"
 	"net"
 	"net/http"
 	"net/http/httptest"

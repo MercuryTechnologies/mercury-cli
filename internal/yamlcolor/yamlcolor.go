@@ -6,16 +6,16 @@ import (
 	"github.com/goccy/go-yaml/printer"
 )
 
-// A palette that roughly mirrors tidwall/pretty's TerminalStyle, 
+// A palette that roughly mirrors tidwall/pretty's TerminalStyle,
 // so colored YAML and colored JSON look consistent side-by-side.
 // (a caveat: tidwall/pretty has special printing for null values,
 // but goccy/go-yaml does not.)
 const (
-	ansiReset     = "\x1b[0m"
-	ansiBoldBlue  = "\x1b[1m\x1b[94m"
-	ansiGreen     = "\x1b[32m"
-	ansiYellow    = "\x1b[33m"
-	ansiCyan      = "\x1b[36m"
+	ansiReset    = "\x1b[0m"
+	ansiBoldBlue = "\x1b[1m\x1b[94m"
+	ansiGreen    = "\x1b[32m"
+	ansiYellow   = "\x1b[33m"
+	ansiCyan     = "\x1b[36m"
 )
 
 func prop(prefix string) *printer.Property {
