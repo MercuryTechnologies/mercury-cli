@@ -126,7 +126,7 @@ var invoicesCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[float64]{
 			Name:       "line-item.unit-price",
-			Usage:      "A dollar amount",
+			Usage:      " the price of one unit of the item before sales tax",
 			InnerField: "unitPrice",
 		},
 		&requestflag.InnerFlag[*float64]{
@@ -238,7 +238,7 @@ var invoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[float64]{
 			Name:       "line-item.unit-price",
-			Usage:      "A dollar amount",
+			Usage:      " the price of one unit of the item before sales tax",
 			InnerField: "unitPrice",
 		},
 		&requestflag.InnerFlag[*float64]{
