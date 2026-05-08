@@ -8,6 +8,7 @@ import (
 
 	"github.com/goccy/go-yaml"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/urfave/cli/v3"
 )
 
@@ -1223,5 +1224,124 @@ func TestApplyStdinDataToFlags(t *testing.T) {
 		assert.NoError(t, ApplyStdinDataToFlags(cmd, map[string]any{}))
 
 		assert.False(t, flag.IsSet())
+	})
+
+	// Path parameters are interpolated raw into the request URL by the SDK.
+	// Piped path params must be validated; otherwise a stdin-controlled value
+	// containing path-meaning characters can redirect the request to a
+	// different endpoint than the operator's command implied (confused deputy
+	// under the operator's API key).
+
+	t.Run("rejects path-traversal sequence in piped path param", func(t *testing.T) {
+		t.Parallel()
+
+		flag := &Flag[string]{
+			Name:      "webhookEndpointId",
+			PathParam: "webhookEndpointId",
+		}
+		assert.NoError(t, flag.PreParse())
+
+		data := map[string]any{"webhookEndpointId": "x/../../account/Y/transactions"}
+		cmd := &cli.Command{Flags: []cli.Flag{flag}}
+		err := ApplyStdinDataToFlags(cmd, data)
+
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "webhookEndpointId")
+		assert.False(t, flag.IsSet())
+	})
+
+	t.Run("rejects URL-meaning characters in piped path param", func(t *testing.T) {
+		t.Parallel()
+
+		cases := []struct {
+			value string
+			match string
+		}{
+			{"wh_id/extra", "URL path separator"},
+			{`wh_id\extra`, "URL path separator"},
+			{"wh_id?query", "URL path separator"},
+			{"wh_id#fragment", "URL path separator"},
+		}
+		for _, tc := range cases {
+			tc := tc
+			t.Run(tc.value, func(t *testing.T) {
+				t.Parallel()
+				flag := &Flag[string]{
+					Name:      "id",
+					PathParam: "id",
+				}
+				assert.NoError(t, flag.PreParse())
+				data := map[string]any{"id": tc.value}
+				err := ApplyStdinDataToFlags(&cli.Command{Flags: []cli.Flag{flag}}, data)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tc.match)
+				assert.False(t, flag.IsSet())
+			})
+		}
+	})
+
+	t.Run("rejects control byte in piped path param", func(t *testing.T) {
+		t.Parallel()
+
+		flag := &Flag[string]{
+			Name:      "id",
+			PathParam: "id",
+		}
+		assert.NoError(t, flag.PreParse())
+
+		data := map[string]any{"id": "wh_id\rfoo"}
+		err := ApplyStdinDataToFlags(&cli.Command{Flags: []cli.Flag{flag}}, data)
+
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "control byte")
+		assert.False(t, flag.IsSet())
+	})
+
+	t.Run("accepts opaque ID shapes in piped path param", func(t *testing.T) {
+		t.Parallel()
+
+		// Concrete identifier shapes Mercury actually returns: prefixed alnum,
+		// UUIDs, dotted versions. None of these contain URL-meaning bytes,
+		// so the validator must accept them.
+		cases := []string{
+			"wh_abc123",
+			"acct_zZ_99-aa",
+			"550e8400-e29b-41d4-a716-446655440000",
+			"customer_id_v1.2.3",
+		}
+		for _, value := range cases {
+			value := value
+			t.Run(value, func(t *testing.T) {
+				t.Parallel()
+				flag := &Flag[string]{
+					Name:      "id",
+					PathParam: "id",
+				}
+				assert.NoError(t, flag.PreParse())
+				data := map[string]any{"id": value}
+				assert.NoError(t, ApplyStdinDataToFlags(&cli.Command{Flags: []cli.Flag{flag}}, data))
+				assert.True(t, flag.IsSet())
+				assert.Equal(t, value, flag.Get())
+			})
+		}
+	})
+
+	t.Run("path-param validation does not affect query or header from piped data", func(t *testing.T) {
+		t.Parallel()
+
+		// Slash, "..", and "?" are legitimate in some query/header values.
+		// Validation is intentionally scoped to PathParam; query/header
+		// values flow through the standard Set/encoder path.
+		queryFlag := &Flag[string]{Name: "q", QueryPath: "q"}
+		headerFlag := &Flag[string]{Name: "h", HeaderPath: "h"}
+		assert.NoError(t, queryFlag.PreParse())
+		assert.NoError(t, headerFlag.PreParse())
+
+		data := map[string]any{"q": "with/slash?x=1", "h": "value/with/slash"}
+		cmd := &cli.Command{Flags: []cli.Flag{queryFlag, headerFlag}}
+		assert.NoError(t, ApplyStdinDataToFlags(cmd, data))
+
+		assert.Equal(t, "with/slash?x=1", queryFlag.Get())
+		assert.Equal(t, "value/with/slash", headerFlag.Get())
 	})
 }

@@ -13,6 +13,34 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+// validatePathParamValue rejects values that could escape URL path interpolation.
+// PathParam values are interpolated raw into the request URL path; mercury-go
+// then feeds the result to (*url.URL).Parse, which treats "/", "?", "#" as
+// segment / query / fragment boundaries and collapses ".." segments. A value
+// containing any of these can redirect the request to a different endpoint
+// under the operator's API key.
+//
+// Mercury OpenAPI path parameters are opaque identifiers ("wh_…", "acct_…",
+// UUIDs, numeric IDs, etc.) and never legitimately contain URL-meaning bytes,
+// dot-segment sequences, or control bytes.
+func validatePathParamValue(s string) error {
+	if s == "" {
+		return fmt.Errorf("empty value")
+	}
+	if strings.ContainsAny(s, "/\\?#") {
+		return fmt.Errorf("contains URL path separator or boundary character")
+	}
+	if strings.Contains(s, "..") {
+		return fmt.Errorf("contains traversal sequence %q", "..")
+	}
+	for _, r := range s {
+		if r < 0x20 || r == 0x7f {
+			return fmt.Errorf("contains control byte (0x%02X)", r)
+		}
+	}
+	return nil
+}
+
 // formatForFlagSet converts a Go value parsed from YAML/JSON stdin data into a string
 // that flag.Set (and thus parseCLIArg) can parse correctly for each flag type.
 // Strings are returned as-is (parseCLIArg[string] assigns the raw value directly, so
@@ -192,13 +220,25 @@ func ApplyStdinDataToFlags(cmd *cli.Command, data map[string]any) error {
 
 		// Try each request location in turn, checking the canonical path key and all aliases.
 		// Body params are excluded: they are already handled by the maps.Copy merge in flagOptions.
-		for _, path := range []string{inReq.GetQueryPath(), inReq.GetHeaderPath(), inReq.GetPathParam()} {
-			if path == "" {
+		// PathParam values from piped data are validated before assignment because they are
+		// interpolated raw into the request URL path: a value containing "/", "..", "?", or
+		// control bytes can redirect the request to a different endpoint than the command
+		// implied. CLI-supplied path params keep their existing path through flag.Set.
+		locations := []struct {
+			path string
+			kind string
+		}{
+			{inReq.GetQueryPath(), "query"},
+			{inReq.GetHeaderPath(), "header"},
+			{inReq.GetPathParam(), "path"},
+		}
+		for _, loc := range locations {
+			if loc.path == "" {
 				continue
 			}
 			var val any
 			var found bool
-			for _, key := range append([]string{path}, inReq.GetDataAliases()...) {
+			for _, key := range append([]string{loc.path}, inReq.GetDataAliases()...) {
 				if v, ok := data[key]; ok {
 					val, found = v, true
 					break
@@ -210,6 +250,11 @@ func ApplyStdinDataToFlags(cmd *cli.Command, data map[string]any) error {
 			setVal, err := formatForFlagSet(val)
 			if err != nil {
 				return fmt.Errorf("cannot format piped value for flag %q: %w", flag.Names()[0], err)
+			}
+			if loc.kind == "path" {
+				if err := validatePathParamValue(setVal); err != nil {
+					return fmt.Errorf("path param %q from piped data: %w", flag.Names()[0], err)
+				}
 			}
 			if err := flag.Set(flag.Names()[0], setVal); err != nil {
 				return fmt.Errorf("cannot set flag %q from piped data: %w", flag.Names()[0], err)
