@@ -38,7 +38,13 @@ func formatJSON(json gjson.Result, width int) string {
 func formatResult(result gjson.Result, indent, width int) string {
 	switch result.Type {
 	case gjson.String:
-		str := result.Str
+		// Strip C0/C1 control bytes before rendering. lipgloss only wraps
+		// styling around the value; it does not sanitize the underlying
+		// bytes, so server-supplied string values can carry ANSI escapes,
+		// CR, BEL, OSC sequences etc. into the user's terminal. Mirrors
+		// the explorer-mode strip from #51 for the static `pretty` render
+		// path. See stripControlBytes in explorer.go for rationale.
+		str := stripControlBytes(result.Str)
 		if str == "" {
 			return nullValueStyle.Render("(empty)")
 		}
@@ -60,7 +66,7 @@ func formatResult(result gjson.Result, indent, width int) string {
 		}
 		return formatJSONObject(result, indent, width)
 	default:
-		return stringValueStyle.Render(result.String())
+		return stringValueStyle.Render(stripControlBytes(result.String()))
 	}
 }
 
@@ -104,7 +110,11 @@ func formatJSONObject(result gjson.Result, indent, width int) string {
 	var items []string
 	for _, key := range keys {
 		value := result.Get(key.String())
-		keyStr := getIndent(indent) + keyStyle.Render(key.String()+":")
+		// Strip control bytes from object keys for the same reason as values:
+		// the rendered key still ends up in the user's terminal and lipgloss
+		// does not sanitize the wrapped bytes. See stripControlBytes in
+		// explorer.go for rationale.
+		keyStr := getIndent(indent) + keyStyle.Render(stripControlBytes(key.String())+":")
 		// If item will be a one-liner, put it inline after the key, otherwise
 		// it starts with a newline and goes below the key.
 		itemWidth := width
