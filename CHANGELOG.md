@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2 (2026-05-13)
+
+Full Changelog: [v0.7.1...v0.7.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.1...v0.7.2)
+
+### Chores
+
+* update OpenAPI spec from b8efe25c41c7115523ba02ee534fbbc8230ff942 ([c8eacd4](https://github.com/MercuryTechnologies/mercury-cli/commit/c8eacd45c70191b3ee0cb7def71b27a560593bba))
+
 ## 0.7.1 (2026-05-07)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.0...v0.7.1)
