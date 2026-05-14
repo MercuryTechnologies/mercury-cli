@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.3 (2026-05-14)
+
+Full Changelog: [v0.7.2...v0.7.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.2...v0.7.3)
+
+### Chores
+
+* **internal:** codegen related update ([e7a7852](https://github.com/MercuryTechnologies/mercury-cli/commit/e7a7852211ef8fd3d5cfb9d208c904e449ff85ff))
+* **internal:** codegen related update ([7eee3c9](https://github.com/MercuryTechnologies/mercury-cli/commit/7eee3c96dd369926e2b9ae8633d91899669efd8e))
+* update OpenAPI spec from 0cde29c1f4502d1067f547752b695d75aa4f0dd9 ([6364784](https://github.com/MercuryTechnologies/mercury-cli/commit/6364784daad3c3ce7da2608e0f9cd963194499b3))
+
 ## 0.7.2 (2026-05-13)
 
 Full Changelog: [v0.7.1...v0.7.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.1...v0.7.2)
