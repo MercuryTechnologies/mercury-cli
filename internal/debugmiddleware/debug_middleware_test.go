@@ -272,7 +272,7 @@ func TestDebugMiddleware(t *testing.T) {
 		const bodyContent = "downstream-must-still-read-this"
 
 		req := httptest.NewRequest("GET", "https://example.com", nil)
-		var capturedBody string
+		var captured *http.Response
 		middleware.Middleware()(req, func(req *http.Request) (*http.Response, error) {
 			resp := &http.Response{
 				StatusCode: http.StatusOK,
@@ -282,19 +282,13 @@ func TestDebugMiddleware(t *testing.T) {
 			}
 			// Force a redaction path by including a sensitive header.
 			resp.Header.Set("Set-Cookie", "x=y")
-
-			result := resp
-			middleware.Middleware()(req, func(_ *http.Request) (*http.Response, error) {
-				return resp, nil
-			})
-
-			body, err := io.ReadAll(result.Body)
-			require.NoError(t, err)
-			capturedBody = string(body)
+			captured = resp
 			return resp, nil
 		})
 
-		require.Equal(t, bodyContent, capturedBody)
+		body, err := io.ReadAll(captured.Body)
+		require.NoError(t, err)
+		require.Equal(t, bodyContent, string(body))
 	})
 
 	t.Run("DoesNotRedactNonSensitiveResponseHeaders", func(t *testing.T) {
