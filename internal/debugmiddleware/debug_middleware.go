@@ -57,20 +57,21 @@ func (m *RequestLogger) Middleware() Middleware {
 			return resp, err
 		}
 
-		if respBytes, err := httputil.DumpResponse(resp, true); err == nil {
-			m.logger.Printf("Response Content:\n%s\n", respBytes)
+		if err := m.dumpRedactedResponse(resp); err != nil {
+			return resp, err
 		}
 
 		return resp, err
 	}
 }
 
-// redactRequest redacts sensitive information from the request for logging
-// purposes. If redaction is necessary, the request is cloned before mutating
-// the original and that clone is returned. As a small optimization, the
-// original is request is returned unchanged if no redaction is necessary.
-func (m *RequestLogger) redactRequest(req *http.Request) (*http.Request, error) {
-	redactedHeaders := req.Header.Clone()
+// redactHeaders returns a clone of h with sensitive headers replaced by the
+// placeholder. Authorization is redacted with its token-kind prefix preserved
+// (e.g. "Bearer <REDACTED>"). Every header in m.sensitiveHeaders is replaced
+// in full. The clone is always allocated so callers can compare the result to
+// the original to detect whether any redaction actually occurred.
+func (m *RequestLogger) redactHeaders(h http.Header) http.Header {
+	redactedHeaders := h.Clone()
 
 	// Notably, the clauses below are written so they can redact multiple
 	// headers of the same name if necessary.
@@ -102,6 +103,16 @@ func (m *RequestLogger) redactRequest(req *http.Request) (*http.Request, error) 
 		}
 	}
 
+	return redactedHeaders
+}
+
+// redactRequest redacts sensitive information from the request for logging
+// purposes. If redaction is necessary, the request is cloned before mutating
+// the original and that clone is returned. As a small optimization, the
+// original is request is returned unchanged if no redaction is necessary.
+func (m *RequestLogger) redactRequest(req *http.Request) (*http.Request, error) {
+	redactedHeaders := m.redactHeaders(req.Header)
+
 	if reflect.DeepEqual(req.Header, redactedHeaders) {
 		return req, nil
 	}
@@ -111,6 +122,38 @@ func (m *RequestLogger) redactRequest(req *http.Request) (*http.Request, error) 
 	var err error
 	redacted.Body, req.Body, err = cloneBody(req.Body)
 	return redacted, err
+}
+
+// dumpRedactedResponse logs the response with sensitive headers redacted.
+// `set-cookie` is on `sensitiveHeaders` because Mercury's API session cookie
+// (HttpOnly+Secure+SameSite=Strict, e.g. `_SESSION=...`) appears on every
+// authenticated response. Without redaction the cookie surfaces verbatim in
+// `--debug` output, which is commonly archived in CI logs and developer
+// shell history. The previous implementation only redacted request headers;
+// this mirrors the same redaction on the response. Body bytes are buffered
+// via cloneBody so the downstream caller can still consume `resp.Body` after
+// the dump, matching the original behavior.
+func (m *RequestLogger) dumpRedactedResponse(resp *http.Response) error {
+	redactedHeaders := m.redactHeaders(resp.Header)
+
+	if reflect.DeepEqual(resp.Header, redactedHeaders) {
+		if respBytes, err := httputil.DumpResponse(resp, true); err == nil {
+			m.logger.Printf("Response Content:\n%s\n", respBytes)
+		}
+		return nil
+	}
+
+	respClone := *resp
+	respClone.Header = redactedHeaders
+	var err error
+	respClone.Body, resp.Body, err = cloneBody(resp.Body)
+	if err != nil {
+		return err
+	}
+	if respBytes, dumpErr := httputil.DumpResponse(&respClone, true); dumpErr == nil {
+		m.logger.Printf("Response Content:\n%s\n", respBytes)
+	}
+	return nil
 }
 
 // This function returns two copies of an HTTP request body that can each be

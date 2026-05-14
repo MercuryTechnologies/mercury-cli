@@ -198,4 +198,119 @@ func TestDebugMiddleware(t *testing.T) {
 		require.True(t, nextMiddlewareRan)
 		require.Contains(t, logBuf.String(), "Authorization: "+redactedPlaceholder)
 	})
+
+	// Response headers carry the same classes of secrets that the request-side
+	// list redacts. `set-cookie` is on `sensitiveHeaders` because Mercury's
+	// API session cookie (HttpOnly+Secure+SameSite=Strict) appears on every
+	// authenticated response. Without redaction the cookie surfaces verbatim
+	// in `--debug` output, which is commonly archived in CI logs.
+
+	t.Run("RedactsSensitiveResponseHeaders", func(t *testing.T) {
+		t.Parallel()
+
+		middleware, logBuf := setup()
+
+		const sessionCookie = "_SESSION=4hl5Nz9ATGm8CVMkQ7c; Path=/; HttpOnly; Secure; SameSite=Strict"
+		const apiKeyResp = "key-leaked-in-response"
+
+		req := httptest.NewRequest("GET", "https://example.com", nil)
+		middleware.Middleware()(req, func(req *http.Request) (*http.Response, error) {
+			resp := &http.Response{
+				StatusCode: http.StatusOK,
+				ProtoMajor: 1, ProtoMinor: 1,
+				Header: http.Header{},
+				Body:   io.NopCloser(strings.NewReader("")),
+			}
+			resp.Header.Add("Set-Cookie", sessionCookie)
+			resp.Header.Add("api-key", apiKeyResp)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		})
+
+		out := logBuf.String()
+		// Sensitive response headers must be redacted in the dump.
+		require.NotContains(t, out, sessionCookie)
+		require.NotContains(t, out, apiKeyResp)
+		require.Contains(t, out, "Set-Cookie: "+redactedPlaceholder)
+		require.Contains(t, out, "Api-Key: "+redactedPlaceholder)
+		// Non-sensitive headers must remain intact.
+		require.Contains(t, out, "Content-Type: application/json")
+	})
+
+	t.Run("DoesNotMutateOriginalResponseHeaders", func(t *testing.T) {
+		t.Parallel()
+
+		middleware, _ := setup()
+
+		const sessionCookie = "_SESSION=raw-value"
+		req := httptest.NewRequest("GET", "https://example.com", nil)
+
+		var capturedResp *http.Response
+		middleware.Middleware()(req, func(req *http.Request) (*http.Response, error) {
+			resp := &http.Response{
+				StatusCode: http.StatusOK,
+				ProtoMajor: 1, ProtoMinor: 1,
+				Header: http.Header{},
+				Body:   io.NopCloser(strings.NewReader("")),
+			}
+			resp.Header.Set("Set-Cookie", sessionCookie)
+			capturedResp = resp
+			return resp, nil
+		})
+
+		// The downstream consumer must still see the unredacted Set-Cookie value
+		// on the actual response — redaction only applies to the dumped log output.
+		require.NotNil(t, capturedResp)
+		require.Equal(t, sessionCookie, capturedResp.Header.Get("Set-Cookie"))
+	})
+
+	t.Run("DoesNotConsumeResponseBody", func(t *testing.T) {
+		t.Parallel()
+
+		middleware, _ := setup()
+
+		const bodyContent = "downstream-must-still-read-this"
+
+		req := httptest.NewRequest("GET", "https://example.com", nil)
+		var captured *http.Response
+		middleware.Middleware()(req, func(req *http.Request) (*http.Response, error) {
+			resp := &http.Response{
+				StatusCode: http.StatusOK,
+				ProtoMajor: 1, ProtoMinor: 1,
+				Header: http.Header{},
+				Body:   io.NopCloser(strings.NewReader(bodyContent)),
+			}
+			// Force a redaction path by including a sensitive header.
+			resp.Header.Set("Set-Cookie", "x=y")
+			captured = resp
+			return resp, nil
+		})
+
+		body, err := io.ReadAll(captured.Body)
+		require.NoError(t, err)
+		require.Equal(t, bodyContent, string(body))
+	})
+
+	t.Run("DoesNotRedactNonSensitiveResponseHeaders", func(t *testing.T) {
+		t.Parallel()
+
+		middleware, logBuf := setup()
+
+		req := httptest.NewRequest("GET", "https://example.com", nil)
+		middleware.Middleware()(req, func(req *http.Request) (*http.Response, error) {
+			resp := &http.Response{
+				StatusCode: http.StatusOK,
+				ProtoMajor: 1, ProtoMinor: 1,
+				Header: http.Header{},
+				Body:   io.NopCloser(strings.NewReader("")),
+			}
+			resp.Header.Set("X-Mercury-Request-Id", "trace-abc-123")
+			resp.Header.Set("Content-Type", "application/json; charset=utf-8")
+			return resp, nil
+		})
+
+		out := logBuf.String()
+		require.Contains(t, out, "X-Mercury-Request-Id: trace-abc-123")
+		require.Contains(t, out, "Content-Type: application/json; charset=utf-8")
+	})
 }
