@@ -11,9 +11,16 @@ package cmd
 // If Stainless renames a variable, the compiler will tell you here.
 
 import (
+	"context"
+	"fmt"
+	"os"
 	"reflect"
 
+	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
+	mercury "github.com/MercuryTechnologies/mercury-go"
+	"github.com/MercuryTechnologies/mercury-go/option"
+	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
 )
 
@@ -203,9 +210,67 @@ func init() {
 	usersList.Usage = "List organization team members (supports pagination)"
 	usersGet.Usage = "Get a team member by ID"
 
+	// onboarding
+	for _, f := range onboardingSubmit.Flags {
+		if rf, ok := f.(*requestflag.Flag[string]); ok && rf.Name == "partner" {
+			rf.Hidden = true
+			rf.Required = false
+			rf.Const = true
+			rf.Default = "Mercury Integrations"
+			break
+		}
+	}
+
+	// Override onboarding submit to display the signup link prominently.
+	onboardingSubmit.Action = onboardingSubmitOverride
+
 	// webhooks
 	webhooksList.Usage = "List webhook endpoints (supports pagination)"
 	webhooksGet.Usage = "Get a webhook endpoint by ID"
 	webhooksVerify.Usage = "Send a test event to verify a webhook endpoint"
 	webhooksUpdate.Usage = "Update a webhook endpoint's configuration"
+}
+
+func onboardingSubmitOverride(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	if len(cmd.Args().Slice()) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", cmd.Args().Slice())
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := mercury.OnboardingSubmitParams{}
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Onboarding.Submit(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	if link := obj.Get("signupLink"); link.Exists() {
+		fmt.Fprintf(os.Stdout, "\n  Open this link to continue your Mercury application:\n\n")
+		fmt.Fprintf(os.Stdout, "  \033[1;4m%s\033[0m\n\n", link.String())
+		return nil
+	}
+
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "onboarding submit",
+		Transform:      transform,
+	})
 }
