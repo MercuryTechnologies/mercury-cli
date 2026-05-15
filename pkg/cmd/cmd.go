@@ -320,6 +320,14 @@ func init() {
 			// CUSTOM: self-upgrade command
 			&upgrade,
 			{
+				Name:     "onboarding",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&onboardingSubmit,
+				},
+			},
+			{
 				Name:            "@manpages",
 				Usage:           "Generate documentation for 'man'",
 				UsageText:       "mercury @manpages [-o mercury.1] [--gzip]",
