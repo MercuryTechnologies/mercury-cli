@@ -24,6 +24,8 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+func ptr[T any](v T) *T { return &v }
+
 // setFlagUsage overwrites the Usage text of a named flag on a command. It uses
 // reflection so one helper works across all generic `requestflag.Flag[T]`
 // instantiations without a per-type switch. Silently no-ops if the flag is
@@ -212,12 +214,23 @@ func init() {
 
 	// onboarding
 	for _, f := range onboardingSubmit.Flags {
-		if rf, ok := f.(*requestflag.Flag[string]); ok && rf.Name == "partner" {
-			rf.Hidden = true
-			rf.Required = false
-			rf.Const = true
-			rf.Default = "Mercury Integrations"
-			break
+		switch rf := f.(type) {
+		case *requestflag.Flag[string]:
+			if rf.Name == "partner" {
+				rf.Hidden = true
+				rf.Required = false
+				rf.Const = true
+				rf.Default = "Mercury Integrations"
+			}
+		case *requestflag.Flag[*string]:
+			switch rf.Name {
+			case "application-type":
+				rf.Hidden = true
+				rf.Const = true
+				rf.Default = ptr("DefaultApplication")
+			case "webhook-url":
+				rf.Hidden = true
+			}
 		}
 	}
 
