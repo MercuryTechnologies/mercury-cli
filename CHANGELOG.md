@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.0 (2026-05-15)
+
+Full Changelog: [v0.7.3...v0.8.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.3...v0.8.0)
+
+### Features
+
+* **api:** manual updates ([6c80e34](https://github.com/MercuryTechnologies/mercury-cli/commit/6c80e34a904cb550d74d09206793db155ed4f77b))
+* **api:** manual updates for onboarding api ([de3424e](https://github.com/MercuryTechnologies/mercury-cli/commit/de3424e8c5d607d520d719f5e4ec250c6df62276))
+
+
+### Chores
+
+* update OpenAPI spec from fa9ecd521cf1448c5b2f23cede689f99ade606b9 ([437aa43](https://github.com/MercuryTechnologies/mercury-cli/commit/437aa43f3388e09972e8e701382621e4b706586c))
+
 ## 0.7.3 (2026-05-14)
 
 Full Changelog: [v0.7.2...v0.7.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.7.2...v0.7.3)
