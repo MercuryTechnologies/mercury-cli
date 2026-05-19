@@ -65,6 +65,9 @@ func init() {
 			sub.Usage = "Send money, request approvals, and transfer between accounts"
 		case "treasury":
 			sub.Usage = "View treasury accounts and transactions"
+		case "onboarding":
+			sub.Usage = "Use the CLI to help you get started on creating a Mercury account"
+			sub.Category = "Create Account"
 		}
 	}
 
@@ -233,6 +236,15 @@ func init() {
 			}
 		}
 	}
+
+	// onboarding submit flags
+	setFlagUsage(&onboardingSubmit, "beneficial-owner", "Beneficial owner details (name, address, ID, ownership %)")
+	setFlagUsage(&onboardingSubmit, "about", "Company info (name, industry, description, website)")
+	setFlagUsage(&onboardingSubmit, "business-contact-details", "Business contact address and phone number")
+	setFlagUsage(&onboardingSubmit, "business-legal-address", "Registered legal address of the business")
+	setFlagUsage(&onboardingSubmit, "business-physical-address", "Physical/mailing address of the business")
+	setFlagUsage(&onboardingSubmit, "formation-details", "EIN, company structure, and formation documents")
+	setFlagUsage(&onboardingSubmit, "invite-email", "Email address to send the application invite to")
 
 	// Override onboarding submit to display the signup link prominently.
 	onboardingSubmit.Action = onboardingSubmitOverride
