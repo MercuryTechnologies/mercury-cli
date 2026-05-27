@@ -1,4 +1,4 @@
 configured_endpoints: 53
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/MercuryTechnologies/mercury-01418a04c115f3596b65782a11fe1d85b114700ef7ba3d9b1d344f16fe3c8759.yml
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/MercuryTechnologies/mercury-de4d0ed64eed4f4cba7b3836e3360b0403b5ce28a049b0d0d0255db93dc0af25.yml
 openapi_spec_hash: c0cd5e48ac6dda89b693d9b842bf6c25
-config_hash: c65c1aa3dad335589efc426a4ac5280a
+config_hash: e1785dd0cea1dd1256f4b71660c9a579
