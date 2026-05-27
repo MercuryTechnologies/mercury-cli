@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.0 (2026-05-27)
+
+Full Changelog: [v0.8.2...v0.9.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.8.2...v0.9.0)
+
+### Features
+
+* **api:** manual updates ([08cdb59](https://github.com/MercuryTechnologies/mercury-cli/commit/08cdb5952089ebd3a3eec6dd1a8a2e1f7001e8a9))
+* **api:** manual updates ([23375f4](https://github.com/MercuryTechnologies/mercury-cli/commit/23375f464265f6d25affcc3114393c4f5d80935b))
+
+
+### Chores
+
+* bump flake vendorHash for mercury-go 0.10.0 ([bd7ba9b](https://github.com/MercuryTechnologies/mercury-cli/commit/bd7ba9b839215974b20b63cc8de4c8d3f8115c08))
+
 ## 0.8.2 (2026-05-19)
 
 Full Changelog: [v0.8.1...v0.8.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.8.1...v0.8.2)
