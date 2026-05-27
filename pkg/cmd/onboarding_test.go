@@ -9,13 +9,13 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
 )
 
-func TestOnboardingSubmit1(t *testing.T) {
+func TestOnboardingSubmit(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"onboarding", "submit1",
+			"onboarding", "submit",
 			"--beneficial-owner", "{address1: address1, address2: address2, citizenshipStatus: USCitizen, city: city, country: country, dateOfBirth: '2016-07-22', email: email, firstName: firstName, identificationBlob: identificationBlob, identificationType: Passport, isPep: IsPep, jobTitle: ChiefExecutiveOfficer, lastName: lastName, otherJobTitle: otherJobTitle, percentOwnership: 0, phoneNumber: phoneNumber, postalCode: postalCode, region: region, socialProfileLinks: [string], state: state}",
 			"--partner", "partner",
 			"--about", "{countriesOfOperations: [string], countryOfOperation: countryOfOperation, description: description, industry: industry, legalBusinessName: legalBusinessName, website: website}",
@@ -31,13 +31,13 @@ func TestOnboardingSubmit1(t *testing.T) {
 
 	t.Run("inner flags", func(t *testing.T) {
 		// Check that inner flags have been set up correctly
-		requestflag.CheckInnerFlags(onboardingSubmit1)
+		requestflag.CheckInnerFlags(onboardingSubmit)
 
 		// Alternative argument passing style using inner flags
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"onboarding", "submit1",
+			"onboarding", "submit",
 			"--beneficial-owner.address1", "address1",
 			"--beneficial-owner.address2", "address2",
 			"--beneficial-owner.citizenship-status", "USCitizen",
@@ -169,7 +169,7 @@ func TestOnboardingSubmit1(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"onboarding", "submit1",
+			"onboarding", "submit",
 		)
 	})
 }
