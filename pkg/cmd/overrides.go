@@ -65,11 +65,26 @@ func init() {
 			sub.Usage = "Send money, request approvals, and transfer between accounts"
 		case "treasury":
 			sub.Usage = "View treasury accounts and transactions"
-		case "onboarding":
-			sub.Usage = "Use the CLI to help you get started on creating a Mercury account"
-			sub.Category = "Create Account"
 		}
 	}
+
+	// ── Flatten `onboarding apply` to a top-level `mercury apply` command ─────
+	//
+	// Stainless generates the apply method nested under an `onboarding` resource
+	// wrapper (i.e. `mercury onboarding apply`). We hoist it to the top level so
+	// the CLI exposes `mercury apply` directly, dropping the wrapper. The
+	// generated onboarding_test.go only references onboardingApply for compile
+	// checks (its mock-server runs are t.Skip-ed), so removing the wrapper is safe.
+	onboardingApply.Usage = "Get started applying to Mercury"
+	onboardingApply.Category = "Onboarding"
+	flattened := make([]*cli.Command, 0, len(Command.Commands))
+	for _, sub := range Command.Commands {
+		if sub.Name == "onboarding" {
+			continue
+		}
+		flattened = append(flattened, sub)
+	}
+	Command.Commands = append(flattened, &onboardingApply)
 
 	// ── Global flag overrides ────────────────────────────────────────────────
 	for _, f := range Command.Flags {

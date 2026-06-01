@@ -137,7 +137,7 @@ func renderCustomHelp(w io.Writer, cmd *cli.Command) {
 	}
 	groups := []group{}
 	groupMap := map[string]int{}
-	for _, cat := range []string{"Auth", "Create Account", "Resources", "Utility"} {
+	for _, cat := range []string{"Auth", "Onboarding", "Resources", "Utility"} {
 		groupMap[cat] = len(groups)
 		groups = append(groups, group{title: cat})
 	}
