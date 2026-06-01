@@ -14,8 +14,8 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var onboardingSubmit = requestflag.WithInnerFlags(cli.Command{
-	Name:    "submit",
+var onboardingApply = requestflag.WithInnerFlags(cli.Command{
+	Name:    "apply",
 	Usage:   "Submit onboarding data for applicants to pre-fill their Mercury application",
 	Suggest: true,
 	Flags: []cli.Flag{
@@ -63,7 +63,7 @@ var onboardingSubmit = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "webhookURL",
 		},
 	},
-	Action:          handleOnboardingSubmit,
+	Action:          handleOnboardingApply,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
 	"beneficial-owner": {
@@ -317,7 +317,7 @@ var onboardingSubmit = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
-func handleOnboardingSubmit(ctx context.Context, cmd *cli.Command) error {
+func handleOnboardingApply(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
 
@@ -336,11 +336,11 @@ func handleOnboardingSubmit(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	params := mercury.OnboardingSubmitParams{}
+	params := mercury.OnboardingApplyParams{}
 
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Onboarding.Submit(ctx, params, options...)
+	_, err = client.Onboarding.Apply(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -353,7 +353,7 @@ func handleOnboardingSubmit(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "onboarding submit",
+		Title:          "onboarding apply",
 		Transform:      transform,
 	})
 }
