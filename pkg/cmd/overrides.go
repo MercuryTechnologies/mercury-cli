@@ -216,7 +216,7 @@ func init() {
 	usersGet.Usage = "Get a team member by ID"
 
 	// onboarding
-	for _, f := range onboardingSubmit.Flags {
+	for _, f := range onboardingApply.Flags {
 		switch rf := f.(type) {
 		case *requestflag.Flag[string]:
 			if rf.Name == "partner" {
@@ -237,17 +237,17 @@ func init() {
 		}
 	}
 
-	// onboarding submit flags
-	setFlagUsage(&onboardingSubmit, "beneficial-owner", "Beneficial owner details (name, address, ID, ownership %)")
-	setFlagUsage(&onboardingSubmit, "about", "Company info (name, industry, description, website)")
-	setFlagUsage(&onboardingSubmit, "business-contact-details", "Business contact address and phone number")
-	setFlagUsage(&onboardingSubmit, "business-legal-address", "Registered legal address of the business")
-	setFlagUsage(&onboardingSubmit, "business-physical-address", "Physical/mailing address of the business")
-	setFlagUsage(&onboardingSubmit, "formation-details", "EIN, company structure, and formation documents")
-	setFlagUsage(&onboardingSubmit, "invite-email", "Email address to send the application invite to")
+	// onboarding apply flags
+	setFlagUsage(&onboardingApply, "beneficial-owner", "Beneficial owner details (name, address, ID, ownership %)")
+	setFlagUsage(&onboardingApply, "about", "Company info (name, industry, description, website)")
+	setFlagUsage(&onboardingApply, "business-contact-details", "Business contact address and phone number")
+	setFlagUsage(&onboardingApply, "business-legal-address", "Registered legal address of the business")
+	setFlagUsage(&onboardingApply, "business-physical-address", "Physical/mailing address of the business")
+	setFlagUsage(&onboardingApply, "formation-details", "EIN, company structure, and formation documents")
+	setFlagUsage(&onboardingApply, "invite-email", "Email address to send the application invite to")
 
-	// Override onboarding submit to display the signup link prominently.
-	onboardingSubmit.Action = onboardingSubmitOverride
+	// Override onboarding apply to display the signup link prominently.
+	onboardingApply.Action = onboardingApplyOverride
 
 	// webhooks
 	webhooksList.Usage = "List webhook endpoints (supports pagination)"
@@ -256,7 +256,7 @@ func init() {
 	webhooksUpdate.Usage = "Update a webhook endpoint's configuration"
 }
 
-func onboardingSubmitOverride(ctx context.Context, cmd *cli.Command) error {
+func onboardingApplyOverride(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	if len(cmd.Args().Slice()) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", cmd.Args().Slice())
@@ -273,10 +273,10 @@ func onboardingSubmitOverride(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	params := mercury.OnboardingSubmitParams{}
+	params := mercury.OnboardingApplyParams{}
 	var res []byte
 	options = append(options, option.WithResponseBodyInto(&res))
-	_, err = client.Onboarding.Submit(ctx, params, options...)
+	_, err = client.Onboarding.Apply(ctx, params, options...)
 	if err != nil {
 		return err
 	}
@@ -295,7 +295,7 @@ func onboardingSubmitOverride(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "onboarding submit",
+		Title:          "onboarding apply",
 		Transform:      transform,
 	})
 }
