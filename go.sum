@@ -1,5 +1,5 @@
-github.com/MercuryTechnologies/mercury-go v0.12.0 h1:YLPPDUC9/QDdWKs8dZ2tJhEhEso5mrHzNNqwy682PiM=
-github.com/MercuryTechnologies/mercury-go v0.12.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.12.1 h1:wgmJzK8OsoNK6kEvG7/Aai0O/9bNuDOr0qkX7YCug8w=
+github.com/MercuryTechnologies/mercury-go v0.12.1/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=
