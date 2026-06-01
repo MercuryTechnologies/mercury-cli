@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.2 (2026-06-01)
+
+Full Changelog: [v0.9.1...v0.9.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.1...v0.9.2)
+
+### Bug Fixes
+
+* surface onboarding apply as top-level mercury apply command ([6951b9e](https://github.com/MercuryTechnologies/mercury-cli/commit/6951b9e6d231763650d228b086858aa1b0e2341c))
+
 ## 0.9.1 (2026-06-01)
 
 Full Changelog: [v0.9.0...v0.9.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.0...v0.9.1)
