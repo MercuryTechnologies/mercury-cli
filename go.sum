@@ -1,15 +1,7 @@
 al.essio.dev/pkg/shellescape v1.5.1 h1:86HrALUujYS/h+GtqoB26SBEdkWfmMI6FubjXlsXyho=
 al.essio.dev/pkg/shellescape v1.5.1/go.mod h1:6sIqp7X2P6mThCQ7twERpZTuigpr6KbZWtls1U8I890=
-github.com/MercuryTechnologies/mercury-go v0.6.3 h1:2Q8PyE3FLqy5aO37pbac+pbXKiMTYJC0xc1yviakWJ8=
-github.com/MercuryTechnologies/mercury-go v0.6.3/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
-github.com/MercuryTechnologies/mercury-go v0.7.0 h1:G7S6lgaS5DhAvdnVSNh9PrfkqVVJmiPrwDF3q6fWU04=
-github.com/MercuryTechnologies/mercury-go v0.7.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
-github.com/MercuryTechnologies/mercury-go v0.8.0 h1:SCAJyJG3xW5H+9casF6DKz/G0z99uFpnVNISciVgdeU=
-github.com/MercuryTechnologies/mercury-go v0.8.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
-github.com/MercuryTechnologies/mercury-go v0.9.0 h1:iPf1pAlu67tyhdgpPbbXILxs6lcIn8CBHcHJ7p919HQ=
-github.com/MercuryTechnologies/mercury-go v0.9.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
-github.com/MercuryTechnologies/mercury-go v0.10.0 h1:E2GGXNBOQL6dB3sX36JINfGz6449F6UyH+jCtzseTQk=
-github.com/MercuryTechnologies/mercury-go v0.10.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.12.1 h1:wgmJzK8OsoNK6kEvG7/Aai0O/9bNuDOr0qkX7YCug8w=
+github.com/MercuryTechnologies/mercury-go v0.12.1/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=
