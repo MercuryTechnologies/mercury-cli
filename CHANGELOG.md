@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.1 (2026-06-01)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.0...v0.9.1)
+
+### Bug Fixes
+
+* unpin mercury-go to v0.12.1 and migrate onboarding submit-&gt;apply ([eb5c057](https://github.com/MercuryTechnologies/mercury-cli/commit/eb5c057a22badbdf09e9c946b04fcd074e852c28))
+
+
+### Chores
+
+* submit to apply ([a095492](https://github.com/MercuryTechnologies/mercury-cli/commit/a095492e627c0f14fbc5ea321d3b85b53cee2633))
+
 ## 0.9.0 (2026-05-27)
 
 Full Changelog: [v0.8.2...v0.9.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.8.2...v0.9.0)
