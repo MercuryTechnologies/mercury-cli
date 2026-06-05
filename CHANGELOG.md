@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2026-06-05)
+
+Full Changelog: [v0.9.2...v0.10.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.2...v0.10.0)
+
+### Features
+
+* add apply --template to scaffold an application YAML ([#81](https://github.com/MercuryTechnologies/mercury-cli/issues/81)) ([3f32ef7](https://github.com/MercuryTechnologies/mercury-cli/commit/3f32ef794654f6f1d8b14916e6968be8cdc626e5))
+
 ## 0.9.2 (2026-06-01)
 
 Full Changelog: [v0.9.1...v0.9.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.1...v0.9.2)
