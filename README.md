@@ -190,6 +190,19 @@ which credential is active.
 - `--transform` - Transform the data output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)
 - `--transform-error` - Transform the error output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)
 
+### Filling out `mercury apply`
+
+To start a Mercury application, write out a blank annotated template, fill it
+in, and submit it via stdin:
+
+```bash
+mercury apply --template > apply.yaml   # write a blank template
+# edit apply.yaml with your details
+mercury apply < apply.yaml              # submit
+```
+
+Explicit flags still override values from the piped file.
+
 ### Passing files as arguments
 
 To pass files to your API, you can use the `@myfile.ext` syntax:

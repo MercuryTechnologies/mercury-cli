@@ -1,0 +1,95 @@
+# Mercury application template.
+# Fill in the values below, then submit with:
+#
+#   mercury apply < apply.yaml
+#
+# Required fields are marked. Remove any optional sections you don't need.
+# Country fields use ISO 3166-1 alpha-2 codes (e.g. US, CA, GB).
+
+# Company info (optional).
+about:
+  countriesOfOperations: []      # list of ISO 3166-1 alpha-2 codes, e.g. ["US"]
+  countryOfOperation: ""         # ISO 3166-1 alpha-2, e.g. US
+  description: ""
+  industry: ""
+  legalBusinessName: ""
+  website: ""
+
+# Beneficial owners (REQUIRED). List one or more owners.
+beneficialOwners:
+  - address1: ""
+    address2: ""
+    # Allowed values: USCitizen, USResident, NonResident.
+    citizenshipStatus: ""
+    city: ""
+    country: ""                  # ISO 3166-1 alpha-2, e.g. US
+    dateOfBirth: ""              # YYYY-MM-DD
+    email: ""
+    firstName: ""
+    identificationBlob: ""
+    # Allowed values: Passport, DriversLicense, StateID, AlienRegistrationCard,
+    # EmployeeAuthorizationDocument, VerifiedByThirdParty, NationalID,
+    # ResidencePermit, Visa.
+    identificationType: ""
+    # Politically exposed person. Allowed values: IsPep, IsNotPep.
+    isPep: ""
+    # Allowed values: ChiefExecutiveOfficer, ChiefOperatingOfficer,
+    # ChiefTechnologyOfficer, ChiefFinancialOfficer, Founder, President,
+    # GeneralPartner, FinanceTeam, Other.
+    jobTitle: ""
+    lastName: ""
+    otherJobTitle: ""            # free text; use when jobTitle is "Other"
+    percentOwnership: 0          # number, up to 2 decimal places
+    phoneNumber: ""
+    postalCode: ""
+    region: ""                   # state/region, e.g. CA
+    socialProfileLinks: []
+
+# Business contact details (optional).
+businessContactDetails:
+  address1: ""
+  address2: ""
+  city: ""
+  country: ""                    # ISO 3166-1 alpha-2, e.g. US
+  phoneNumber: ""
+  postalCode: ""
+  state: ""                      # state/region, e.g. CA
+
+# Registered legal address of the business (optional).
+businessLegalAddress:
+  address1: ""
+  address2: ""
+  city: ""
+  country: ""                    # ISO 3166-1 alpha-2, e.g. US
+  postalCode: ""
+  region: ""                     # state/region, e.g. CA
+
+# Physical/mailing address of the business (optional).
+businessPhysicalAddress:
+  address1: ""
+  address2: ""
+  city: ""
+  country: ""                    # ISO 3166-1 alpha-2, e.g. US
+  postalCode: ""
+  region: ""                     # state/region, e.g. CA
+
+# EIN, company structure, and formation documents (optional).
+# If you include this section, federalEin and formationDocumentFileBlob are required.
+formationDetails:
+  # Required. May be null, "Pending" (provided later), or a real value, e.g. 12-3456789.
+  federalEin: ""
+  # Required. May be null, "Pending" (provided later), or a real value.
+  formationDocumentFileBlob: ""
+  companyOriginCountry: ""       # ISO 3166-1 alpha-2, e.g. US
+  # Allowed values: CCorp, LLC, LLP, NonProfit, Partnership, ProfessionalAssociation,
+  # ProfessionalCorporation, SCorp, GeneralPartnership, LimitedPartnership, JointVenture,
+  # LLCTaxedAsSoleProprietorship, SoleProprietorship, ExemptedCompany, Limited.
+  companyStructure: ""
+  einDocumentFileBlob: ""
+  foreignBusinessNumber: ""
+  # Allowed values: ArticlesOfIncorporation, ArticlesOfOrganization, CertificateOfFormation,
+  # PartnershipAgreement, SecretaryOfStateRegistrationPage.
+  formationDocumentType: ""
+
+# Email address to send the application invite to (optional).
+inviteEmail: ""
