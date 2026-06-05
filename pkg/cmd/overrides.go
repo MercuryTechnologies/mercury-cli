@@ -252,6 +252,10 @@ func init() {
 		}
 	}
 
+	// onboarding apply: --template prints a blank apply.yaml and exits (no API call).
+	onboardingApply.Flags = append(onboardingApply.Flags,
+		&cli.BoolFlag{Name: "template", Usage: "Print a blank annotated apply.yaml template and exit"})
+
 	// onboarding apply flags
 	setFlagUsage(&onboardingApply, "beneficial-owner", "Beneficial owner details (name, address, ID, ownership %)")
 	setFlagUsage(&onboardingApply, "about", "Company info (name, industry, description, website)")
@@ -272,6 +276,11 @@ func init() {
 }
 
 func onboardingApplyOverride(ctx context.Context, cmd *cli.Command) error {
+	if cmd.Bool("template") {
+		fmt.Fprint(os.Stdout, applyTemplate)
+		return nil
+	}
+
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	if len(cmd.Args().Slice()) > 0 {
 		return fmt.Errorf("Unexpected extra arguments: %v", cmd.Args().Slice())
