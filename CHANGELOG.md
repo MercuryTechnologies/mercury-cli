@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.2 (2026-06-22)
+
+Full Changelog: [v0.10.1...v0.10.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.10.1...v0.10.2)
+
+### Bug Fixes
+
+* correct cards command descriptions ([94d48d2](https://github.com/MercuryTechnologies/mercury-cli/commit/94d48d215b036e109e9fc511249d98105864d5f4))
+
 ## 0.10.1 (2026-06-22)
 
 Full Changelog: [v0.10.0...v0.10.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.10.0...v0.10.1)
