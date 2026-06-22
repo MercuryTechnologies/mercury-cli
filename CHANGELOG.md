@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.1 (2026-06-22)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.10.0...v0.10.1)
+
+### Chores
+
+* add readme samples ([b0ef3dc](https://github.com/MercuryTechnologies/mercury-cli/commit/b0ef3dc6c9c68977436263fac18b71c4486ae9eb))
+* manual updates ([0110564](https://github.com/MercuryTechnologies/mercury-cli/commit/011056475585cb3966c9d692907afbf6dd07eeab))
+
 ## 0.10.0 (2026-06-05)
 
 Full Changelog: [v0.9.2...v0.10.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.9.2...v0.10.0)
