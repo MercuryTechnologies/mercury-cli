@@ -26,7 +26,7 @@
           src = self;
           # When go.sum changes: set to pkgs.lib.fakeHash, run `nix build`,
           # copy the sha256 from the error, paste it here.
-          vendorHash = "sha256-43OWfi62dRNLJItfNf4u4aueL+Ugb1THhLKAy7sT7kU=";
+          vendorHash = "sha256-YFYagq/zDTSa3VpZT7hZ7iOaQJdR5vwNXyCZ2NpI5lY=";
           subPackages = [ "cmd/mercury" ];
           env.CGO_ENABLED = "0";
           ldflags = [
