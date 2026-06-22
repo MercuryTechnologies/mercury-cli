@@ -140,7 +140,13 @@ func init() {
 				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
+					&cardsCreate,
+					&cardsUpdate,
 					&cardsList,
+					&cardsCancel,
+					&cardsFreeze,
+					&cardsGet,
+					&cardsUnfreeze,
 				},
 			},
 			{
