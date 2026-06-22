@@ -61,6 +61,8 @@ func init() {
 		switch sub.Name {
 		case "accounts":
 			sub.Usage = "List and view bank accounts"
+		case "cards":
+			sub.Usage = "Issue, view, and manage debit and credit cards"
 		case "payments":
 			sub.Usage = "Send money, request approvals, and transfer between accounts"
 		case "treasury":
@@ -130,7 +132,7 @@ func init() {
 	accountsGet.Usage = "Get an account by ID"
 
 	// cards
-	cardsList.Usage = "List debit and credit cards for an account"
+	cardsList.Usage = "List debit and credit cards (supports pagination)"
 
 	// categories
 	categoriesList.Usage = "List expense categories (supports pagination)"
