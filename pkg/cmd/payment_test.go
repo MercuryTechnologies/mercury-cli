@@ -112,6 +112,27 @@ func TestPaymentsRequest(t *testing.T) {
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--external-memo", "externalMemo",
 			"--note", "note",
+			"--purpose", "{simple: {category: Employee, additionalInfo: additionalInfo}}",
+		)
+	})
+
+	t.Run("inner flags", func(t *testing.T) {
+		// Check that inner flags have been set up correctly
+		requestflag.CheckInnerFlags(paymentsRequest)
+
+		// Alternative argument passing style using inner flags
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"payments", "request",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--amount", "0.01",
+			"--idempotency-key", "idempotencyKey",
+			"--payment-method", "ach",
+			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--external-memo", "externalMemo",
+			"--note", "note",
+			"--purpose.simple", "{category: Employee, additionalInfo: additionalInfo}",
 		)
 	})
 
@@ -123,7 +144,11 @@ func TestPaymentsRequest(t *testing.T) {
 			"paymentMethod: ach\n" +
 			"recipientId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"externalMemo: externalMemo\n" +
-			"note: note\n")
+			"note: note\n" +
+			"purpose:\n" +
+			"  simple:\n" +
+			"    category: Employee\n" +
+			"    additionalInfo: additionalInfo\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
