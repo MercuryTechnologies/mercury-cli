@@ -132,7 +132,7 @@ var paymentsGet = cli.Command{
 	HideHelpCommand: true,
 }
 
-var paymentsRequest = cli.Command{
+var paymentsRequest = requestflag.WithInnerFlags(cli.Command{
 	Name:    "request",
 	Usage:   "Create a \"request to send money\" that will require approval based on your\norganization's approval policies.",
 	Suggest: true,
@@ -177,10 +177,22 @@ var paymentsRequest = cli.Command{
 			Usage:    "Optional note",
 			BodyPath: "note",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "purpose",
+			Usage:    " External API representation of SendMoneyPurpose.\n Only exposes the 'simple' field to decouple internal implementation from external API.",
+			BodyPath: "purpose",
+		},
 	},
 	Action:          handlePaymentsRequest,
 	HideHelpCommand: true,
-}
+}, map[string][]requestflag.HasOuterFlag{
+	"purpose": {
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "purpose.simple",
+			InnerField: "simple",
+		},
+	},
+})
 
 var paymentsTransfer = cli.Command{
 	Name:    "transfer",
