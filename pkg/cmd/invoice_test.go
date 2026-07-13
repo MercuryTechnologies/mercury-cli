@@ -25,6 +25,7 @@ func TestInvoicesCreate(t *testing.T) {
 			"--invoice-date", "'2016-07-22'",
 			"--line-item", "{name: name, quantity: 0, unitPrice: 0, salesTaxRate: 0}",
 			"--use-real-account-number=true",
+			"--currency-code", "currencyCode",
 			"--internal-note", "internalNote",
 			"--invoice-number", "invoiceNumber",
 			"--payer-memo", "payerMemo",
@@ -56,6 +57,7 @@ func TestInvoicesCreate(t *testing.T) {
 			"--line-item.unit-price", "0",
 			"--line-item.sales-tax-rate", "0",
 			"--use-real-account-number=true",
+			"--currency-code", "currencyCode",
 			"--internal-note", "internalNote",
 			"--invoice-number", "invoiceNumber",
 			"--payer-memo", "payerMemo",
@@ -83,6 +85,7 @@ func TestInvoicesCreate(t *testing.T) {
 			"    unitPrice: 0\n" +
 			"    salesTaxRate: 0\n" +
 			"useRealAccountNumber: true\n" +
+			"currencyCode: currencyCode\n" +
 			"internalNote: internalNote\n" +
 			"invoiceNumber: invoiceNumber\n" +
 			"payerMemo: payerMemo\n" +

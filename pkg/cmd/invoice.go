@@ -75,6 +75,11 @@ var invoicesCreate = requestflag.WithInnerFlags(cli.Command{
 			BodyPath: "useRealAccountNumber",
 		},
 		&requestflag.Flag[*string]{
+			Name:     "currency-code",
+			Usage:    " ISO 4217 currency code for the invoice. Defaults to USD if not provided.",
+			BodyPath: "currencyCode",
+		},
+		&requestflag.Flag[*string]{
 			Name:     "internal-note",
 			Usage:    " Internal note for the invoice, visible by users in the organization but not visible to payers.",
 			BodyPath: "internalNote",
