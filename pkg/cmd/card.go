@@ -42,11 +42,6 @@ var cardsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "ID for a Mercury account.",
 			BodyPath: "accountId",
 		},
-		&requestflag.Flag[map[string]any]{
-			Name:     "card-spend-management-state",
-			Usage:    " The spend-management state of a card. Used both as the input at issuance\n time (the configuration the caller wants applied) and as the read-side\n response from\n 'CardManagement.Issuing.CardSpendManagement.getCardSpendManagement'. All\n of the card spend-management tables are collapsed into this single type.",
-			BodyPath: "cardSpendManagementState",
-		},
 		&requestflag.Flag[*string]{
 			Name:     "nickname",
 			Usage:    " Optional user-assigned label for the card.",
@@ -61,18 +56,6 @@ var cardsCreate = requestflag.WithInnerFlags(cli.Command{
 	Action:          handleCardsCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
-	"card-spend-management-state": {
-		&requestflag.InnerFlag[bool]{
-			Name:       "card-spend-management-state.is-single-use",
-			Usage:      " Whether this card auto-cancels itself on the first approved non-zero\n authorization. Must be 'False' for physical cards.",
-			InnerField: "isSingleUse",
-		},
-		&requestflag.InnerFlag[map[string]any]{
-			Name:       "card-spend-management-state.agentic-card-state",
-			Usage:      " Configuration for a card managed by the agentic spend-management agent.",
-			InnerField: "agenticCardState",
-		},
-	},
 	"spend-limit": {
 		&requestflag.InnerFlag[int64]{
 			Name:       "spend-limit.amount-cents",
