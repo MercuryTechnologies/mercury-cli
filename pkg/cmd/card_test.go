@@ -20,7 +20,6 @@ func TestCardsCreate(t *testing.T) {
 			"--type", "virtual",
 			"--user-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--card-spend-management-state", "{isSingleUse: true, agenticCardState: {manualApprovalThreshold: 0}}",
 			"--nickname", "nickname",
 			"--spend-limit", "{amountCents: 0, interval: daily}",
 		)
@@ -39,8 +38,6 @@ func TestCardsCreate(t *testing.T) {
 			"--type", "virtual",
 			"--user-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			"--card-spend-management-state.is-single-use=true",
-			"--card-spend-management-state.agentic-card-state", "{manualApprovalThreshold: 0}",
 			"--nickname", "nickname",
 			"--spend-limit.amount-cents", "0",
 			"--spend-limit.interval", "daily",
@@ -54,10 +51,6 @@ func TestCardsCreate(t *testing.T) {
 			"type: virtual\n" +
 			"userId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"accountId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
-			"cardSpendManagementState:\n" +
-			"  isSingleUse: true\n" +
-			"  agenticCardState:\n" +
-			"    manualApprovalThreshold: 0\n" +
 			"nickname: nickname\n" +
 			"spendLimit:\n" +
 			"  amountCents: 0\n" +
