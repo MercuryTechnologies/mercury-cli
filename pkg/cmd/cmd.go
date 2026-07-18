@@ -134,6 +134,7 @@ func init() {
 					&cardsCancel,
 					&cardsFreeze,
 					&cardsGet,
+					&cardsReveal,
 					&cardsUnfreeze,
 				},
 			},
