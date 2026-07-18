@@ -224,6 +224,22 @@ var cardsGet = cli.Command{
 	HideHelpCommand: true,
 }
 
+var cardsReveal = cli.Command{
+	Name:    "reveal",
+	Usage:   "Retrieve the full card number, expiration date, and CVC for a card. Available\nfor agentic cards only.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "card-id",
+			Usage:     "Unique identifier for a card",
+			Required:  true,
+			PathParam: "cardId",
+		},
+	},
+	Action:          handleCardsReveal,
+	HideHelpCommand: true,
+}
+
 var cardsUnfreeze = cli.Command{
 	Name:    "unfreeze",
 	Usage:   "Unfreeze a previously frozen card, restoring it to active status.",
@@ -507,6 +523,48 @@ func handleCardsGet(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "cards get",
+		Transform:      transform,
+	})
+}
+
+func handleCardsReveal(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("card-id") && len(unusedArgs) > 0 {
+		cmd.Set("card-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Cards.Reveal(ctx, cmd.Value("card-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "cards reveal",
 		Transform:      transform,
 	})
 }
