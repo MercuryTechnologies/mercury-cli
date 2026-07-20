@@ -97,11 +97,11 @@ func init() {
 			}
 		case "format":
 			if sf, ok := f.(*cli.StringFlag); ok {
-				sf.Usage = "Output format (auto|json|jsonl|pretty|raw|yaml|explore)"
+				sf.Usage = "Output format (auto|json|jsonl|pretty|raw|yaml|csv|explore)"
 			}
 		case "format-error":
 			if sf, ok := f.(*cli.StringFlag); ok {
-				sf.Usage = "Error format (auto|json|jsonl|pretty|raw|yaml|explore)"
+				sf.Usage = "Error format (auto|json|jsonl|pretty|raw|yaml|csv|explore)"
 			}
 		case "transform":
 			if sf, ok := f.(*cli.StringFlag); ok {
