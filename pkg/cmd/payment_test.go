@@ -23,7 +23,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--external-memo", "externalMemo",
 			"--note", "note",
-			"--purpose", "{simple: {category: Employee, additionalInfo: additionalInfo}}",
+			"--purpose", "{simple: {category: employee, additionalInfo: additionalInfo}}",
 		)
 	})
 
@@ -43,7 +43,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--external-memo", "externalMemo",
 			"--note", "note",
-			"--purpose.simple", "{category: Employee, additionalInfo: additionalInfo}",
+			"--purpose.simple", "{category: employee, additionalInfo: additionalInfo}",
 		)
 	})
 
@@ -58,7 +58,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"note: note\n" +
 			"purpose:\n" +
 			"  simple:\n" +
-			"    category: Employee\n" +
+			"    category: employee\n" +
 			"    additionalInfo: additionalInfo\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
@@ -112,7 +112,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--external-memo", "externalMemo",
 			"--note", "note",
-			"--purpose", "{simple: {category: Employee, additionalInfo: additionalInfo}}",
+			"--purpose", "{simple: {category: employee, additionalInfo: additionalInfo}}",
 		)
 	})
 
@@ -132,7 +132,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--external-memo", "externalMemo",
 			"--note", "note",
-			"--purpose.simple", "{category: Employee, additionalInfo: additionalInfo}",
+			"--purpose.simple", "{category: employee, additionalInfo: additionalInfo}",
 		)
 	})
 
@@ -147,7 +147,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"note: note\n" +
 			"purpose:\n" +
 			"  simple:\n" +
-			"    category: Employee\n" +
+			"    category: employee\n" +
 			"    additionalInfo: additionalInfo\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
