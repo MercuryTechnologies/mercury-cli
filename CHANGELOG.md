@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.11.0 (2026-07-22)
+
+Full Changelog: [v0.10.3...v0.11.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.10.3...v0.11.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([16bc944](https://github.com/MercuryTechnologies/mercury-cli/commit/16bc944a408f23b9af467942062d19ac0e63ea2f))
+
+
+### Chores
+
+* force build ([2e0e8b7](https://github.com/MercuryTechnologies/mercury-cli/commit/2e0e8b734c2d7df7e51eccdc5646f6b892be1619))
+* update OpenAPI spec from 43b38fa39742f594961949509856450fc29ec547 ([0bb2ea1](https://github.com/MercuryTechnologies/mercury-cli/commit/0bb2ea1d2702dbf741e266589cb5305f3ac724a9))
+* update OpenAPI spec from a4808a0da19a13b08a1eeb23d028307913311584 ([1951ee8](https://github.com/MercuryTechnologies/mercury-cli/commit/1951ee8c0b68dbbaee059cafd3d2ba5563518995))
+* update OpenAPI spec from a8b82e908b7f4bca9acaa90b5e39fc3cdc00cf36 ([c60533d](https://github.com/MercuryTechnologies/mercury-cli/commit/c60533d0751c0c2bd27c928c24a387b7b7f98fb0))
+* update OpenAPI spec from cbbbc206ad9a63468d4ce498e294d56d53611b25 ([5358eba](https://github.com/MercuryTechnologies/mercury-cli/commit/5358eba59846d02c76c55d4414bdec77990a7208))
+* update OpenAPI spec from d629734977c8187eb2c13b555baf0cfb84c9021b ([f1563cf](https://github.com/MercuryTechnologies/mercury-cli/commit/f1563cf353727edb7f998bd5147086d095d4db6c))
+
 ## 0.10.3 (2026-07-08)
 
 Full Changelog: [v0.10.2...v0.10.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.10.2...v0.10.3)
