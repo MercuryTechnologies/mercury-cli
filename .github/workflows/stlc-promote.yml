@@ -1,0 +1,80 @@
+name: Promote SDKs
+
+# Promote staging to production by fast-forwarding production `main` up to the
+# staging trunk, preserving commit SHAs. Because the SHAs are preserved,
+# production `main` and staging `main` stay identical and linear, the sealed
+# custom-code commit stays an ancestor of both, and there is no divergence to
+# heal on the next `stlc build`.
+#
+# Manual dispatch (workflow_dispatch): spec/codegen changes accumulate on
+# staging `main`, and a maintainer promotes the batch in one fast-forward when
+# ready to cut a release. Optionally gate each run behind a required-reviewer
+# approval — see the `environment` note on the job below. release-please then
+# opens its version/changelog PR on production on top.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+    # Optional: add required reviewers on each promote run before the fast-forward push.
+    # With no reviewers it only scopes secrets/variables and adds no gate, so the manual dispatch
+    # above is the only checkpoint. Remove this line if you don't use it.
+    env:
+      PRODUCTION_REPO: MercuryTechnologies/mercury-cli
+    steps:
+      - name: Check out staging
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Mint GitHub App token for the production repo
+        # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
+          private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
+          owner: MercuryTechnologies
+          repositories: mercury-cli
+
+      - name: Fetch production main
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git remote add production \
+            "https://x-access-token:${GH_TOKEN}@github.com/${PRODUCTION_REPO}.git"
+          git fetch production main
+
+      - name: Check whether production already has staging's content
+        id: diff
+        run: |
+          # After a release, production carries release-please's version/changelog
+          # commits that staging lacks. Ask whether merging staging into production
+          # would change production's tree: if not, production already has staging's content.
+          MERGED=$(git merge-tree --write-tree production/main origin/main) || MERGED=conflict
+          PRODUCTION_TREE=$(git rev-parse 'production/main^{tree}')
+          if [ "$MERGED" = "$PRODUCTION_TREE" ]; then
+            echo "Production already contains staging's content. Nothing to promote."
+            echo "synced=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "synced=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Promote staging to production (fast-forward)
+        if: steps.diff.outputs.synced == 'false'
+        run: |
+          # Refuse unless production/main is an ancestor of staging/main. If it
+          # isn't, the trunks have forked (someone advanced production out of
+          # band without back-syncing first) and a fast-forward is unsafe.
+          if ! git merge-base --is-ancestor production/main origin/main; then
+            echo "::error title=Promote blocked::production/main is not an ancestor of staging main. Back-sync production into staging first."
+            exit 1
+          fi
+          git push production origin/main:refs/heads/main
+          echo "Fast-forwarded production/main to staging/main."

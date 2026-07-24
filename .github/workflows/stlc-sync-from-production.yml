@@ -1,0 +1,103 @@
+name: Sync from production
+
+# Bring production's commits back onto staging `main` by fast-forwarding.
+# This keeps staging and production identical and linear so the next `stlc build`
+# reseals against the released state.
+#
+# Triggered by the production-side release dispatch and by a periodic poll.
+on:
+  schedule:
+    # Polls for non-release production changes. If you take frequent
+    # community PRs, tighten this or add an eager `on: push: [main]`
+    # dispatch on production alongside the release one.
+    - cron: '17 */6 * * *'
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [prod-released]
+
+permissions:
+  # Only the initial checkout uses GITHUB_TOKEN (read the staging repo). All
+  # writes go through the app token, so read is sufficient here.
+  contents: read
+
+concurrency:
+  group: stlc-sync-from-production
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+    env:
+      PRODUCTION_REPO: MercuryTechnologies/mercury-cli
+    steps:
+      - name: Check out staging
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          # Don't persist GITHUB_TOKEN into git config; every git operation below
+          # authenticates with the app token embedded in the remote URL instead.
+          persist-credentials: false
+
+      - name: Mint GitHub App token for the production repo
+        # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
+          private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
+          owner: MercuryTechnologies
+          # Reads production and writes staging, so the token must cover both.
+          repositories: |
+            mercury-cli
+            mercury-cli-staging
+          
+      - name: Debug token access
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          echo "token length: ${#GH_TOKEN}"
+          gh api "repos/${PRODUCTION_REPO}" --jq .full_name   # metadata read
+          git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${PRODUCTION_REPO}.git" HEAD  # contents read
+          
+      - name: Fetch production main
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git remote add production \
+            "https://x-access-token:${GH_TOKEN}@github.com/${PRODUCTION_REPO}.git"
+          git fetch production main
+
+      - name: Check whether production has content staging lacks
+        id: diff
+        run: |
+          # Inverse of the promote guard: would merging production into
+          # staging change staging's tree? If not, staging already has
+          # production's content.
+          MERGED=$(git merge-tree --write-tree origin/main production/main) || MERGED=conflict
+          STAGING_TREE=$(git rev-parse 'origin/main^{tree}')
+          if [ "$MERGED" = "$STAGING_TREE" ]; then
+            echo "Staging already has production's content. Nothing to pull back."
+            echo "behind=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "behind=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sync production to staging (fast-forward)
+        if: steps.diff.outputs.behind == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          # Refuse unless staging/main is an ancestor of production/main. If it
+          # isn't, the trunks have forked (staging advanced out of band while a
+          # production change was unsynced) and a fast-forward is unsafe.
+          #
+          # The trunk-sync lock (trunk-sync-lock.yml) is what normally
+          # prevents this by freezing staging merges until the back-sync lands.
+          if ! git merge-base --is-ancestor origin/main production/main; then
+            echo "::error title=Back-sync blocked::staging main is not an ancestor of production/main."
+            exit 1
+          fi
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            production/main:refs/heads/main
+          echo "Fast-forwarded staging/main to production/main."

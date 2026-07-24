@@ -1,0 +1,82 @@
+name: Trunk sync lock
+
+# Posts a `trunk-synced` commit status to open PRs targeting staging `main`:
+# red while production is ahead of staging (a release hasn't been synced back
+# yet), green once they are in sync.
+#
+# You should make `trunk-synced` a required status check on staging `main`
+# to block merges onto a stale trunk during the release
+# window.
+#
+# This only gates PRs, not direct pushes. The back-sync bypasses this check
+# by pushing to staging `main` directly. If staging `main` also requires a pull
+# request, give the back-sync's identity ruleset-bypass so it can push. Never
+# route the back-sync through a PR gated by this check, or it deadlocks.
+#
+# First-run note: GitHub treats a status check as "required" only once it has
+# been reported at least once. At setup time staging and production are
+# identical, so trigger this workflow once (push a PR or use the Run workflow
+# button) BEFORE adding `trunk-synced` to the required checks, so the first
+# status is green rather than missing.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: ["Sync from production"]
+    types: [completed]
+  repository_dispatch:
+    types: [prod-released]
+  workflow_dispatch: {}
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+  statuses: write
+  pull-requests: read
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+    env:
+      PRODUCTION_REPO: MercuryTechnologies/mercury-cli
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Mint GitHub App token for the production repo
+        # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
+          private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
+          owner: MercuryTechnologies
+          repositories: mercury-cli
+
+      - name: Evaluate sync state and post status to open main PRs
+        env:
+          PRODUCTION_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          git remote add production \
+            "https://x-access-token:${PRODUCTION_TOKEN}@github.com/${PRODUCTION_REPO}.git"
+          git fetch --no-tags production main
+          if git merge-base --is-ancestor production/main HEAD; then
+            state=success; desc="staging main is in sync with production"
+          else
+            state=failure; desc="production is ahead — wait for the back-sync before merging"
+          fi
+          echo "trunk-synced => $state ($desc)"
+          shas=$(gh pr list --repo "$GITHUB_REPOSITORY" --base main --state open --json headRefOid --jq '.[].headRefOid')
+          if [ -z "$shas" ]; then echo "no open PRs targeting main"; exit 0; fi
+          for sha in $shas; do
+            gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$sha" \
+              -f state="$state" -f context="trunk-synced" -f description="$desc" >/dev/null
+            echo "posted trunk-synced=$state to $sha"
+          done
