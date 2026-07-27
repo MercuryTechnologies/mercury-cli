@@ -4,7 +4,7 @@ name: Trigger staging back-sync on release
 # This workflow is dispatch-only: it cannot write production or staging contents.
 #
 # Uses the "Mercury OpenAPI Sync" GitHub App to mint a short-lived installation
-# token scoped to the staging repo instead of a long-lived PAT.
+# token instead of a long-lived PAT.
 on:
   release:
     types: [published]
