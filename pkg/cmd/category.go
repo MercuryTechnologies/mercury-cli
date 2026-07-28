@@ -14,6 +14,40 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+var categoriesCreate = cli.Command{
+	Name:    "create",
+	Usage:   "Create a new custom expense category for the organization.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:     "name",
+			Usage:    " Name of the category",
+			Required: true,
+			BodyPath: "name",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "visible-for-card-spend",
+			Usage:    " Whether this category is applicable to card transactions",
+			Required: true,
+			BodyPath: "visibleForCardSpend",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "visible-for-other",
+			Usage:    " Whether this category is applicable to all other transaction kinds",
+			Required: true,
+			BodyPath: "visibleForOther",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "visible-for-reimbursements",
+			Usage:    " Whether this category is applicable to expense reimbursement transactions",
+			Required: true,
+			BodyPath: "visibleForReimbursements",
+		},
+	},
+	Action:          handleCategoriesCreate,
+	HideHelpCommand: true,
+}
+
 var categoriesList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of all available custom expense categories for the\norganization. Supports cursor-based pagination with limit, order, start_after,\nand end_before query parameters.",
@@ -48,6 +82,47 @@ var categoriesList = cli.Command{
 	},
 	Action:          handleCategoriesList,
 	HideHelpCommand: true,
+}
+
+func handleCategoriesCreate(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := mercury.CategoryNewParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Categories.New(ctx, params, options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "categories create",
+		Transform:      transform,
+	})
 }
 
 func handleCategoriesList(ctx context.Context, cmd *cli.Command) error {

@@ -8,6 +8,35 @@ import (
 	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
 )
 
+func TestCategoriesCreate(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"categories", "create",
+			"--name", "name",
+			"--visible-for-card-spend=true",
+			"--visible-for-other=true",
+			"--visible-for-reimbursements=true",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"name: name\n" +
+			"visibleForCardSpend: true\n" +
+			"visibleForOther: true\n" +
+			"visibleForReimbursements: true\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"categories", "create",
+		)
+	})
+}
+
 func TestCategoriesList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {

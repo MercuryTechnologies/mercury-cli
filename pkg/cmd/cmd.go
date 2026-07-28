@@ -156,6 +156,7 @@ func init() {
 				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
+					&categoriesCreate,
 					&categoriesList,
 				},
 			},
