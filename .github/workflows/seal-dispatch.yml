@@ -70,7 +70,7 @@ jobs:
 
           [ -n "${DISPATCH_TOKEN:-}" ] || { echo "app token not minted" >&2; exit 1; }
           payload=$(jq -n --arg sha "$SHA" --arg repo "$REPO" \
-            '{event_type:"seal-custom-code",client_payload:{target:"all",sha:$sha,repo:$repo}}')
+            '{event_type:"seal-custom-code",client_payload:{target:"cli",sha:$sha,repo:$repo}}')
           code=$(curl -sS -o /tmp/dispatch.txt -w '%{http_code}' -X POST \
             -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
