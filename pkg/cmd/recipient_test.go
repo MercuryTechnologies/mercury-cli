@@ -21,7 +21,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
 			"--check-info", "{address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}}",
 			"--contact-email", "contactEmail",
-			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
+			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber, defaultForBenefitOf: defaultForBenefitOf}",
 			"--electronic-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, electronicAccountType: businessChecking, routingNumber: routingNumber}",
 			"--nickname", "nickname",
 		)
@@ -48,6 +48,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"--domestic-wire-routing-info.account-number", "accountNumber",
 			"--domestic-wire-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
 			"--domestic-wire-routing-info.routing-number", "routingNumber",
+			"--domestic-wire-routing-info.default-for-benefit-of", "defaultForBenefitOf",
 			"--electronic-routing-info.account-number", "accountNumber",
 			"--electronic-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
 			"--electronic-routing-info.electronic-account-type", "businessChecking",
@@ -87,6 +88,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"    region: region\n" +
 			"    address2: address2\n" +
 			"  routingNumber: routingNumber\n" +
+			"  defaultForBenefitOf: defaultForBenefitOf\n" +
 			"electronicRoutingInfo:\n" +
 			"  accountNumber: accountNumber\n" +
 			"  address:\n" +
@@ -118,7 +120,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
 			"--check-info", "{address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}}",
 			"--contact-email", "contactEmail",
-			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
+			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber, defaultForBenefitOf: defaultForBenefitOf}",
 			"--electronic-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, electronicAccountType: businessChecking, routingNumber: routingNumber}",
 			"--email", "string",
 			"--name", "name",
@@ -146,6 +148,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--domestic-wire-routing-info.account-number", "accountNumber",
 			"--domestic-wire-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
 			"--domestic-wire-routing-info.routing-number", "routingNumber",
+			"--domestic-wire-routing-info.default-for-benefit-of", "defaultForBenefitOf",
 			"--electronic-routing-info.account-number", "accountNumber",
 			"--electronic-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
 			"--electronic-routing-info.electronic-account-type", "businessChecking",
@@ -184,6 +187,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"    region: region\n" +
 			"    address2: address2\n" +
 			"  routingNumber: routingNumber\n" +
+			"  defaultForBenefitOf: defaultForBenefitOf\n" +
 			"electronicRoutingInfo:\n" +
 			"  accountNumber: accountNumber\n" +
 			"  address:\n" +
