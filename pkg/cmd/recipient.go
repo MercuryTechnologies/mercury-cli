@@ -102,11 +102,6 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      " The routing number of the bank account to use for domestic wire payments.",
 			InnerField: "routingNumber",
 		},
-		&requestflag.InnerFlag[*string]{
-			Name:       "domestic-wire-routing-info.default-for-benefit-of",
-			Usage:      " The name of the beneficiary of the domestic wire. This is the name of the entity that will receive the domestic wire.",
-			InnerField: "defaultForBenefitOf",
-		},
 	},
 	"electronic-routing-info": {
 		&requestflag.InnerFlag[string]{
@@ -222,11 +217,6 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 			Name:       "domestic-wire-routing-info.routing-number",
 			Usage:      " The routing number of the bank account to use for domestic wire payments.",
 			InnerField: "routingNumber",
-		},
-		&requestflag.InnerFlag[*string]{
-			Name:       "domestic-wire-routing-info.default-for-benefit-of",
-			Usage:      " The name of the beneficiary of the domestic wire. This is the name of the entity that will receive the domestic wire.",
-			InnerField: "defaultForBenefitOf",
 		},
 	},
 	"electronic-routing-info": {

@@ -10,6 +10,8 @@ github.com/MercuryTechnologies/mercury-go v0.13.0 h1:0dcZfpFM2CL04TNfJeNBP7jaVBr
 github.com/MercuryTechnologies/mercury-go v0.13.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/MercuryTechnologies/mercury-go v0.13.1 h1:HaKgiOSNs27zt3LEb7ywjTl+oIHeccUJxkuqnvwspDo=
 github.com/MercuryTechnologies/mercury-go v0.13.1/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.13.4 h1:V0QwBXGJByqkvnI2UiWMlWZ/ztFDY2oc1xyf8E645PA=
+github.com/MercuryTechnologies/mercury-go v0.13.4/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=
@@ -98,9 +100,9 @@ golang.org/x/exp v0.0.0-20220909182711-5c715a9e8561/go.mod h1:cyybsKvd6eL0RnXn6p
 golang.org/x/sync v0.15.0 h1:KWH3jNZsfyT6xfAfKiz6MRNmd46ByHDYaZ7KSkCtdW8=
 golang.org/x/sync v0.15.0/go.mod h1:1dzgHSNfp02xaA81J2MS99Qcpr2w7fw1gpm99rleRqA=
 golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.6.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.38.0 h1:3yZWxaJjBmCWXqhN1qh02AkOnCQ1poK6oF+a7xWL6Gc=
 golang.org/x/sys v0.38.0/go.mod h1:OgkHotnGiDImocRcuBABYBEXf8A9a87e/uXjp9XT3ks=
+golang.org/x/sys v0.6.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/text v0.3.8 h1:nAL+RVCQ9uMn3vJZbV+MRnydTJFPf8qqY42YiA6MrqY=
 golang.org/x/text v0.3.8/go.mod h1:E6s5w1FMmriuDzIBO73fBruAKo1PCIq6d2Q6DHfQ8WQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
