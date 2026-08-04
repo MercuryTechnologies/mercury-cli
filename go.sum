@@ -12,6 +12,8 @@ github.com/MercuryTechnologies/mercury-go v0.13.1 h1:HaKgiOSNs27zt3LEb7ywjTl+oIH
 github.com/MercuryTechnologies/mercury-go v0.13.1/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/MercuryTechnologies/mercury-go v0.13.4 h1:V0QwBXGJByqkvnI2UiWMlWZ/ztFDY2oc1xyf8E645PA=
 github.com/MercuryTechnologies/mercury-go v0.13.4/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.13.5 h1:9fWHQon30cB4h+dvT7zqqTFEj+S50bwFHjaLFu0DUw8=
+github.com/MercuryTechnologies/mercury-go v0.13.5/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiErDT4WkJ2k=
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWpi6yML8=

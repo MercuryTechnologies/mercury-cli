@@ -292,6 +292,7 @@ func init() {
 					&recipientsCreate,
 					&recipientsUpdate,
 					&recipientsList,
+					&recipientsDelete,
 					&recipientsGet,
 					{
 						Name:    "attachments",

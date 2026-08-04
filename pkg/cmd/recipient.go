@@ -278,6 +278,22 @@ var recipientsList = cli.Command{
 	HideHelpCommand: true,
 }
 
+var recipientsDelete = cli.Command{
+	Name:    "delete",
+	Usage:   "Delete a specific recipient by ID. Fails if the recipient is blocked by\nscheduled payments, pending approvals, or active ACH authorizations.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "recipient-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "recipientId",
+		},
+	},
+	Action:          handleRecipientsDelete,
+	HideHelpCommand: true,
+}
+
 var recipientsGet = cli.Command{
 	Name:    "get",
 	Usage:   "Retrieve details of a specific recipient by ID",
@@ -437,6 +453,31 @@ func handleRecipientsList(ctx context.Context, cmd *cli.Command) error {
 			Transform:      transform,
 		})
 	}
+}
+
+func handleRecipientsDelete(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("recipient-id") && len(unusedArgs) > 0 {
+		cmd.Set("recipient-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return client.Recipients.Delete(ctx, cmd.Value("recipient-id").(string), options...)
 }
 
 func handleRecipientsGet(ctx context.Context, cmd *cli.Command) error {
