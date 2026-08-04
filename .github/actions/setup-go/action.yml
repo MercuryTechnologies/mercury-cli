@@ -1,5 +1,5 @@
 name: Setup Go
-description: 'Sets up Go environment'
+description: 'Sets up Go environment, authenticating against the private Go SDK repo and linking its matching branch on staging'
 inputs:
   go-version:
     required: false
@@ -7,9 +7,33 @@ inputs:
   cache-dependency-path:
     required: false
     description: path to dependency files for caching
+  go-sdk-app-private-key:
+    required: false
+    description: >-
+      Private key for the "Mercury OpenAPI Sync (Stainless CLI)" GitHub App, used to read the
+      private mercury-go-staging repo. Required on the staging repo; ignored elsewhere.
 runs:
   using: composite
   steps:
+    # On staging, the Go SDK lives in a private repo, so git needs credentials before
+    # anything (the access check below, `go mod tidy`) touches github.com.
+    - name: Mint GitHub App token for the private Go SDK repo
+      # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
+      if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+      id: go-sdk-token
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      with:
+        client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
+        private-key: ${{ inputs.go-sdk-app-private-key }}
+        owner: MercuryTechnologies
+        repositories: mercury-go-staging
+
+    - name: Authenticate git for the private Go SDK repo
+      if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+      shell: bash
+      run: |
+        git config --global url."https://x-access-token:${{ steps.go-sdk-token.outputs.token }}@github.com/MercuryTechnologies/".insteadOf "https://github.com/MercuryTechnologies/"
+
     - name: Verify Go SDK module is accessible
       shell: bash
       env:
@@ -17,7 +41,7 @@ runs:
       run: |
         if ! git ls-remote --exit-code "https://github.com/${GO_MODULE_REPO}" >/dev/null 2>&1; then
           echo "::error::Cannot access the Go SDK module at https://github.com/${GO_MODULE_REPO}."
-          echo "::error::If the repo is private, uncomment the 'Authenticate git for the private Go SDK repo' step in .github/workflows/ci.yml and add a GO_REPO_READ_TOKEN secret to this repo."
+          echo "::error::If the repo is private, pass 'go-sdk-app-private-key' to this action and make sure the Mercury OpenAPI Sync (Stainless CLI) App is installed on ${GO_MODULE_REPO} with Contents: read."
           exit 1
         fi
 
@@ -27,6 +51,17 @@ runs:
         go-version: ${{ inputs.go-version }}
         go-version-file: ./go.mod
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    # Build against the Go SDK branch matching this one. The module path stays
+    # `mercury-go` (that is what mercury-go-staging's go.mod declares), so the rewrite
+    # below is what redirects the fetch to the staging repo. `|| true` covers the Go SDK
+    # not having a branch of this name, in which case we build against the pinned version.
+    - name: Link staging branch
+      if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
+      shell: bash
+      run: |
+        git config --global url."https://x-access-token:${{ steps.go-sdk-token.outputs.token }}@github.com/MercuryTechnologies/mercury-go-staging".insteadOf "https://github.com/MercuryTechnologies/mercury-go"
+        ./scripts/link "github.com/MercuryTechnologies/mercury-go@${{ github.ref_name }}" || true
 
     - name: Bootstrap
       shell: bash
