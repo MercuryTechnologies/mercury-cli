@@ -306,6 +306,22 @@ func init() {
 				},
 			},
 			{
+				Name:     "recipients:invites",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&recipientsInvitesList,
+				},
+			},
+			{
+				Name:     "recipients:invites",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&recipientsInvitesList,
+				},
+			},
+			{
 				Name:     "transactions",
 				Usage:    "Search, update, and attach files to transactions",
 				Category: "Resources",
