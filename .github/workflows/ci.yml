@@ -15,13 +15,13 @@ on:
       - 'stl-preview-base/**'
 
 env:
-  GOPRIVATE: github.com/MercuryTechnologies/mercury-go,github.com/stainless-sdks/mercury-go
+  GOPRIVATE: github.com/MercuryTechnologies/mercury-go,github.com/MercuryTechnologies/mercury-go-staging
 
 jobs:
   lint:
     timeout-minutes: 10
     name: lint
-    runs-on: ${{ startsWith(github.repository, 'stainless-sdks/') && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
 
     steps:
@@ -29,15 +29,7 @@ jobs:
 
       - uses: ./.github/actions/setup-go
         with:
-          stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
-
-      - name: Link staging branch
-        if: github.repository == 'stainless-sdks/mercury-cli'
-        run: |
-          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}' || true
-
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+          go-sdk-app-private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
 
       - name: Run lints
         run: ./scripts/lint
@@ -47,23 +39,14 @@ jobs:
     name: build
     permissions:
       contents: read
-      id-token: write
-    runs-on: ${{ startsWith(github.repository, 'stainless-sdks/') && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: ./.github/actions/setup-go
         with:
-          stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
-
-      - name: Link staging branch
-        if: github.repository == 'stainless-sdks/mercury-cli'
-        run: |
-          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}' || true
-
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+          go-sdk-app-private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
 
       - name: Run goreleaser
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
@@ -73,44 +56,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get GitHub OIDC Token
-        if: |-
-          github.repository == 'stainless-sdks/mercury-cli' &&
-          !startsWith(github.ref, 'refs/heads/stl/')
-        id: github-oidc
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        with:
-          script: core.setOutput('github_token', await core.getIDToken());
-
-      - name: Upload tarball
-        if: |-
-          github.repository == 'stainless-sdks/mercury-cli' &&
-          !startsWith(github.ref, 'refs/heads/stl/')
-        env:
-          URL: https://pkg.stainless.com/s
-          AUTH: ${{ steps.github-oidc.outputs.github_token }}
-          SHA: ${{ github.sha }}
-        run: ./scripts/utils/upload-artifact.sh
-
   test:
     timeout-minutes: 10
     name: test
-    runs-on: ${{ startsWith(github.repository, 'stainless-sdks/') && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: ./.github/actions/setup-go
         with:
-          stainless-api-key: ${{ secrets.STAINLESS_API_KEY }}
-
-      - name: Link staging branch
-        if: github.repository == 'stainless-sdks/mercury-cli'
-        run: |
-          ./scripts/link 'github.com/stainless-sdks/mercury-go@${{ github.ref_name }}' || true
-
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+          go-sdk-app-private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
 
       - name: Run tests
         run: ./scripts/test
@@ -118,7 +74,9 @@ jobs:
   nix:
     timeout-minutes: 15
     name: nix build
-    runs-on: ${{ github.repository == 'stainless-sdks/mercury-cli' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
     steps:
       - uses: actions/checkout@v6
@@ -130,28 +88,78 @@ jobs:
 
       - name: Build flake
         id: build
+        continue-on-error: true
         run: |
           set -o pipefail
           nix build .#default --print-build-logs 2>&1 | tee build.log
 
-      - name: Surface vendorHash fix on mismatch
-        if: failure() && steps.build.outcome == 'failure'
+      # A `mercury-go` bump from Stainless changes go.mod/go.sum, which invalidates the
+      # vendored module tree that `vendorHash` pins. Rewrite it to the hash nix computed,
+      # prove the flake builds with it, then push the one-line fix back to the branch.
+      - name: Update stale vendorHash
+        id: vendor-hash
+        if: steps.build.outcome == 'failure'
         run: |
+          set -euo pipefail
+
           if ! grep -q "hash mismatch in fixed-output derivation" build.log; then
-            exit 0
+            echo "::error::nix build failed for a reason other than a vendorHash mismatch."
+            exit 1
           fi
+
           NEW_HASH=$(grep -oE 'got:[[:space:]]+sha256-[A-Za-z0-9+/=]+' build.log | head -1 | awk '{print $NF}')
+          if [ -z "$NEW_HASH" ]; then
+            echo "::error::Detected a hash mismatch but could not parse the expected hash out of build.log."
+            exit 1
+          fi
+
+          sed -i -E "s|vendorHash = \"sha256-[^\"]*\";|vendorHash = \"${NEW_HASH}\";|" flake.nix
+          git diff --quiet -- flake.nix && {
+            echo "::error::flake.nix already pins ${NEW_HASH}; the mismatch is not a stale hash."
+            exit 1
+          }
+
+          echo "==> Rebuilding with vendorHash = ${NEW_HASH}"
+          set -o pipefail
+          nix build .#default --print-build-logs 2>&1 | tee rebuild.log
+
+          echo "hash=${NEW_HASH}" >> "$GITHUB_OUTPUT"
+
+      # Only pushable for branches in this repo; fork PRs get the summary and a red job.
+      - name: Commit vendorHash fix
+        id: vendor-hash-push
+        if: steps.vendor-hash.outcome == 'success' && github.event_name == 'push'
+        env:
+          NEW_HASH: ${{ steps.vendor-hash.outputs.hash }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "update flake vendorHash after go.mod change" -- flake.nix
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          {
+            echo "## :white_check_mark: Updated stale flake \`vendorHash\`"
+            echo ""
+            echo "\`flake.nix\` now pins \`${NEW_HASH}\`, verified by a second \`nix build\`, and the fix was pushed to \`${GITHUB_REF_NAME}\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Surface vendorHash fix when it could not be pushed
+        if: steps.vendor-hash.outcome == 'success' && steps.vendor-hash-push.outcome == 'skipped'
+        env:
+          NEW_HASH: ${{ steps.vendor-hash.outputs.hash }}
+        run: |
           {
             echo "## :warning: Flake \`vendorHash\` is stale"
             echo ""
-            echo "Go dependencies changed (likely a \`mercury-go\` bump from Stainless) but \`flake.nix\`'s \`vendorHash\` was not updated."
-            echo ""
-            echo "**Fix:** replace the \`vendorHash\` line in \`flake.nix\` with:"
+            echo "Go dependencies changed (likely a \`mercury-go\` bump from Stainless) but \`flake.nix\`'s \`vendorHash\` was not updated. CI cannot push to this ref, so apply it by hand:"
             echo ""
             echo '```nix'
             echo "vendorHash = \"${NEW_HASH}\";"
             echo '```'
-            echo ""
-            echo "Commit the change and push; CI will re-run."
           } >> "$GITHUB_STEP_SUMMARY"
           echo "::error file=flake.nix::vendorHash is stale — update to ${NEW_HASH}"
+          exit 1
+
+      - name: Fail if the flake never built
+        if: steps.build.outcome == 'failure' && steps.vendor-hash.outcome != 'success'
+        run: exit 1
