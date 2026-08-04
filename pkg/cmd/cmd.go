@@ -310,6 +310,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
+					&recipientsInvitesCreate,
 					&recipientsInvitesList,
 				},
 			},
@@ -318,6 +319,7 @@ func init() {
 				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
+					&recipientsInvitesCreate,
 					&recipientsInvitesList,
 				},
 			},
