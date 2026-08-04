@@ -48,6 +48,42 @@ var categoriesCreate = cli.Command{
 	HideHelpCommand: true,
 }
 
+var categoriesUpdate = cli.Command{
+	Name:    "update",
+	Usage:   "Update an existing custom expense category for the organization.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "expense-category-id",
+			Usage:     "ID for the category",
+			Required:  true,
+			PathParam: "expenseCategoryId",
+		},
+		&requestflag.Flag[*string]{
+			Name:     "name",
+			Usage:    " New name for the category",
+			BodyPath: "name",
+		},
+		&requestflag.Flag[*bool]{
+			Name:     "visible-for-card-spend",
+			Usage:    " Whether this category is applicable to card transactions",
+			BodyPath: "visibleForCardSpend",
+		},
+		&requestflag.Flag[*bool]{
+			Name:     "visible-for-other",
+			Usage:    " Whether this category is applicable to all other transaction kinds",
+			BodyPath: "visibleForOther",
+		},
+		&requestflag.Flag[*bool]{
+			Name:     "visible-for-reimbursements",
+			Usage:    " Whether this category is applicable to expense reimbursement transactions",
+			BodyPath: "visibleForReimbursements",
+		},
+	},
+	Action:          handleCategoriesUpdate,
+	HideHelpCommand: true,
+}
+
 var categoriesList = cli.Command{
 	Name:    "list",
 	Usage:   "Retrieve a paginated list of all available custom expense categories for the\norganization. Supports cursor-based pagination with limit, order, start_after,\nand end_before query parameters.",
@@ -81,6 +117,22 @@ var categoriesList = cli.Command{
 		},
 	},
 	Action:          handleCategoriesList,
+	HideHelpCommand: true,
+}
+
+var categoriesDelete = cli.Command{
+	Name:    "delete",
+	Usage:   "Delete a custom expense category for the organization.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "expense-category-id",
+			Usage:     "ID for the category",
+			Required:  true,
+			PathParam: "expenseCategoryId",
+		},
+	},
+	Action:          handleCategoriesDelete,
 	HideHelpCommand: true,
 }
 
@@ -121,6 +173,55 @@ func handleCategoriesCreate(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "categories create",
+		Transform:      transform,
+	})
+}
+
+func handleCategoriesUpdate(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("expense-category-id") && len(unusedArgs) > 0 {
+		cmd.Set("expense-category-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		ApplicationJSON,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := mercury.CategoryUpdateParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Categories.Update(
+		ctx,
+		cmd.Value("expense-category-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "categories update",
 		Transform:      transform,
 	})
 }
@@ -178,4 +279,29 @@ func handleCategoriesList(ctx context.Context, cmd *cli.Command) error {
 			Transform:      transform,
 		})
 	}
+}
+
+func handleCategoriesDelete(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("expense-category-id") && len(unusedArgs) > 0 {
+		cmd.Set("expense-category-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return client.Categories.Delete(ctx, cmd.Value("expense-category-id").(string), options...)
 }

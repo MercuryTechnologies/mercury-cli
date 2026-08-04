@@ -157,7 +157,9 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&categoriesCreate,
+					&categoriesUpdate,
 					&categoriesList,
+					&categoriesDelete,
 				},
 			},
 			{
