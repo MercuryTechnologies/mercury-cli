@@ -38,12 +38,28 @@ runs:
       shell: bash
       env:
         GO_MODULE_REPO: ${{ github.repository == 'MercuryTechnologies/mercury-cli-staging' && 'MercuryTechnologies/mercury-go-staging' || 'MercuryTechnologies/mercury-go' }}
+        GO_SDK_TOKEN: ${{ steps.go-sdk-token.outputs.token }}
       run: |
-        if ! git ls-remote --exit-code "https://github.com/${GO_MODULE_REPO}" >/dev/null 2>&1; then
-          echo "::error::Cannot access the Go SDK module at https://github.com/${GO_MODULE_REPO}."
-          echo "::error::If the repo is private, pass 'go-sdk-app-private-key' to this action and make sure the Mercury OpenAPI Sync (Stainless CLI) App is installed on ${GO_MODULE_REPO} with Contents: read."
-          exit 1
+        # Run from outside the checkout. actions/checkout persists an
+        # `http.https://github.com/.extraheader` Authorization for GITHUB_TOKEN (scoped to
+        # this repo only) via an includeIf.gitdir entry; that header wins over the App
+        # token embedded in our rewritten URL, so from inside the repo this check would
+        # 404 on the private Go SDK repo. Fetches that `go` makes happen in the module
+        # cache, outside the repo, so they are unaffected.
+        cd "${RUNNER_TEMP}"
+        if git ls-remote --exit-code "https://github.com/${GO_MODULE_REPO}" >/dev/null 2>&1; then
+          exit 0
         fi
+        echo "::error::Cannot access the Go SDK module at https://github.com/${GO_MODULE_REPO}."
+        if [ -n "${GO_SDK_TOKEN:-}" ]; then
+          STATUS=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer ${GO_SDK_TOKEN}" \
+            "https://api.github.com/repos/${GO_MODULE_REPO}")
+          echo "::error::GitHub App token reached the repo API with HTTP ${STATUS} (200 = token is fine, so this is a git/credential problem; 403/404 = the App lacks Contents: read on ${GO_MODULE_REPO})."
+        else
+          echo "::error::No App token was minted. Pass 'go-sdk-app-private-key' to this action."
+        fi
+        exit 1
 
     - name: Setup go
       uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
