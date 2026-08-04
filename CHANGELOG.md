@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.2...v0.11.3) (2026-08-04)
+
+
+### Chores
+
+* list recipient invites ([da49620](https://github.com/MercuryTechnologies/mercury-cli/commit/da496202c6d448461c893861189e71f7d1bc6646))
+
 ## [0.11.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.1...v0.11.2) (2026-08-04)
 
 
