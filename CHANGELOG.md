@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.4](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.3...v0.11.4) (2026-08-04)
+
+
+### Chores
+
+* add create invites endpoint ([2d82502](https://github.com/MercuryTechnologies/mercury-cli/commit/2d825029f552217278eead14c1e70f72a88736fa))
+
 ## [0.11.3](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.2...v0.11.3) (2026-08-04)
 
 
