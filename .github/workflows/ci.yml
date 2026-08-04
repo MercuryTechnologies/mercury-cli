@@ -135,7 +135,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m "chore: update flake vendorHash after go.mod change" -- flake.nix
+          git commit -m "update flake vendorHash after go.mod change" -- flake.nix
           git push origin "HEAD:${GITHUB_REF_NAME}"
           {
             echo "## :white_check_mark: Updated stale flake \`vendorHash\`"
