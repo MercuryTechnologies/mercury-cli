@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.1...v0.11.2) (2026-08-04)
+
+
+### Chores
+
+* update flake vendorHash after go.mod change ([ba60f6c](https://github.com/MercuryTechnologies/mercury-cli/commit/ba60f6c77fe416cd5039f3895a3c43a31dcc1cb4))
+
 ## [0.11.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.0...v0.11.1) (2026-07-27)
 
 
