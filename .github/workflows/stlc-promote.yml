@@ -16,7 +16,7 @@ on:
 
 permissions:
   contents: read
-  checks: read          # read staging's check runs before promoting
+  actions: read         # read ci.yml's run for the commit being promoted
 
 jobs:
   promote:
