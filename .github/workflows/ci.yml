@@ -77,7 +77,6 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -87,7 +86,7 @@ jobs:
         # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
         # Push events only
         id: app-token
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository == 'MercuryTechnologies/mercury-cli-staging'
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
@@ -139,10 +138,14 @@ jobs:
 
           echo "hash=${NEW_HASH}" >> "$GITHUB_OUTPUT"
 
-      # Only pushable for branches in this repo; fork PRs get the summary and a red job.
+      # Staging only, and only for branches in this repo. Everywhere else the
+      # step below prints the hash and reds the job instead of committing.
       - name: Commit vendorHash fix
         id: vendor-hash-push
-        if: steps.vendor-hash.outcome == 'success' && github.event_name == 'push'
+        if: >-
+          steps.vendor-hash.outcome == 'success'
+          && github.event_name == 'push'
+          && github.repository == 'MercuryTechnologies/mercury-cli-staging'
         env:
           NEW_HASH: ${{ steps.vendor-hash.outputs.hash }}
           PUSH_TOKEN: ${{ steps.app-token.outputs.token }}
