@@ -77,7 +77,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
+    if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
     steps:
       - uses: actions/checkout@v6
 
