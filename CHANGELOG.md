@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.5](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.4...v0.11.5) (2026-08-05)
+
+
+### Chores
+
+* add delete recipient invite endpoint ([e98271c](https://github.com/MercuryTechnologies/mercury-cli/commit/e98271c6368630f99825e94dcab5d884350f5685))
+
 ## [0.11.4](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.3...v0.11.4) (2026-08-04)
 
 
