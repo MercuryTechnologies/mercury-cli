@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  checks: read          # read staging's check runs before promoting
 
 jobs:
   promote:
@@ -65,6 +66,60 @@ jobs:
           else
             echo "synced=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Require staging CI to be green on the commit being promoted
+        # ci.yml's nix job fixes a stale flake `vendorHash` a few minutes after
+        # a codegen push lands. Promoting before it finishes ships a broken
+        # flake to production — and nix doesn't run there to catch it, so CI
+        # stays green while `nix build github:.../mercury-cli` fails for
+        # everyone. Worse, a release cut in that window tags it permanently.
+        if: steps.diff.outputs.synced == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          sha=$(git rev-parse origin/main)
+          echo "Checking staging CI on $sha"
+
+          rows=$(gh api --paginate "repos/$GITHUB_REPOSITORY/commits/$sha/check-runs" \
+            --jq '.check_runs[] | [.name, .status, (.conclusion // "-")] | @tsv')
+
+          if [ -z "$rows" ]; then
+            echo "::error title=Promote blocked::No check runs on $sha — staging CI hasn't started. Wait for it, then re-run."
+            exit 1
+          fi
+
+          pending=""; failed=""; nix_ok=false
+          while IFS=$'\t' read -r name status conclusion; do
+            printf '  %-28s %-12s %s\n' "$name" "$status" "$conclusion"
+            if [ "$status" != completed ]; then
+              pending="$pending $name"
+              continue
+            fi
+            case "$conclusion" in
+              # `skipped` is normal: the lint/build/test jobs opt out of
+              # `codegen metadata` pushes and of non-fork PR events.
+              success|skipped|neutral) ;;
+              *) failed="$failed $name" ;;
+            esac
+            [ "$name" = "nix build" ] && [ "$conclusion" = success ] && nix_ok=true
+          done <<< "$rows"
+
+          if [ -n "$failed" ]; then
+            echo "::error title=Promote blocked::Staging CI failed on $sha:$failed. Fix staging first."
+            exit 1
+          fi
+          if [ -n "$pending" ]; then
+            echo "::error title=Promote blocked::Staging CI still running on $sha:$pending. Wait for it to finish, then re-run."
+            exit 1
+          fi
+          # Explicit: a *missing* nix run is the dangerous case, and an all-green
+          # sweep of the other jobs would otherwise let it through.
+          if [ "$nix_ok" != true ]; then
+            echo "::error title=Promote blocked::The 'nix build' check has not succeeded on $sha, so flake.nix may still pin a stale vendorHash. Production does not run nix and would not catch it."
+            exit 1
+          fi
+          echo "Staging CI is green on $sha — safe to promote."
 
       - name: Promote staging to production (fast-forward)
         if: steps.diff.outputs.synced == 'false'

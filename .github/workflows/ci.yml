@@ -75,11 +75,25 @@ jobs:
     timeout-minutes: 15
     name: nix build
     permissions:
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Mint GitHub App token for pushing the vendorHash fix
+        # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
+        # Push events only
+        id: app-token
+        if: github.event_name == 'push'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: "Iv23lidIPoT2oBJKuwto" # Mercury OpenAPI Sync (Stainless CLI)
+          private-key: ${{ secrets.MERCURY_OPENAPI_SYNC_APP_PRIVATE_KEY }}
+          owner: MercuryTechnologies
+          repositories: mercury-cli-staging
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -131,12 +145,14 @@ jobs:
         if: steps.vendor-hash.outcome == 'success' && github.event_name == 'push'
         env:
           NEW_HASH: ${{ steps.vendor-hash.outputs.hash }}
+          PUSH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m "update flake vendorHash after go.mod change" -- flake.nix
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${GITHUB_REF_NAME}"
           {
             echo "## :white_check_mark: Updated stale flake \`vendorHash\`"
             echo ""
