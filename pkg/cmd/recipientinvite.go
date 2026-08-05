@@ -105,6 +105,22 @@ var recipientsInvitesList = cli.Command{
 	HideHelpCommand: true,
 }
 
+var recipientsInvitesDelete = cli.Command{
+	Name:    "delete",
+	Usage:   "Delete an active recipient invite.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "invite-id",
+			Usage:     "ID for the invite",
+			Required:  true,
+			PathParam: "inviteId",
+		},
+	},
+	Action:          handleRecipientsInvitesDelete,
+	HideHelpCommand: true,
+}
+
 func handleRecipientsInvitesCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -185,4 +201,29 @@ func handleRecipientsInvitesList(ctx context.Context, cmd *cli.Command) error {
 		Title:          "recipients:invites list",
 		Transform:      transform,
 	})
+}
+
+func handleRecipientsInvitesDelete(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("invite-id") && len(unusedArgs) > 0 {
+		cmd.Set("invite-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return client.Recipients.Invites.Delete(ctx, cmd.Value("invite-id").(string), options...)
 }

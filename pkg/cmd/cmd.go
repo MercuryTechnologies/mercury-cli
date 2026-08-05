@@ -312,6 +312,7 @@ func init() {
 				Commands: []*cli.Command{
 					&recipientsInvitesCreate,
 					&recipientsInvitesList,
+					&recipientsInvitesDelete,
 				},
 			},
 			{
@@ -321,6 +322,7 @@ func init() {
 				Commands: []*cli.Command{
 					&recipientsInvitesCreate,
 					&recipientsInvitesList,
+					&recipientsInvitesDelete,
 				},
 			},
 			{
