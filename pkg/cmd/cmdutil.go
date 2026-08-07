@@ -536,6 +536,21 @@ func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, op
 	}
 
 	if !usePager {
+		// Wrap output in JSON array for json/pretty formats
+		if strings.ToLower(opts.Format) == "json" || strings.ToLower(opts.Format) == "pretty" {
+			arrOutput := []byte("[\n")
+			arrOutput = append(arrOutput, output...)
+			// Replace trailing newline with comma before closing bracket
+			if len(arrOutput) > 0 && arrOutput[len(arrOutput)-1] == '\n' {
+				arrOutput[len(arrOutput)-1] = ','
+			}
+			arrOutput = append(arrOutput, "\n]\n"...)
+			_, err := opts.Stdout.Write(arrOutput)
+			if err != nil {
+				return err
+			}
+			return iter.Err()
+		}
 		_, err := opts.Stdout.Write(output)
 		if err != nil {
 			return err
@@ -544,15 +559,12 @@ func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, op
 		return iter.Err()
 	}
 
-	return streamOutput(opts.Title, func(pager *os.File) error {
-		_, err := pager.Write(output)
-		if err != nil {
+	// Pager path: stream items with ShowJSON
+	if strings.ToLower(opts.Format) == "json" || strings.ToLower(opts.Format) == "pretty" {
+		if _, err := pager.Write([]byte("[\n")); err != nil {
 			return err
 		}
-
-		pagerOpts := opts
-		pagerOpts.Stdout = pager
-
+		first := true
 		for iter.Next() {
 			if itemsToDisplay == 0 {
 				break
@@ -568,11 +580,22 @@ func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, op
 				}
 				obj = gjson.ParseBytes(jsonData)
 			}
+			if !first {
+				if _, err := pager.Write([]byte(",\n")); err != nil {
+					return err
+				}
+			}
+			first = false
+			pagerOpts := opts
+			pagerOpts.Stdout = pager
 			if err := ShowJSON(obj, pagerOpts); err != nil {
 				return err
 			}
 			itemsToDisplay -= 1
 		}
+		if _, err := pager.Write([]byte("\n]\n")); err != nil {
+			return err
+		}
 		return iter.Err()
-	})
+	}
 }
