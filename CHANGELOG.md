@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.6](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.5...v0.11.6) (2026-08-07)
+
+
+### Chores
+
+* add payment method field to recipients ([7c2d884](https://github.com/MercuryTechnologies/mercury-cli/commit/7c2d8845e886fdef1b3760a6ec54516cda29f7a4))
+
 ## [0.11.5](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.4...v0.11.5) (2026-08-05)
 
 
