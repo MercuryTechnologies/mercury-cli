@@ -10,6 +10,8 @@ github.com/MercuryTechnologies/mercury-go v0.13.0 h1:0dcZfpFM2CL04TNfJeNBP7jaVBr
 github.com/MercuryTechnologies/mercury-go v0.13.0/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/MercuryTechnologies/mercury-go v0.13.1 h1:HaKgiOSNs27zt3LEb7ywjTl+oIHeccUJxkuqnvwspDo=
 github.com/MercuryTechnologies/mercury-go v0.13.1/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
+github.com/MercuryTechnologies/mercury-go v0.13.10 h1:J3wC+tyKo071syhp8dvwmqp6FS94ONfwk4Vo10UKY80=
+github.com/MercuryTechnologies/mercury-go v0.13.10/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/MercuryTechnologies/mercury-go v0.13.4 h1:V0QwBXGJByqkvnI2UiWMlWZ/ztFDY2oc1xyf8E645PA=
 github.com/MercuryTechnologies/mercury-go v0.13.4/go.mod h1:ExYve8WcrjrixtuTiKvJLGrGPXA/wQIlx+ETFDJTQjQ=
 github.com/MercuryTechnologies/mercury-go v0.13.5 h1:9fWHQon30cB4h+dvT7zqqTFEj+S50bwFHjaLFu0DUw8=
