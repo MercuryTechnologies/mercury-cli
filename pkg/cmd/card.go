@@ -130,6 +130,11 @@ var cardsList = cli.Command{
 			Usage:     "The ID of the card to end the page before (exclusive). When provided, results will end just before this ID and work backwards. Use this for reverse pagination or to retrieve previous pages. Cannot be combined with start_after.",
 			QueryPath: "end_before",
 		},
+		&requestflag.Flag[bool]{
+			Name:      "is-agent-card",
+			Usage:     "Filter cards by whether they are for Agent use.",
+			QueryPath: "isAgentCard",
+		},
 		&requestflag.Flag[[]string]{
 			Name:      "kind",
 			Usage:     "Filter cards by kind (debit or credit).",

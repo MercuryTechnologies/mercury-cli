@@ -120,6 +120,7 @@ func TestCardsList(t *testing.T) {
 			"--max-items", "10",
 			"--account-id", "string",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--is-agent-card=true",
 			"--kind", "debit",
 			"--limit", "1",
 			"--order", "asc",
