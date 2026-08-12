@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.8](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.7...v0.11.8) (2026-08-12)
+
+
+### Chores
+
+* sync specs from MWB@v2026.08.11.71496+6a2220d ([3de060d](https://github.com/MercuryTechnologies/mercury-cli/commit/3de060d1856054db84b4cb0b438eee8dc4cc8251))
+
 ## [0.11.7](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.11.6...v0.11.7) (2026-08-11)
 
 
