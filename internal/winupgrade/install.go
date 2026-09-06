@@ -18,13 +18,32 @@ import (
 )
 
 const maxArchiveSize = 128 << 20
+const releaseBaseURL = "https://cli.mercury.com"
 
 var versionPattern = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$`)
 
 // Install returns the path of any retained previous executable. On Windows,
 // a running image can be renamed but cannot be overwritten or deleted.
 func Install(ctx context.Context, version, arch, destination string) (string, error) {
-	return install(ctx, &http.Client{Timeout: 2 * time.Minute}, "https://cli.mercury.com", version, arch, destination)
+	return install(ctx, &http.Client{Timeout: 10 * time.Minute}, releaseBaseURL, version, arch, destination)
+}
+
+// LatestVersion uses an interactive request timeout, independent of the short
+// background update-notification deadline.
+func LatestVersion(ctx context.Context) (string, error) {
+	return latestVersion(ctx, &http.Client{Timeout: 30 * time.Second}, releaseBaseURL+"/VERSION")
+}
+
+func latestVersion(ctx context.Context, client *http.Client, url string) (string, error) {
+	body, err := download(ctx, client, url, 64)
+	if err != nil {
+		return "", err
+	}
+	version := strings.TrimPrefix(strings.TrimSpace(string(body)), "v")
+	if !versionPattern.MatchString(version) {
+		return "", fmt.Errorf("invalid release version %q", version)
+	}
+	return version, nil
 }
 
 func install(ctx context.Context, client *http.Client, baseURL, version, arch, destination string) (string, error) {

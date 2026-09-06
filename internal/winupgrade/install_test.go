@@ -15,6 +15,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 func zipBytes(t *testing.T, names ...string) []byte {
@@ -125,7 +126,11 @@ func TestInvalidInputs(t *testing.T) {
 		w := zip.NewWriter(&archive)
 		header := &zip.FileHeader{Name: "mercury.exe"}
 		header.SetMode(mode)
-		if _, err := w.CreateHeader(header); err != nil {
+		entry, err := w.CreateHeader(header)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := entry.Write([]byte("not a regular executable")); err != nil {
 			t.Fatal(err)
 		}
 		if err := w.Close(); err != nil {
@@ -134,6 +139,30 @@ func TestInvalidInputs(t *testing.T) {
 		if _, err := extractBinary(archive.Bytes()); err == nil {
 			t.Fatalf("accepted non-regular entry with mode %v", mode)
 		}
+	}
+}
+
+func TestLatestVersion(t *testing.T) {
+	for _, tc := range []struct {
+		body    string
+		delay   time.Duration
+		wantErr bool
+	}{
+		{"v1.2.3\n", 2100 * time.Millisecond, false},
+		{"../1.2.3", 0, true},
+		{strings.Repeat("1", 65), 0, true},
+	} {
+		t.Run(tc.body[:5], func(t *testing.T) {
+			s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				time.Sleep(tc.delay)
+				fmt.Fprint(w, tc.body)
+			}))
+			defer s.Close()
+			got, err := latestVersion(context.Background(), s.Client(), s.URL)
+			if (err != nil) != tc.wantErr || (!tc.wantErr && got != "1.2.3") {
+				t.Fatalf("version=%q, error=%v", got, err)
+			}
+		})
 	}
 }
 

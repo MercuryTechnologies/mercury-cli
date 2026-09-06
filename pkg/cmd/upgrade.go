@@ -80,9 +80,9 @@ func runWindowsUpgrade(ctx context.Context, c *cli.Command) error {
 		version = os.Getenv("MERCURY_VERSION")
 	}
 	if version == "" {
-		latest, err := updatecheck.FetchLatest(ctx)
+		latest, err := winupgrade.LatestVersion(ctx)
 		if err != nil {
-			return fmt.Errorf("fetch latest release: %w", err)
+			return fmt.Errorf("fetch latest release (retry or pin a release with --version): %w", err)
 		}
 		if latest == Version && !c.Bool("force") {
 			fmt.Fprintf(os.Stdout, "Already at the latest version (%s). Use --force to reinstall.\n", Version)
