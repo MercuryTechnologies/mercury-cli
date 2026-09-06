@@ -112,7 +112,7 @@ func runWindowsUpgrade(ctx context.Context, c *cli.Command) error {
 	}
 	fmt.Fprintf(os.Stdout, "Mercury %s installed to %s.\n", version, destination)
 	if backup != "" {
-		fmt.Fprintf(os.Stdout, "Previous executable retained at %s; you can remove it after this command exits.\n", backup)
+		fmt.Fprintf(os.Stdout, "Previous executable retained at %s; you can remove its containing directory %s after this command exits.\n", backup, filepath.Dir(backup))
 	}
 	return nil
 }

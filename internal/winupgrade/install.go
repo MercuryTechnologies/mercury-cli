@@ -154,7 +154,20 @@ func replaceBinary(destination string, binary []byte, rename func(string, string
 		}
 	}()
 	newPath := filepath.Join(stage, "mercury.exe")
-	if err := os.WriteFile(newPath, binary, 0o755); err != nil {
+	f, err := os.OpenFile(newPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o755)
+	if err != nil {
+		return "", err
+	}
+	if _, err := f.Write(binary); err != nil {
+		_ = f.Close()
+		return "", err
+	}
+	// Flush the staged executable before moving the previous one aside.
+	if err := f.Sync(); err != nil {
+		_ = f.Close()
+		return "", err
+	}
+	if err := f.Close(); err != nil {
 		return "", err
 	}
 	backup := filepath.Join(stage, "previous.exe")

@@ -120,6 +120,21 @@ func TestInvalidInputs(t *testing.T) {
 			t.Fatalf("accepted %v", names)
 		}
 	}
+	for _, mode := range []os.FileMode{os.ModeDir | 0o755, os.ModeSymlink | 0o777} {
+		var archive bytes.Buffer
+		w := zip.NewWriter(&archive)
+		header := &zip.FileHeader{Name: "mercury.exe"}
+		header.SetMode(mode)
+		if _, err := w.CreateHeader(header); err != nil {
+			t.Fatal(err)
+		}
+		if err := w.Close(); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := extractBinary(archive.Bytes()); err == nil {
+			t.Fatalf("accepted non-regular entry with mode %v", mode)
+		}
+	}
 }
 
 func TestRollback(t *testing.T) {

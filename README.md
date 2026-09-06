@@ -130,7 +130,7 @@ Set `MERCURY_INSTALL_DIR` to override the install location.
 On Windows, `upgrade` downloads the official release ZIP and verifies its SHA-256
 checksum without requiring `sh` or `curl`. It replaces the running executable in
 place unless `MERCURY_INSTALL_DIR` is set. If Windows keeps the previous executable
-locked, the command prints its backup path; remove that file after the command
+locked, the command prints its backup path; remove the backup directory after the command
 exits. `--version` takes precedence over `MERCURY_VERSION`.
 
 When a newer release is available, `mercury` prints a one-line notice on stderr
