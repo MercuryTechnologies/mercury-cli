@@ -25,13 +25,32 @@ var versionPattern = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-
 // Install returns the path of any retained previous executable. On Windows,
 // a running image can be renamed but cannot be overwritten or deleted.
 func Install(ctx context.Context, version, arch, destination string) (string, error) {
-	return install(ctx, &http.Client{Timeout: 10 * time.Minute}, releaseBaseURL, version, arch, destination)
+	return install(ctx, releaseClient(10*time.Minute), releaseBaseURL, version, arch, destination)
 }
 
 // LatestVersion uses an interactive request timeout, independent of the short
 // background update-notification deadline.
 func LatestVersion(ctx context.Context) (string, error) {
-	return latestVersion(ctx, &http.Client{Timeout: 30 * time.Second}, releaseBaseURL+"/VERSION")
+	return latestVersion(ctx, versionClient(), releaseBaseURL+"/VERSION")
+}
+
+func versionClient() *http.Client {
+	return releaseClient(30 * time.Second)
+}
+
+func releaseClient(timeout time.Duration) *http.Client {
+	return &http.Client{
+		Timeout: timeout,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if req.URL.Scheme != "https" {
+				return fmt.Errorf("refusing release redirect to non-HTTPS URL")
+			}
+			if len(via) >= 10 {
+				return fmt.Errorf("stopped after 10 release redirects")
+			}
+			return nil
+		},
+	}
 }
 
 func latestVersion(ctx context.Context, client *http.Client, url string) (string, error) {

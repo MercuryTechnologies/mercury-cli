@@ -158,11 +158,42 @@ func TestLatestVersion(t *testing.T) {
 				fmt.Fprint(w, tc.body)
 			}))
 			defer s.Close()
-			got, err := latestVersion(context.Background(), s.Client(), s.URL)
+			got, err := latestVersion(context.Background(), versionClient(), s.URL)
 			if (err != nil) != tc.wantErr || (!tc.wantErr && got != "1.2.3") {
 				t.Fatalf("version=%q, error=%v", got, err)
 			}
 		})
+	}
+}
+
+func TestReleaseClientRedirects(t *testing.T) {
+	plain := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("followed insecure redirect")
+	}))
+	defer plain.Close()
+	var secure *httptest.Server
+	secure = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/downgrade":
+			http.Redirect(w, r, plain.URL, http.StatusFound)
+		case "/redirect":
+			http.Redirect(w, r, secure.URL+"/ok", http.StatusFound)
+		case "/loop":
+			http.Redirect(w, r, secure.URL+"/loop", http.StatusFound)
+		default:
+			fmt.Fprint(w, "ok")
+		}
+	}))
+	defer secure.Close()
+	client := releaseClient(10 * time.Second)
+	client.Transport = secure.Client().Transport
+	for _, path := range []string{"/downgrade", "/loop"} {
+		if _, err := download(context.Background(), client, secure.URL+path, 64); err == nil {
+			t.Fatalf("accepted redirect %s", path)
+		}
+	}
+	if got, err := download(context.Background(), client, secure.URL+"/redirect", 64); err != nil || string(got) != "ok" {
+		t.Fatalf("HTTPS redirect: %q, %v", got, err)
 	}
 }
 
