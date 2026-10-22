@@ -16,7 +16,7 @@ import (
 
 var statementsAccountsList = cli.Command{
 	Name:    "list",
-	Usage:   "Retrieve a paginated list of monthly statements for a specific account. Supports\ncursor-based pagination with limit, order, start_after, and end_before query\nparameters, as well as date range filtering with start and end parameters.",
+	Usage:   "Retrieve a paginated list of monthly statements for a depository account. For IO\ncredit accounts, use getCreditAccountStatements. Supports cursor-based\npagination with limit, order, start_after, and end_before query parameters, as\nwell as date range filtering with start and end parameters.",
 	Suggest: true,
 	Flags: []cli.Flag{
 		&requestflag.Flag[string]{
