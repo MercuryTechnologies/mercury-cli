@@ -23,7 +23,7 @@ func TestOnboardingApply(t *testing.T) {
 			"--business-contact-details", "{address1: address1, address2: address2, city: city, country: country, phoneNumber: phoneNumber, postalCode: postalCode, state: state}",
 			"--business-legal-address", "{address1: address1, address2: address2, city: city, country: country, postalCode: postalCode, region: region}",
 			"--business-physical-address", "{address1: address1, address2: address2, city: city, country: country, postalCode: postalCode, region: region}",
-			"--formation-details", "{federalEin: 12-3456789, formationDocumentFileBlob: 12-3456789, companyOriginCountry: companyOriginCountry, companyStructure: CCorp, einDocumentFileBlob: einDocumentFileBlob, eINDocumentFileBlob: eINDocumentFileBlob, foreignBusinessNumber: foreignBusinessNumber, formationDocumentType: ArticlesOfIncorporation}",
+			"--formation-details", "{companyOriginCountry: companyOriginCountry, companyStructure: CCorp, einDocumentFileBlob: einDocumentFileBlob, eINDocumentFileBlob: eINDocumentFileBlob, federalEin: 12-3456789, foreignBusinessNumber: foreignBusinessNumber, formationDocumentFileBlob: 12-3456789, formationDocumentType: ArticlesOfIncorporation}",
 			"--invite-email", "inviteEmail",
 			"--webhook-url", "webhookURL",
 		)
@@ -85,13 +85,13 @@ func TestOnboardingApply(t *testing.T) {
 			"--business-physical-address.country", "country",
 			"--business-physical-address.postal-code", "postalCode",
 			"--business-physical-address.region", "region",
-			"--formation-details.federal-ein", "12-3456789",
-			"--formation-details.formation-document-file-blob", "12-3456789",
 			"--formation-details.company-origin-country", "companyOriginCountry",
 			"--formation-details.company-structure", "CCorp",
 			"--formation-details.ein-document-file-blob", "einDocumentFileBlob",
 			"--formation-details.e-in-document-file-blob", "eINDocumentFileBlob",
+			"--formation-details.federal-ein", "12-3456789",
 			"--formation-details.foreign-business-number", "foreignBusinessNumber",
+			"--formation-details.formation-document-file-blob", "12-3456789",
 			"--formation-details.formation-document-type", "ArticlesOfIncorporation",
 			"--invite-email", "inviteEmail",
 			"--webhook-url", "webhookURL",
@@ -156,13 +156,13 @@ func TestOnboardingApply(t *testing.T) {
 			"  postalCode: postalCode\n" +
 			"  region: region\n" +
 			"formationDetails:\n" +
-			"  federalEin: 12-3456789\n" +
-			"  formationDocumentFileBlob: 12-3456789\n" +
 			"  companyOriginCountry: companyOriginCountry\n" +
 			"  companyStructure: CCorp\n" +
 			"  einDocumentFileBlob: einDocumentFileBlob\n" +
 			"  eINDocumentFileBlob: eINDocumentFileBlob\n" +
+			"  federalEin: 12-3456789\n" +
 			"  foreignBusinessNumber: foreignBusinessNumber\n" +
+			"  formationDocumentFileBlob: 12-3456789\n" +
 			"  formationDocumentType: ArticlesOfIncorporation\n" +
 			"inviteEmail: inviteEmail\n" +
 			"webhookURL: webhookURL\n")

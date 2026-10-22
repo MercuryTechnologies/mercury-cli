@@ -157,7 +157,7 @@ var paymentsRequest = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:     "payment-method",
-			Usage:    `Allowed values: "ach", "check", "domesticWire", "internationalWire".`,
+			Usage:    `Allowed values: "ach", "check", "domesticWire", "internationalWire", "realTimePayment".`,
 			Required: true,
 			BodyPath: "paymentMethod",
 		},
@@ -166,6 +166,11 @@ var paymentsRequest = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "ID for a Mercury account.",
 			Required: true,
 			BodyPath: "recipientId",
+		},
+		&requestflag.Flag[string]{
+			Name:     "charge-type",
+			Usage:    "Who pays intermediary bank fees on a USD international wire. Pass 'ours' so the recipient receives the full amount (Mercury charges a $15 fee), or 'shared' to split those fees. If omitted on a USD international wire, this defaults to 'ours'. Do not include this field for other payment methods or accounts that are not charged international-wire fees.",
+			BodyPath: "chargeType",
 		},
 		&requestflag.Flag[string]{
 			Name:     "external-memo",

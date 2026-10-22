@@ -279,16 +279,6 @@ var onboardingApply = requestflag.WithInnerFlags(cli.Command{
 	},
 	"formation-details": {
 		&requestflag.InnerFlag[*string]{
-			Name:       "formation-details.federal-ein",
-			Usage:      "Field should be null (no value), 'Pending' (value will be provided at a later date), or a valid value",
-			InnerField: "federalEin",
-		},
-		&requestflag.InnerFlag[*string]{
-			Name:       "formation-details.formation-document-file-blob",
-			Usage:      "Field should be null (no value), 'Pending' (value will be provided at a later date), or a valid value",
-			InnerField: "formationDocumentFileBlob",
-		},
-		&requestflag.InnerFlag[*string]{
 			Name:       "formation-details.company-origin-country",
 			InnerField: "companyOriginCountry",
 		},
@@ -306,8 +296,18 @@ var onboardingApply = requestflag.WithInnerFlags(cli.Command{
 			InnerField: "eINDocumentFileBlob",
 		},
 		&requestflag.InnerFlag[*string]{
+			Name:       "formation-details.federal-ein",
+			Usage:      "Field should be null (no value), 'Pending' (value will be provided at a later date), or a valid value",
+			InnerField: "federalEin",
+		},
+		&requestflag.InnerFlag[*string]{
 			Name:       "formation-details.foreign-business-number",
 			InnerField: "foreignBusinessNumber",
+		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "formation-details.formation-document-file-blob",
+			Usage:      "Field should be null (no value), 'Pending' (value will be provided at a later date), or a valid value",
+			InnerField: "formationDocumentFileBlob",
 		},
 		&requestflag.InnerFlag[*string]{
 			Name:       "formation-details.formation-document-type",

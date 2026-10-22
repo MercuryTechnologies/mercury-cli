@@ -84,7 +84,6 @@ var cardsUpdate = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.Flag[*string]{
 			Name:     "nickname",
 			Usage:    "Nickname update action. Omit the field to keep the current nickname, send null or an empty/whitespace-only string to clear it, or send a string to set it.",
-			Required: true,
 			BodyPath: "nickname",
 		},
 		&requestflag.Flag[map[string]any]{
@@ -109,7 +108,7 @@ var cardsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[*int64]{
 			Name:       "spend-limit.atm-amount-cents",
-			Usage:      " Maximum ATM withdrawal allowed per interval, in cents. Null for virtual cards.",
+			Usage:      " Maximum ATM withdrawal allowed per interval, in cents. Null for virtual\n cards and credit cards.",
 			InnerField: "atmAmountCents",
 		},
 	},

@@ -97,7 +97,7 @@ var recipientsInvitesList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "status",
-			Usage:     `Allowed values: "created", "completed", "expired".`,
+			Usage:     `Allowed values: "created", "completed", "expired", "declined".`,
 			QueryPath: "status",
 		},
 	},

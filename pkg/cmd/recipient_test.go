@@ -24,6 +24,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
 			"--electronic-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, electronicAccountType: businessChecking, routingNumber: routingNumber}",
 			"--nickname", "nickname",
+			"--real-time-payment-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
 		)
 	})
 
@@ -53,6 +54,9 @@ func TestRecipientsCreate(t *testing.T) {
 			"--electronic-routing-info.electronic-account-type", "businessChecking",
 			"--electronic-routing-info.routing-number", "routingNumber",
 			"--nickname", "nickname",
+			"--real-time-payment-routing-info.account-number", "accountNumber",
+			"--real-time-payment-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
+			"--real-time-payment-routing-info.routing-number", "routingNumber",
 		)
 	})
 
@@ -98,7 +102,17 @@ func TestRecipientsCreate(t *testing.T) {
 			"    address2: address2\n" +
 			"  electronicAccountType: businessChecking\n" +
 			"  routingNumber: routingNumber\n" +
-			"nickname: nickname\n")
+			"nickname: nickname\n" +
+			"realTimePaymentRoutingInfo:\n" +
+			"  accountNumber: accountNumber\n" +
+			"  address:\n" +
+			"    address1: address1\n" +
+			"    city: city\n" +
+			"    country: country\n" +
+			"    postalCode: postalCode\n" +
+			"    region: region\n" +
+			"    address2: address2\n" +
+			"  routingNumber: routingNumber\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
@@ -123,6 +137,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--email", "string",
 			"--name", "name",
 			"--nickname", "nickname",
+			"--real-time-payment-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
 		)
 	})
 
@@ -153,6 +168,9 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--email", "string",
 			"--name", "name",
 			"--nickname", "nickname",
+			"--real-time-payment-routing-info.account-number", "accountNumber",
+			"--real-time-payment-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
+			"--real-time-payment-routing-info.routing-number", "routingNumber",
 		)
 	})
 
@@ -198,7 +216,17 @@ func TestRecipientsUpdate(t *testing.T) {
 			"emails:\n" +
 			"  - string\n" +
 			"name: name\n" +
-			"nickname: nickname\n")
+			"nickname: nickname\n" +
+			"realTimePaymentRoutingInfo:\n" +
+			"  accountNumber: accountNumber\n" +
+			"  address:\n" +
+			"    address1: address1\n" +
+			"    city: city\n" +
+			"    country: country\n" +
+			"    postalCode: postalCode\n" +
+			"    region: region\n" +
+			"    address2: address2\n" +
+			"  routingNumber: routingNumber\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",

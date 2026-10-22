@@ -25,16 +25,14 @@ var transactionsUpdate = cli.Command{
 			Required:  true,
 			PathParam: "transactionId",
 		},
-		&requestflag.Flag[string]{
+		&requestflag.Flag[*string]{
 			Name:     "category-id",
-			Usage:    "ID for the category",
-			Required: true,
+			Usage:    "Category update action. Omit field to keep current category, send null to clear category, send an ID to set category.",
 			BodyPath: "categoryId",
 		},
 		&requestflag.Flag[*string]{
 			Name:     "note",
 			Usage:    "Note update action. Omit field to keep current note, send null or empty string to clear note, send text to set note.",
-			Required: true,
 			BodyPath: "note",
 		},
 	},
@@ -99,7 +97,7 @@ var transactionsList = cli.Command{
 		},
 		&requestflag.Flag[string]{
 			Name:      "search",
-			Usage:     "Search term to look for in transaction descriptions.",
+			Usage:     "Search term to look for in transaction descriptions, notes, recipient memos, and counterparty names.",
 			QueryPath: "search",
 		},
 		&requestflag.Flag[string]{

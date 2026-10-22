@@ -54,6 +54,11 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 			Name:     "nickname",
 			BodyPath: "nickname",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "real-time-payment-routing-info",
+			Usage:    " Routing information for real-time payments.",
+			BodyPath: "realTimePaymentRoutingInfo",
+		},
 	},
 	Action:          handleRecipientsCreate,
 	HideHelpCommand: true,
@@ -115,12 +120,28 @@ var recipientsCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.electronic-account-type",
-			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings".`,
+			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings", "businessGeneralLedger", "personalGeneralLedger", "businessLoan", "personalLoan".`,
 			InnerField: "electronicAccountType",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.routing-number",
 			Usage:      " The routing number of the bank account to use for ACH payments.",
+			InnerField: "routingNumber",
+		},
+	},
+	"real-time-payment-routing-info": {
+		&requestflag.InnerFlag[string]{
+			Name:       "real-time-payment-routing-info.account-number",
+			Usage:      " The account number of the bank account to use for real-time payments.",
+			InnerField: "accountNumber",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "real-time-payment-routing-info.address",
+			InnerField: "address",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "real-time-payment-routing-info.routing-number",
+			Usage:      " The routing number of the bank account to use for real-time payments.",
 			InnerField: "routingNumber",
 		},
 	},
@@ -169,6 +190,11 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 		&requestflag.Flag[string]{
 			Name:     "nickname",
 			BodyPath: "nickname",
+		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "real-time-payment-routing-info",
+			Usage:    " Routing information for real-time payments.",
+			BodyPath: "realTimePaymentRoutingInfo",
 		},
 	},
 	Action:          handleRecipientsUpdate,
@@ -231,12 +257,28 @@ var recipientsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.electronic-account-type",
-			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings".`,
+			Usage:      `Allowed values: "businessChecking", "businessSavings", "personalChecking", "personalSavings", "businessGeneralLedger", "personalGeneralLedger", "businessLoan", "personalLoan".`,
 			InnerField: "electronicAccountType",
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "electronic-routing-info.routing-number",
 			Usage:      " The routing number of the bank account to use for ACH payments.",
+			InnerField: "routingNumber",
+		},
+	},
+	"real-time-payment-routing-info": {
+		&requestflag.InnerFlag[string]{
+			Name:       "real-time-payment-routing-info.account-number",
+			Usage:      " The account number of the bank account to use for real-time payments.",
+			InnerField: "accountNumber",
+		},
+		&requestflag.InnerFlag[map[string]any]{
+			Name:       "real-time-payment-routing-info.address",
+			InnerField: "address",
+		},
+		&requestflag.InnerFlag[string]{
+			Name:       "real-time-payment-routing-info.routing-number",
+			Usage:      " The routing number of the bank account to use for real-time payments.",
 			InnerField: "routingNumber",
 		},
 	},
