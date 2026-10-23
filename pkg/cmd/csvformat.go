@@ -1,0 +1,100 @@
+package cmd
+
+import (
+	"bytes"
+	"encoding/csv"
+
+	"github.com/tidwall/gjson"
+)
+
+// csvState carries the column layout across formatJSON calls so that streaming
+// display paths (ShowJSONIterator emits one item at a time) write the header
+// row exactly once and keep every subsequent record aligned to it. The columns
+// are derived from the first item; later items missing a column produce an
+// empty cell, and fields not present in the first item are dropped.
+type csvState struct {
+	columns []string
+}
+
+// formatCSV renders a JSON object (one record) or array of objects (one
+// record each) as CSV. Nested objects are flattened into dot-separated column
+// names; arrays and other non-object values are emitted as their raw JSON.
+func formatCSV(res gjson.Result, state *csvState) ([]byte, error) {
+	rows := []gjson.Result{res}
+	if res.IsArray() {
+		rows = res.Array()
+	}
+
+	if state == nil {
+		state = &csvState{}
+	}
+
+	var buf bytes.Buffer
+	w := csv.NewWriter(&buf)
+	for _, row := range rows {
+		columns, values := flattenForCSV(row)
+		if state.columns == nil {
+			state.columns = columns
+			if err := w.Write(state.columns); err != nil {
+				return nil, err
+			}
+		}
+		record := make([]string, len(state.columns))
+		for i, column := range state.columns {
+			record[i] = values[column]
+		}
+		if err := w.Write(record); err != nil {
+			return nil, err
+		}
+	}
+	w.Flush()
+	return buf.Bytes(), w.Error()
+}
+
+// flattenForCSV walks a single record and returns its column names in
+// document order alongside the rendered value for each column. Nested objects
+// contribute dot-separated columns (e.g. "details.address.city"); a
+// non-object record becomes a single "value" column.
+func flattenForCSV(row gjson.Result) ([]string, map[string]string) {
+	columns := []string{}
+	values := map[string]string{}
+
+	var walk func(prefix string, obj gjson.Result)
+	walk = func(prefix string, obj gjson.Result) {
+		obj.ForEach(func(key, value gjson.Result) bool {
+			name := key.String()
+			if prefix != "" {
+				name = prefix + "." + name
+			}
+			if value.IsObject() {
+				walk(name, value)
+			} else {
+				columns = append(columns, name)
+				values[name] = csvValue(value)
+			}
+			return true
+		})
+	}
+
+	if row.IsObject() {
+		walk("", row)
+	} else {
+		columns = append(columns, "value")
+		values["value"] = csvValue(row)
+	}
+	return columns, values
+}
+
+// csvValue renders a single JSON value as a CSV cell: strings unquoted, null
+// as empty, and everything else (numbers, booleans, arrays) as raw JSON.
+// Quoting and escaping are left to encoding/csv.
+func csvValue(v gjson.Result) string {
+	switch v.Type {
+	case gjson.Null:
+		return ""
+	case gjson.String:
+		return v.Str
+	default:
+		return v.Raw
+	}
+}
