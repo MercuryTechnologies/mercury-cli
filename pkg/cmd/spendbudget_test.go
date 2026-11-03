@@ -14,7 +14,7 @@ func TestSpendBudgetsCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "create",
+			"spend", "budgets", "create",
 			"--frequency", "oneTime",
 			"--amount-per-user-per-period", "0",
 			"--description", "description",
@@ -37,7 +37,7 @@ func TestSpendBudgetsCreate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"spend:budgets", "create",
+			"spend", "budgets", "create",
 			"--idempotency-key", "Idempotency-Key",
 		)
 	})
@@ -49,7 +49,7 @@ func TestSpendBudgetsUpdate(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "update",
+			"spend", "budgets", "update",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--amount-per-user-per-period", "0",
 			"--description", "description",
@@ -73,7 +73,7 @@ func TestSpendBudgetsUpdate(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"spend:budgets", "update",
+			"spend", "budgets", "update",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -86,7 +86,7 @@ func TestSpendBudgetsList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "list",
+			"spend", "budgets", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -103,7 +103,7 @@ func TestSpendBudgetsArchive(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "archive",
+			"spend", "budgets", "archive",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -116,7 +116,7 @@ func TestSpendBudgetsAssignTransaction(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "assign-transaction",
+			"spend", "budgets", "assign-transaction",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--allow-overspend=true",
@@ -132,7 +132,7 @@ func TestSpendBudgetsAssignTransaction(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"spend:budgets", "assign-transaction",
+			"spend", "budgets", "assign-transaction",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -145,7 +145,7 @@ func TestSpendBudgetsGet(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "get",
+			"spend", "budgets", "get",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -157,7 +157,7 @@ func TestSpendBudgetsListExpenditures(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "list-expenditures",
+			"spend", "budgets", "list-expenditures",
 			"--max-items", "10",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
@@ -175,7 +175,7 @@ func TestSpendBudgetsListMembers(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:budgets", "list-members",
+			"spend", "budgets", "list-members",
 			"--max-items", "10",
 			"--budget-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",

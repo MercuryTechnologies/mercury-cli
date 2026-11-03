@@ -339,7 +339,7 @@ func handleSpendBudgetsCreate(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "spend:budgets create",
+		Title:          "spend budgets create",
 		Transform:      transform,
 	})
 }
@@ -388,7 +388,7 @@ func handleSpendBudgetsUpdate(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "spend:budgets update",
+		Title:          "spend budgets update",
 		Transform:      transform,
 	})
 }
@@ -429,7 +429,7 @@ func handleSpendBudgetsList(ctx context.Context, cmd *cli.Command) error {
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list",
+			Title:          "spend budgets list",
 			Transform:      transform,
 		})
 	} else {
@@ -442,7 +442,7 @@ func handleSpendBudgetsList(ctx context.Context, cmd *cli.Command) error {
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list",
+			Title:          "spend budgets list",
 			Transform:      transform,
 		})
 	}
@@ -549,7 +549,7 @@ func handleSpendBudgetsGet(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "spend:budgets get",
+		Title:          "spend budgets get",
 		Transform:      transform,
 	})
 }
@@ -598,7 +598,7 @@ func handleSpendBudgetsListExpenditures(ctx context.Context, cmd *cli.Command) e
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list-expenditures",
+			Title:          "spend budgets list-expenditures",
 			Transform:      transform,
 		})
 	} else {
@@ -616,7 +616,7 @@ func handleSpendBudgetsListExpenditures(ctx context.Context, cmd *cli.Command) e
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list-expenditures",
+			Title:          "spend budgets list-expenditures",
 			Transform:      transform,
 		})
 	}
@@ -666,7 +666,7 @@ func handleSpendBudgetsListMembers(ctx context.Context, cmd *cli.Command) error 
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list-members",
+			Title:          "spend budgets list-members",
 			Transform:      transform,
 		})
 	} else {
@@ -684,7 +684,7 @@ func handleSpendBudgetsListMembers(ctx context.Context, cmd *cli.Command) error 
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:budgets list-members",
+			Title:          "spend budgets list-members",
 			Transform:      transform,
 		})
 	}

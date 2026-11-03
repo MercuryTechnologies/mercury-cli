@@ -215,18 +215,26 @@ func init() {
 				},
 			},
 			{
-				Name:     "spend:budgets",
-				Category: "API RESOURCE",
+				Name:     "spend",
+				Usage:    "Create and manage spend budgets",
+				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					&spendBudgetsCreate,
-					&spendBudgetsUpdate,
-					&spendBudgetsList,
-					&spendBudgetsArchive,
-					&spendBudgetsAssignTransaction,
-					&spendBudgetsGet,
-					&spendBudgetsListExpenditures,
-					&spendBudgetsListMembers,
+					{
+						Name:    "budgets",
+						Usage:   "Create, update, and manage budgets",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&spendBudgetsCreate,
+							&spendBudgetsUpdate,
+							&spendBudgetsList,
+							&spendBudgetsArchive,
+							&spendBudgetsAssignTransaction,
+							&spendBudgetsGet,
+							&spendBudgetsListExpenditures,
+							&spendBudgetsListMembers,
+						},
+					},
 				},
 			},
 			{
@@ -318,16 +326,6 @@ func init() {
 							&recipientsAttachmentsAttach,
 						},
 					},
-				},
-			},
-			{
-				Name:     "recipients:invites",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&recipientsInvitesCreate,
-					&recipientsInvitesList,
-					&recipientsInvitesDelete,
 				},
 			},
 			{
