@@ -20,6 +20,7 @@ func TestCardsCreate(t *testing.T) {
 			"--type", "virtual",
 			"--user-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--card-configuration", "{singleUse: true}",
 			"--nickname", "nickname",
 			"--spend-limit", "{amountCents: 0, interval: daily}",
 		)
@@ -38,6 +39,7 @@ func TestCardsCreate(t *testing.T) {
 			"--type", "virtual",
 			"--user-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--card-configuration.single-use=true",
 			"--nickname", "nickname",
 			"--spend-limit.amount-cents", "0",
 			"--spend-limit.interval", "daily",
@@ -51,6 +53,8 @@ func TestCardsCreate(t *testing.T) {
 			"type: virtual\n" +
 			"userId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"accountId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
+			"cardConfiguration:\n" +
+			"  singleUse: true\n" +
 			"nickname: nickname\n" +
 			"spendLimit:\n" +
 			"  amountCents: 0\n" +
@@ -121,6 +125,7 @@ func TestCardsList(t *testing.T) {
 			"--account-id", "string",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--is-agent-card=true",
+			"--is-single-use=true",
 			"--kind", "debit",
 			"--limit", "1",
 			"--order", "asc",

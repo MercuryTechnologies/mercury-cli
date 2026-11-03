@@ -42,6 +42,11 @@ var cardsCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:    "ID for a Mercury account.",
 			BodyPath: "accountId",
 		},
+		&requestflag.Flag[map[string]any]{
+			Name:     "card-configuration",
+			Usage:    " The configuration of a card. Used both as the read-side response\n alongside @cardConfiguration@ and as an alternative input at issuance\n time.",
+			BodyPath: "cardConfiguration",
+		},
 		&requestflag.Flag[*string]{
 			Name:     "nickname",
 			Usage:    " Optional user-assigned label for the card.",
@@ -56,6 +61,13 @@ var cardsCreate = requestflag.WithInnerFlags(cli.Command{
 	Action:          handleCardsCreate,
 	HideHelpCommand: true,
 }, map[string][]requestflag.HasOuterFlag{
+	"card-configuration": {
+		&requestflag.InnerFlag[bool]{
+			Name:       "card-configuration.single-use",
+			Usage:      " Whether this card auto-cancels itself on the first approved non-zero\n authorization. Must be 'False' for physical cards.",
+			InnerField: "singleUse",
+		},
+	},
 	"spend-limit": {
 		&requestflag.InnerFlag[int64]{
 			Name:       "spend-limit.amount-cents",
@@ -133,6 +145,11 @@ var cardsList = cli.Command{
 			Name:      "is-agent-card",
 			Usage:     "Filter cards by whether they are for Agent use.",
 			QueryPath: "isAgentCard",
+		},
+		&requestflag.Flag[bool]{
+			Name:      "is-single-use",
+			Usage:     "Filter cards by whether they are Single-use",
+			QueryPath: "isSingleUse",
 		},
 		&requestflag.Flag[[]string]{
 			Name:      "kind",
