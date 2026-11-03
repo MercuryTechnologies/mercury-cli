@@ -53,6 +53,7 @@ func TestRecipientsInvitesList(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"recipients:invites", "list",
+			"--max-items", "10",
 			"--end-before", "end_before",
 			"--limit", "1",
 			"--order", "asc",

@@ -215,6 +215,21 @@ func init() {
 				},
 			},
 			{
+				Name:     "spend:budgets",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&spendBudgetsCreate,
+					&spendBudgetsUpdate,
+					&spendBudgetsList,
+					&spendBudgetsArchive,
+					&spendBudgetsAssignTransaction,
+					&spendBudgetsGet,
+					&spendBudgetsListExpenditures,
+					&spendBudgetsListMembers,
+				},
+			},
+			{
 				Name:     "statements",
 				Usage:    "Download account statements as PDF",
 				Category: "Resources",
