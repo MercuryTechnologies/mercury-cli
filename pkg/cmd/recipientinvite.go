@@ -125,6 +125,22 @@ var recipientsInvitesDelete = cli.Command{
 	HideHelpCommand: true,
 }
 
+var recipientsInvitesGet = cli.Command{
+	Name:    "get",
+	Usage:   "Retrieve details of a specific recipient invite by ID.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "invite-id",
+			Usage:     "ID for the invite",
+			Required:  true,
+			PathParam: "inviteId",
+		},
+	},
+	Action:          handleRecipientsInvitesGet,
+	HideHelpCommand: true,
+}
+
 func handleRecipientsInvitesCreate(ctx context.Context, cmd *cli.Command) error {
 	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
 	unusedArgs := cmd.Args().Slice()
@@ -244,4 +260,46 @@ func handleRecipientsInvitesDelete(ctx context.Context, cmd *cli.Command) error 
 	}
 
 	return client.Recipients.Invites.Delete(ctx, cmd.Value("invite-id").(string), options...)
+}
+
+func handleRecipientsInvitesGet(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("invite-id") && len(unusedArgs) > 0 {
+		cmd.Set("invite-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Recipients.Invites.Get(ctx, cmd.Value("invite-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "recipients:invites get",
+		Transform:      transform,
+	})
 }

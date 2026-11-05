@@ -238,6 +238,28 @@ func init() {
 				},
 			},
 			{
+				Name:     "spend:receipts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&spendReceiptsList,
+					&spendReceiptsCreateUploadURL,
+					&spendReceiptsGet,
+					&spendReceiptsMatch,
+				},
+			},
+			{
+				Name:     "spend:receipts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&spendReceiptsList,
+					&spendReceiptsCreateUploadURL,
+					&spendReceiptsGet,
+					&spendReceiptsMatch,
+				},
+			},
+			{
 				Name:     "statements",
 				Usage:    "Download account statements as PDF",
 				Category: "Resources",
@@ -336,6 +358,7 @@ func init() {
 					&recipientsInvitesCreate,
 					&recipientsInvitesList,
 					&recipientsInvitesDelete,
+					&recipientsInvitesGet,
 				},
 			},
 			{
