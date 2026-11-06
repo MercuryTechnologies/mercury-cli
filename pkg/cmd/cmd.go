@@ -216,7 +216,7 @@ func init() {
 			},
 			{
 				Name:     "spend",
-				Usage:    "Create and manage spend budgets",
+				Usage:    "Manage spend budgets and receipts",
 				Category: "Resources",
 				Suggest:  true,
 				Commands: []*cli.Command{
@@ -235,28 +235,17 @@ func init() {
 							&spendBudgetsListMembers,
 						},
 					},
-				},
-			},
-			{
-				Name:     "spend:receipts",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&spendReceiptsList,
-					&spendReceiptsCreateUploadURL,
-					&spendReceiptsGet,
-					&spendReceiptsMatch,
-				},
-			},
-			{
-				Name:     "spend:receipts",
-				Category: "API RESOURCE",
-				Suggest:  true,
-				Commands: []*cli.Command{
-					&spendReceiptsList,
-					&spendReceiptsCreateUploadURL,
-					&spendReceiptsGet,
-					&spendReceiptsMatch,
+					{
+						Name:    "receipts",
+						Usage:   "Upload receipts and match them to transactions",
+						Suggest: true,
+						Commands: []*cli.Command{
+							&spendReceiptsList,
+							&spendReceiptsCreateUploadURL,
+							&spendReceiptsGet,
+							&spendReceiptsMatch,
+						},
+					},
 				},
 			},
 			{

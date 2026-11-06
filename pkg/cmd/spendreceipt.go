@@ -146,7 +146,7 @@ func handleSpendReceiptsList(ctx context.Context, cmd *cli.Command) error {
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:receipts list",
+			Title:          "spend receipts list",
 			Transform:      transform,
 		})
 	} else {
@@ -159,7 +159,7 @@ func handleSpendReceiptsList(ctx context.Context, cmd *cli.Command) error {
 			ExplicitFormat: explicitFormat,
 			Format:         format,
 			RawOutput:      cmd.Root().Bool("raw-output"),
-			Title:          "spend:receipts list",
+			Title:          "spend receipts list",
 			Transform:      transform,
 		})
 	}
@@ -201,7 +201,7 @@ func handleSpendReceiptsCreateUploadURL(ctx context.Context, cmd *cli.Command) e
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "spend:receipts create-upload-url",
+		Title:          "spend receipts create-upload-url",
 		Transform:      transform,
 	})
 }
@@ -243,7 +243,7 @@ func handleSpendReceiptsGet(ctx context.Context, cmd *cli.Command) error {
 		ExplicitFormat: explicitFormat,
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
-		Title:          "spend:receipts get",
+		Title:          "spend receipts get",
 		Transform:      transform,
 	})
 }

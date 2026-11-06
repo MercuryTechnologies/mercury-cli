@@ -14,7 +14,7 @@ func TestSpendReceiptsList(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:receipts", "list",
+			"spend", "receipts", "list",
 			"--max-items", "10",
 			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--limit", "1",
@@ -31,7 +31,7 @@ func TestSpendReceiptsCreateUploadURL(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:receipts", "create-upload-url",
+			"spend", "receipts", "create-upload-url",
 			"--file-name", "fileName",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -43,7 +43,7 @@ func TestSpendReceiptsCreateUploadURL(t *testing.T) {
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
-			"spend:receipts", "create-upload-url",
+			"spend", "receipts", "create-upload-url",
 			"--idempotency-key", "Idempotency-Key",
 		)
 	})
@@ -55,7 +55,7 @@ func TestSpendReceiptsGet(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:receipts", "get",
+			"spend", "receipts", "get",
 			"--receipt-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -67,7 +67,7 @@ func TestSpendReceiptsMatch(t *testing.T) {
 		mocktest.TestRunMockTestWithFlags(
 			t,
 			"--api-key", "string",
-			"spend:receipts", "match",
+			"spend", "receipts", "match",
 			"--receipt-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--idempotency-key", "Idempotency-Key",
 		)
