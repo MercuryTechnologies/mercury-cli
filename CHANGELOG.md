@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.13.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.12.1...v0.13.0) (2026-11-07)
+
+
+### Features
+
+* **cli:** nest receipts under spend ([#3](https://github.com/MercuryTechnologies/mercury-cli/issues/3)) ([2bb7787](https://github.com/MercuryTechnologies/mercury-cli/commit/2bb778782d64845f86d819da1db5d58b66833994))
+
+
+### Chores
+
+* sync specs from MWB@v2026.11.05.81407+62d8d35 ([ee9b88a](https://github.com/MercuryTechnologies/mercury-cli/commit/ee9b88a523bc4a8502aa6f52db3ab84be6e696a0))
+
 ## [0.12.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.12.0...v0.12.1) (2026-11-04)
 
 
