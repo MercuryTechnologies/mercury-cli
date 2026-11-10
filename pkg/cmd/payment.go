@@ -49,6 +49,11 @@ var paymentsCreate = requestflag.WithInnerFlags(cli.Command{
 			Required: true,
 			BodyPath: "recipientId",
 		},
+		&requestflag.Flag[bool]{
+			Name:     "duplicate-check-override",
+			Usage:    "Set to true to skip the duplicate payment check. By default, payments are blocked if the same account sent the same amount to the same recipient with the same payment method in the last 24 hours, even when the idempotency key is different. Use this field only when you intentionally send a repeat payment.",
+			BodyPath: "duplicateCheckOverride",
+		},
 		&requestflag.Flag[string]{
 			Name:     "external-memo",
 			Usage:    "Optional external memo",
@@ -171,6 +176,11 @@ var paymentsRequest = requestflag.WithInnerFlags(cli.Command{
 			Name:     "charge-type",
 			Usage:    "Who pays intermediary bank fees on a USD international wire. Pass 'ours' so the recipient receives the full amount (Mercury charges a $15 fee), or 'shared' to split those fees. If omitted on a USD international wire, this defaults to 'ours'. Do not include this field for other payment methods or accounts that are not charged international-wire fees.",
 			BodyPath: "chargeType",
+		},
+		&requestflag.Flag[bool]{
+			Name:     "duplicate-check-override",
+			Usage:    "Set to true to skip the duplicate payment check. By default, payments are blocked if the same account sent the same amount to the same recipient with the same payment method in the last 24 hours, even when the idempotency key is different. Use this field only when you intentionally send a repeat payment. The check occurs when you create the request. When an approver approves the request, the check does not occur again.",
+			BodyPath: "duplicateCheckOverride",
 		},
 		&requestflag.Flag[string]{
 			Name:     "external-memo",

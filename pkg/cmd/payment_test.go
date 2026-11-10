@@ -21,6 +21,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"--idempotency-key", "idempotencyKey",
 			"--payment-method", "ach",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--duplicate-check-override=true",
 			"--external-memo", "externalMemo",
 			"--note", "note",
 			"--purpose", "{simple: {category: employee, additionalInfo: additionalInfo}}",
@@ -41,6 +42,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"--idempotency-key", "idempotencyKey",
 			"--payment-method", "ach",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--duplicate-check-override=true",
 			"--external-memo", "externalMemo",
 			"--note", "note",
 			"--purpose.simple", "{category: employee, additionalInfo: additionalInfo}",
@@ -54,6 +56,7 @@ func TestPaymentsCreate(t *testing.T) {
 			"idempotencyKey: idempotencyKey\n" +
 			"paymentMethod: ach\n" +
 			"recipientId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
+			"duplicateCheckOverride: true\n" +
 			"externalMemo: externalMemo\n" +
 			"note: note\n" +
 			"purpose:\n" +
@@ -111,6 +114,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"--payment-method", "ach",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--charge-type", "ours",
+			"--duplicate-check-override=true",
 			"--external-memo", "externalMemo",
 			"--note", "note",
 			"--purpose", "{simple: {category: employee, additionalInfo: additionalInfo}}",
@@ -132,6 +136,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"--payment-method", "ach",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--charge-type", "ours",
+			"--duplicate-check-override=true",
 			"--external-memo", "externalMemo",
 			"--note", "note",
 			"--purpose.simple", "{category: employee, additionalInfo: additionalInfo}",
@@ -146,6 +151,7 @@ func TestPaymentsRequest(t *testing.T) {
 			"paymentMethod: ach\n" +
 			"recipientId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"chargeType: ours\n" +
+			"duplicateCheckOverride: true\n" +
 			"externalMemo: externalMemo\n" +
 			"note: note\n" +
 			"purpose:\n" +
