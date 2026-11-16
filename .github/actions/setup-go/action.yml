@@ -16,7 +16,9 @@ runs:
   using: composite
   steps:
     # On staging, the Go SDK lives in a private repo, so git needs credentials before
-    # anything (the access check below, `go mod tidy`) touches github.com.
+    # anything (the access check below, `go mod tidy`) touches it. The token is scoped to
+    # mercury-go-staging, so only that repo's URL carries it; the public mercury-go is
+    # fetched anonymously.
     - name: Mint GitHub App token for the private Go SDK repo
       # See: https://github.com/organizations/MercuryTechnologies/settings/apps/mercury-openapi-sync-stainless-cli
       if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
@@ -32,7 +34,7 @@ runs:
       if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
       shell: bash
       run: |
-        git config --global url."https://x-access-token:${{ steps.go-sdk-token.outputs.token }}@github.com/MercuryTechnologies/".insteadOf "https://github.com/MercuryTechnologies/"
+        git config --global url."https://x-access-token:${{ steps.go-sdk-token.outputs.token }}@github.com/MercuryTechnologies/mercury-go-staging".insteadOf "https://github.com/MercuryTechnologies/mercury-go-staging"
 
     - name: Verify Go SDK module is accessible
       shell: bash
@@ -70,14 +72,28 @@ runs:
 
     # Build against the Go SDK branch matching this one. The module path stays
     # `mercury-go` (that is what mercury-go-staging's go.mod declares), so the rewrite
-    # below is what redirects the fetch to the staging repo. `|| true` covers the Go SDK
-    # not having a branch of this name, in which case we build against the pinned version.
+    # below is what redirects the fetch to the staging repo. mercury-go-staging has no
+    # release tags, so when it has no branch of this name, skip the rewrite and let the
+    # version pinned in go.mod resolve from the public mercury-go.
     - name: Link staging branch
       if: github.repository == 'MercuryTechnologies/mercury-cli-staging'
       shell: bash
+      env:
+        REF: ${{ github.ref_name }}
+        GO_SDK_TOKEN: ${{ steps.go-sdk-token.outputs.token }}
       run: |
-        git config --global url."https://x-access-token:${{ steps.go-sdk-token.outputs.token }}@github.com/MercuryTechnologies/mercury-go-staging".insteadOf "https://github.com/MercuryTechnologies/mercury-go"
-        ./scripts/link "github.com/MercuryTechnologies/mercury-go@${{ github.ref_name }}" || true
+        # Run outside the checkout for the same extraheader reason as the access check above.
+        # Exit code 2 means no matching ref; anything else is a real failure.
+        status=0
+        (cd "${RUNNER_TEMP}" && git ls-remote --exit-code https://github.com/MercuryTechnologies/mercury-go-staging "refs/heads/${REF}" >/dev/null) || status=$?
+        if [ "${status}" -eq 2 ]; then
+          echo "No mercury-go-staging branch named ${REF}; building against the version pinned in go.mod."
+          exit 0
+        elif [ "${status}" -ne 0 ]; then
+          exit "${status}"
+        fi
+        git config --global url."https://x-access-token:${GO_SDK_TOKEN}@github.com/MercuryTechnologies/mercury-go-staging".insteadOf "https://github.com/MercuryTechnologies/mercury-go"
+        ./scripts/link "github.com/MercuryTechnologies/mercury-go@${REF}"
 
     - name: Bootstrap
       shell: bash
