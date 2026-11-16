@@ -3,9 +3,13 @@ package auth
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"regexp"
 	"testing"
 	"time"
 
@@ -264,4 +268,74 @@ func TestRefreshToken_PerRequestTimeoutAppliesWithoutCallerDeadline(t *testing.T
 	// but assert we're nowhere near the kernel TCP timeout (which is minutes).
 	assert.Less(t, elapsed, tokenRequestTimeout+5*time.Second,
 		"per-request timeout must bound RefreshToken; elapsed=%s", elapsed)
+}
+
+// RFC 7636 §4.6: the server recomputes BASE64URL(SHA256(code_verifier)) and
+// rejects the exchange unless it equals the code_challenge from the authorize
+// request. This test performs that server-side check against Login.
+func TestLogin_TokenExchangeVerifierMatchesAuthorizeChallenge(t *testing.T) {
+	formCh := make(chan url.Values, 1)
+	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = r.ParseForm()
+		formCh <- r.PostForm
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{
+			"access_token": "new-access-token",
+			"token_type": "Bearer",
+			"expires_in": 3600
+		}`))
+	}))
+	defer tokenServer.Close()
+
+	// Stands in for the user approving access. The browser lands on the
+	// callback with a code and the state Login sent.
+	var authURL *url.URL
+	prev := openBrowser
+	openBrowser = func(rawURL string) error {
+		u, err := url.Parse(rawURL)
+		if err != nil {
+			return err
+		}
+		authURL = u
+		callback := url.Values{"code": {"auth-code"}, "state": {u.Query().Get("state")}}
+		resp, err := http.Get(u.Query().Get("redirect_uri") + "?" + callback.Encode())
+		if err != nil {
+			return err
+		}
+		return resp.Body.Close()
+	}
+	t.Cleanup(func() { openBrowser = prev })
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := Login(ctx, &OAuthConfig{
+		ClientID: "test-client",
+		AuthURL:  "https://auth.example/oauth2/auth",
+		TokenURL: tokenServer.URL,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, authURL)
+	form := <-formCh
+
+	assert.Equal(t, "S256", authURL.Query().Get("code_challenge_method"))
+	sum := sha256.Sum256([]byte(form.Get("code_verifier")))
+	assert.Equal(t, authURL.Query().Get("code_challenge"), base64.RawURLEncoding.EncodeToString(sum[:]))
+	assert.Equal(t, "authorization_code", form.Get("grant_type"))
+	assert.Empty(t, form.Get("client_secret"))
+}
+
+func TestGeneratePKCE_VerifierMeetsRFC7636(t *testing.T) {
+	t.Parallel()
+
+	verifierPattern := regexp.MustCompile(`^[A-Za-z0-9._~-]{43,128}$`)
+
+	verifier1, challenge1, err := generatePKCE()
+	require.NoError(t, err)
+	verifier2, challenge2, err := generatePKCE()
+	require.NoError(t, err)
+
+	assert.Regexp(t, verifierPattern, verifier1)
+	assert.Regexp(t, verifierPattern, verifier2)
+	assert.NotEqual(t, verifier1, verifier2)
+	assert.NotEqual(t, challenge1, challenge2)
 }

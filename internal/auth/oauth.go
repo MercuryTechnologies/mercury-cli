@@ -369,8 +369,9 @@ func newCallbackServer(handler http.Handler) *http.Server {
 	}
 }
 
-// openBrowser opens the given URL in the user's default browser.
-func openBrowser(url string) error {
+// openBrowser opens the given URL in the user's default browser. Tests swap it
+// to drive Login without launching a browser.
+var openBrowser = func(url string) error {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin":
