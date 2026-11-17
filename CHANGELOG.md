@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.2](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.13.1...v0.13.2) (2026-11-17)
+
+
+### Chores
+
+* request team-api reviews with CODEOWNERS ([#104](https://github.com/MercuryTechnologies/mercury-cli/issues/104)) ([52f547e](https://github.com/MercuryTechnologies/mercury-cli/commit/52f547e9011246d5d8263978eaa2ea2027744020))
+
 ## [0.13.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.13.0...v0.13.1) (2026-11-17)
 
 
