@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.13.0...v0.13.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **ci:** build against the pinned Go SDK when staging has no matching branch ([#5](https://github.com/MercuryTechnologies/mercury-cli/issues/5)) ([c0662b0](https://github.com/MercuryTechnologies/mercury-cli/commit/c0662b0ac5aeabbd6a9475942bdcdcc158c3556c))
+* **cli:** nest resource groups at startup so CLI codegen replays cleanly ([#6](https://github.com/MercuryTechnologies/mercury-cli/issues/6)) ([5182e72](https://github.com/MercuryTechnologies/mercury-cli/commit/5182e72b328787dfdf7925763f41883bfc83fd4e))
+
 ## [0.13.0](https://github.com/MercuryTechnologies/mercury-cli/compare/v0.12.1...v0.13.0) (2026-11-07)
 
 
