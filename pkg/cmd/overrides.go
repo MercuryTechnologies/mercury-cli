@@ -5,16 +5,19 @@ package cmd
 // Stainless regenerates all other files in this package from the OpenAPI spec.
 // This file is NOT generated and will survive codegen runs. It patches Usage
 // strings (and global flag descriptions) to be concise, consistent, and free
-// of HTTP implementation details.
+// of HTTP implementation details, and reshapes the generated command tree.
 //
 // After a Stainless update, run `go build ./...` to confirm nothing broke.
 // If Stainless renames a variable, the compiler will tell you here.
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"os"
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/MercuryTechnologies/mercury-cli/internal/apiquery"
 	"github.com/MercuryTechnologies/mercury-cli/internal/requestflag"
@@ -46,6 +49,67 @@ func setFlagUsage(cmd *cli.Command, name, usage string) {
 			u.SetString(usage)
 		}
 		return
+	}
+}
+
+// nestedGroupUsage holds the help text for groups that nestColonGroups moves
+// or creates, keyed by their space-separated path under `mercury`.
+var nestedGroupUsage = map[string]string{
+	"invoices attachments":     "Get accounts receivable attachment details",
+	"recipients attachments":   "List and upload recipient tax form attachments",
+	"recipients invites":       "Create and manage recipient invites",
+	"spend":                    "Manage budgets, receipts, and reimbursements",
+	"spend budgets":            "Create, update, and manage budgets",
+	"spend receipts":           "Upload receipts and match them to transactions",
+	"spend reimbursements":     "Create, review, and track reimbursements",
+	"statements accounts":      "List monthly account statements",
+	"statements treasury":      "List treasury account statements",
+	"transactions attachments": "Upload file attachments to transactions",
+}
+
+// nestColonGroups moves each top-level group named `a:b` (or `a:b:c`) under
+// `a` as `b`, creating `a` when the generated code has no such group. Shallower
+// names nest first, so `a:b:c` lands under the already-moved `a b`.
+func nestColonGroups(root *cli.Command) {
+	var colonGroups []*cli.Command
+	topLevel := make([]*cli.Command, 0, len(root.Commands))
+	for _, sub := range root.Commands {
+		if strings.Contains(sub.Name, ":") {
+			colonGroups = append(colonGroups, sub)
+		} else {
+			topLevel = append(topLevel, sub)
+		}
+	}
+	root.Commands = topLevel
+	slices.SortStableFunc(colonGroups, func(a, b *cli.Command) int {
+		return cmp.Compare(strings.Count(a.Name, ":"), strings.Count(b.Name, ":"))
+	})
+
+	for _, group := range colonGroups {
+		segments := strings.Split(group.Name, ":")
+		parents, leaf := segments[:len(segments)-1], segments[len(segments)-1]
+		parent := root
+		for i, segment := range parents {
+			next := parent.Command(segment)
+			if next == nil {
+				next = &cli.Command{
+					Name:    segment,
+					Usage:   nestedGroupUsage[strings.Join(segments[:i+1], " ")],
+					Suggest: true,
+				}
+				if parent == root {
+					next.Category = "Resources"
+				}
+				parent.Commands = append(parent.Commands, next)
+			}
+			parent = next
+		}
+		group.Name = leaf
+		group.Category = ""
+		if usage, ok := nestedGroupUsage[strings.Join(segments, " ")]; ok {
+			group.Usage = usage
+		}
+		parent.Commands = append(parent.Commands, group)
 	}
 }
 
@@ -87,6 +151,16 @@ func init() {
 		flattened = append(flattened, sub)
 	}
 	Command.Commands = append(flattened, &onboardingApply)
+
+	// ── Nest `parent:child` resource groups ──────────────────────────────────
+	//
+	// Stainless generates nested resources as flat top-level groups such as
+	// `spend:receipts`. nestColonGroups moves them under their parent, so the
+	// CLI exposes `mercury spend receipts`. Keep the nesting here, not in
+	// cmd.go: stlc replays every edit to a generated file onto each
+	// regeneration, and an edit next to lines the generator changes stops the
+	// CLI build with a merge conflict.
+	nestColonGroups(Command)
 
 	// ── Global flag overrides ────────────────────────────────────────────────
 	for _, f := range Command.Flags {

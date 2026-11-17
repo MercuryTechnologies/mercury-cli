@@ -123,15 +123,15 @@ func init() {
 					&invoicesCancel,
 					&invoicesDownload,
 					&invoicesGet,
-					{
-						Name:    "attachments",
-						Usage:   "Get accounts receivable attachment details",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&invoicesAttachmentsList,
-							&invoicesAttachmentsGet,
-						},
-					},
+				},
+			},
+			{
+				Name:     "invoices:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&invoicesAttachmentsList,
+					&invoicesAttachmentsGet,
 				},
 			},
 			{
@@ -215,37 +215,29 @@ func init() {
 				},
 			},
 			{
-				Name:     "spend",
-				Usage:    "Manage spend budgets and receipts",
-				Category: "Resources",
+				Name:     "spend:budgets",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
-					{
-						Name:    "budgets",
-						Usage:   "Create, update, and manage budgets",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&spendBudgetsCreate,
-							&spendBudgetsUpdate,
-							&spendBudgetsList,
-							&spendBudgetsArchive,
-							&spendBudgetsAssignTransaction,
-							&spendBudgetsGet,
-							&spendBudgetsListExpenditures,
-							&spendBudgetsListMembers,
-						},
-					},
-					{
-						Name:    "receipts",
-						Usage:   "Upload receipts and match them to transactions",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&spendReceiptsList,
-							&spendReceiptsCreateUploadURL,
-							&spendReceiptsGet,
-							&spendReceiptsMatch,
-						},
-					},
+					&spendBudgetsCreate,
+					&spendBudgetsUpdate,
+					&spendBudgetsList,
+					&spendBudgetsArchive,
+					&spendBudgetsAssignTransaction,
+					&spendBudgetsGet,
+					&spendBudgetsListExpenditures,
+					&spendBudgetsListMembers,
+				},
+			},
+			{
+				Name:     "spend:receipts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&spendReceiptsList,
+					&spendReceiptsCreateUploadURL,
+					&spendReceiptsGet,
+					&spendReceiptsMatch,
 				},
 			},
 			{
@@ -255,22 +247,22 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&statementsDownload,
-					{
-						Name:    "accounts",
-						Usage:   "List monthly account statements",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&statementsAccountsList,
-						},
-					},
-					{
-						Name:    "treasury",
-						Usage:   "List treasury account statements",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&statementsTreasuryList,
-						},
-					},
+				},
+			},
+			{
+				Name:     "statements:accounts",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsAccountsList,
+				},
+			},
+			{
+				Name:     "statements:treasury",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&statementsTreasuryList,
 				},
 			},
 			{
@@ -328,15 +320,15 @@ func init() {
 					&recipientsList,
 					&recipientsDelete,
 					&recipientsGet,
-					{
-						Name:    "attachments",
-						Usage:   "List and upload recipient tax form attachments",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&recipientsAttachmentsList,
-							&recipientsAttachmentsAttach,
-						},
-					},
+				},
+			},
+			{
+				Name:     "recipients:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&recipientsAttachmentsList,
+					&recipientsAttachmentsAttach,
 				},
 			},
 			{
@@ -359,14 +351,14 @@ func init() {
 					&transactionsUpdate,
 					&transactionsList,
 					&transactionsGet,
-					{
-						Name:    "attachments",
-						Usage:   "Upload file attachments to transactions",
-						Suggest: true,
-						Commands: []*cli.Command{
-							&transactionsAttachmentsAttach,
-						},
-					},
+				},
+			},
+			{
+				Name:     "transactions:attachments",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&transactionsAttachmentsAttach,
 				},
 			},
 			// CUSTOM: OAuth auth commands
