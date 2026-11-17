@@ -17,8 +17,8 @@ func TestCustomersCreate(t *testing.T) {
 			"--api-key", "string",
 			"customers", "create",
 			"--email", "email",
-			"--name", "name",
-			"--address", "{address1: address1, city: city, country: country, name: name, postalCode: postalCode, region: region, address2: address2}",
+			"--name", "x",
+			"--address", "{address1: x, city: x, country: country, name: name, postalCode: x, region: region, address2: x}",
 		)
 	})
 
@@ -32,14 +32,14 @@ func TestCustomersCreate(t *testing.T) {
 			"--api-key", "string",
 			"customers", "create",
 			"--email", "email",
-			"--name", "name",
-			"--address.address1", "address1",
-			"--address.city", "city",
+			"--name", "x",
+			"--address.address1", "x",
+			"--address.city", "x",
 			"--address.country", "country",
 			"--address.name", "name",
-			"--address.postal-code", "postalCode",
+			"--address.postal-code", "x",
 			"--address.region", "region",
-			"--address.address2", "address2",
+			"--address.address2", "x",
 		)
 	})
 
@@ -47,15 +47,15 @@ func TestCustomersCreate(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"email: email\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"address:\n" +
-			"  address1: address1\n" +
-			"  city: city\n" +
+			"  address1: x\n" +
+			"  city: x\n" +
 			"  country: country\n" +
 			"  name: name\n" +
-			"  postalCode: postalCode\n" +
+			"  postalCode: x\n" +
 			"  region: region\n" +
-			"  address2: address2\n")
+			"  address2: x\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",
@@ -73,9 +73,9 @@ func TestCustomersUpdate(t *testing.T) {
 			"customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
-			"--name", "name",
+			"--name", "x",
 			"--resend-open-invoices=true",
-			"--address", "{address1: address1, city: city, country: country, name: name, postalCode: postalCode, region: region, address2: address2}",
+			"--address", "{address1: x, city: x, country: country, name: name, postalCode: x, region: region, address2: x}",
 		)
 	})
 
@@ -90,15 +90,15 @@ func TestCustomersUpdate(t *testing.T) {
 			"customers", "update",
 			"--customer-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--email", "email",
-			"--name", "name",
+			"--name", "x",
 			"--resend-open-invoices=true",
-			"--address.address1", "address1",
-			"--address.city", "city",
+			"--address.address1", "x",
+			"--address.city", "x",
 			"--address.country", "country",
 			"--address.name", "name",
-			"--address.postal-code", "postalCode",
+			"--address.postal-code", "x",
 			"--address.region", "region",
-			"--address.address2", "address2",
+			"--address.address2", "x",
 		)
 	})
 
@@ -106,16 +106,16 @@ func TestCustomersUpdate(t *testing.T) {
 		// Test piping YAML data over stdin
 		pipeData := []byte("" +
 			"email: email\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"resendOpenInvoices: true\n" +
 			"address:\n" +
-			"  address1: address1\n" +
-			"  city: city\n" +
+			"  address1: x\n" +
+			"  city: x\n" +
 			"  country: country\n" +
 			"  name: name\n" +
-			"  postalCode: postalCode\n" +
+			"  postalCode: x\n" +
 			"  region: region\n" +
-			"  address2: address2\n")
+			"  address2: x\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",

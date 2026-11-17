@@ -112,6 +112,7 @@ func init() {
 					&invoicesCancel,
 					&invoicesDownload,
 					&invoicesGet,
+					&invoicesRetrievePayments,
 				},
 			},
 			{
@@ -121,6 +122,16 @@ func init() {
 				Commands: []*cli.Command{
 					&invoicesAttachmentsList,
 					&invoicesAttachmentsGet,
+				},
+			},
+			{
+				Name:     "invoices:attachments:products",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&invoicesAttachmentsProductsCreate,
+					&invoicesAttachmentsProductsList,
+					&invoicesAttachmentsProductsDelete,
 				},
 			},
 			{
@@ -155,6 +166,7 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&creditList,
+					&creditRetrieveStatements,
 				},
 			},
 			{
@@ -183,6 +195,7 @@ func init() {
 					&paymentsList,
 					&paymentsGet,
 					&paymentsRequest,
+					&paymentsRetrieveTransactions,
 					&paymentsTransfer,
 				},
 			},
@@ -220,6 +233,21 @@ func init() {
 					&spendReceiptsCreateUploadURL,
 					&spendReceiptsGet,
 					&spendReceiptsMatch,
+				},
+			},
+			{
+				Name:     "spend:reimbursements",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&spendReimbursementsCreate,
+					&spendReimbursementsUpdate,
+					&spendReimbursementsList,
+					&spendReimbursementsApprove,
+					&spendReimbursementsCancel,
+					&spendReimbursementsDeny,
+					&spendReimbursementsGet,
+					&spendReimbursementsMarkPaid,
 				},
 			},
 			{
@@ -284,6 +312,8 @@ func init() {
 				Commands: []*cli.Command{
 					&accountsList,
 					&accountsGet,
+					&accountsGetTransaction,
+					&accountsRetrieveCards,
 				},
 			},
 			{
@@ -342,6 +372,41 @@ func init() {
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&onboardingApply,
+				},
+			},
+			{
+				Name:     "auto-transfer-rules",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&autoTransferRulesRetrieveAutoTransferRules,
+				},
+			},
+			{
+				Name:     "invest",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&investList,
+					&investRetrieveActivity,
+				},
+			},
+			{
+				Name:     "merchants",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&merchantsList,
+				},
+			},
+			{
+				Name:     "request-transfer",
+				Category: "API RESOURCE",
+				Suggest:  true,
+				Commands: []*cli.Command{
+					&requestTransferRetrieve,
+					&requestTransferRequestTransfer,
+					&requestTransferRetrieveRequestTransfer,
 				},
 			},
 			{

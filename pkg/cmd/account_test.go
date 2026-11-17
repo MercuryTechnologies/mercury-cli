@@ -35,3 +35,28 @@ func TestAccountsGet(t *testing.T) {
 		)
 	})
 }
+
+func TestAccountsGetTransaction(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts", "get-transaction",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--transaction-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestAccountsRetrieveCards(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"accounts", "retrieve-cards",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}

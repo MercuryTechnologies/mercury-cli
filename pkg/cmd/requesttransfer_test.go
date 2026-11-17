@@ -1,0 +1,71 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cmd
+
+import (
+	"testing"
+
+	"github.com/MercuryTechnologies/mercury-cli/internal/mocktest"
+)
+
+func TestRequestTransferRetrieve(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"request-transfer", "retrieve",
+			"--request-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestRequestTransferRequestTransfer(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"request-transfer", "request-transfer",
+			"--amount", "0.01",
+			"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--idempotency-key", "idempotencyKey",
+			"--source-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--note", "note",
+		)
+	})
+
+	t.Run("piping data", func(t *testing.T) {
+		// Test piping YAML data over stdin
+		pipeData := []byte("" +
+			"amount: 0.01\n" +
+			"destinationAccountId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
+			"idempotencyKey: idempotencyKey\n" +
+			"sourceAccountId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
+			"note: note\n")
+		mocktest.TestRunMockTestWithPipeAndFlags(
+			t, pipeData,
+			"--api-key", "string",
+			"request-transfer", "request-transfer",
+		)
+	})
+}
+
+func TestRequestTransferRetrieveRequestTransfer(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"request-transfer", "retrieve-request-transfer",
+			"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--end-before", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--limit", "1",
+			"--order", "asc",
+			"--source-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--start-after", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--start-at", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--status", "pendingApproval",
+		)
+	})
+}

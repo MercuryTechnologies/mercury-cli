@@ -76,7 +76,7 @@ var cardsCreate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "spend-limit.interval",
-			Usage:      " Rolling window the limit applies to.",
+			Usage:      `Allowed values: "daily", "weekly", "monthly", "yearly".`,
 			InnerField: "interval",
 		},
 	},
@@ -115,7 +115,7 @@ var cardsUpdate = requestflag.WithInnerFlags(cli.Command{
 		},
 		&requestflag.InnerFlag[string]{
 			Name:       "spend-limit.interval",
-			Usage:      " Rolling window the limit applies to.",
+			Usage:      `Allowed values: "daily", "weekly", "monthly", "yearly".`,
 			InnerField: "interval",
 		},
 		&requestflag.InnerFlag[*int64]{

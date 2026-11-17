@@ -23,13 +23,13 @@ func TestInvoicesCreate(t *testing.T) {
 			"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--due-date", "'2016-07-22'",
 			"--invoice-date", "'2016-07-22'",
-			"--line-item", "{name: name, quantity: 0, unitPrice: 0, salesTaxRate: 0}",
+			"--line-item", "{name: x, quantity: 0, unitPrice: 0, productId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e, salesTaxRate: 0}",
 			"--use-real-account-number=true",
 			"--currency-code", "currencyCode",
-			"--internal-note", "internalNote",
-			"--invoice-number", "invoiceNumber",
-			"--payer-memo", "payerMemo",
-			"--po-number", "poNumber",
+			"--internal-note", "x",
+			"--invoice-number", "x",
+			"--payer-memo", "x",
+			"--po-number", "x",
 			"--send-email-option", "DontSend",
 			"--service-period-end-date", "'2016-07-22'",
 			"--service-period-start-date", "'2016-07-22'",
@@ -52,16 +52,17 @@ func TestInvoicesCreate(t *testing.T) {
 			"--destination-account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--due-date", "'2016-07-22'",
 			"--invoice-date", "'2016-07-22'",
-			"--line-item.name", "name",
+			"--line-item.name", "x",
 			"--line-item.quantity", "0",
 			"--line-item.unit-price", "0",
+			"--line-item.product-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--line-item.sales-tax-rate", "0",
 			"--use-real-account-number=true",
 			"--currency-code", "currencyCode",
-			"--internal-note", "internalNote",
-			"--invoice-number", "invoiceNumber",
-			"--payer-memo", "payerMemo",
-			"--po-number", "poNumber",
+			"--internal-note", "x",
+			"--invoice-number", "x",
+			"--payer-memo", "x",
+			"--po-number", "x",
 			"--send-email-option", "DontSend",
 			"--service-period-end-date", "'2016-07-22'",
 			"--service-period-start-date", "'2016-07-22'",
@@ -80,16 +81,17 @@ func TestInvoicesCreate(t *testing.T) {
 			"dueDate: '2016-07-22'\n" +
 			"invoiceDate: '2016-07-22'\n" +
 			"lineItems:\n" +
-			"  - name: name\n" +
+			"  - name: x\n" +
 			"    quantity: 0\n" +
 			"    unitPrice: 0\n" +
+			"    productId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"    salesTaxRate: 0\n" +
 			"useRealAccountNumber: true\n" +
 			"currencyCode: currencyCode\n" +
-			"internalNote: internalNote\n" +
-			"invoiceNumber: invoiceNumber\n" +
-			"payerMemo: payerMemo\n" +
-			"poNumber: poNumber\n" +
+			"internalNote: x\n" +
+			"invoiceNumber: x\n" +
+			"payerMemo: x\n" +
+			"poNumber: x\n" +
 			"sendEmailOption: DontSend\n" +
 			"servicePeriodEndDate: '2016-07-22'\n" +
 			"servicePeriodStartDate: '2016-07-22'\n")
@@ -114,12 +116,12 @@ func TestInvoicesUpdate(t *testing.T) {
 			"--credit-card-enabled=true",
 			"--due-date", "'2016-07-22'",
 			"--invoice-date", "'2016-07-22'",
-			"--invoice-number", "invoiceNumber",
-			"--line-item", "{name: name, quantity: 0, unitPrice: 0, salesTaxRate: 0}",
+			"--invoice-number", "x",
+			"--line-item", "{name: x, quantity: 0, unitPrice: 0, productId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e, salesTaxRate: 0}",
 			"--use-real-account-number=true",
-			"--internal-note", "internalNote",
-			"--payer-memo", "payerMemo",
-			"--po-number", "poNumber",
+			"--internal-note", "x",
+			"--payer-memo", "x",
+			"--po-number", "x",
 			"--service-period-end-date", "'2016-07-22'",
 			"--service-period-start-date", "'2016-07-22'",
 		)
@@ -140,15 +142,16 @@ func TestInvoicesUpdate(t *testing.T) {
 			"--credit-card-enabled=true",
 			"--due-date", "'2016-07-22'",
 			"--invoice-date", "'2016-07-22'",
-			"--invoice-number", "invoiceNumber",
-			"--line-item.name", "name",
+			"--invoice-number", "x",
+			"--line-item.name", "x",
 			"--line-item.quantity", "0",
 			"--line-item.unit-price", "0",
+			"--line-item.product-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			"--line-item.sales-tax-rate", "0",
 			"--use-real-account-number=true",
-			"--internal-note", "internalNote",
-			"--payer-memo", "payerMemo",
-			"--po-number", "poNumber",
+			"--internal-note", "x",
+			"--payer-memo", "x",
+			"--po-number", "x",
 			"--service-period-end-date", "'2016-07-22'",
 			"--service-period-start-date", "'2016-07-22'",
 		)
@@ -163,16 +166,17 @@ func TestInvoicesUpdate(t *testing.T) {
 			"creditCardEnabled: true\n" +
 			"dueDate: '2016-07-22'\n" +
 			"invoiceDate: '2016-07-22'\n" +
-			"invoiceNumber: invoiceNumber\n" +
+			"invoiceNumber: x\n" +
 			"lineItems:\n" +
-			"  - name: name\n" +
+			"  - name: x\n" +
 			"    quantity: 0\n" +
 			"    unitPrice: 0\n" +
+			"    productId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n" +
 			"    salesTaxRate: 0\n" +
 			"useRealAccountNumber: true\n" +
-			"internalNote: internalNote\n" +
-			"payerMemo: payerMemo\n" +
-			"poNumber: poNumber\n" +
+			"internalNote: x\n" +
+			"payerMemo: x\n" +
+			"poNumber: x\n" +
 			"servicePeriodEndDate: '2016-07-22'\n" +
 			"servicePeriodStartDate: '2016-07-22'\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
@@ -232,6 +236,18 @@ func TestInvoicesGet(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"invoices", "get",
+			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		)
+	})
+}
+
+func TestInvoicesRetrievePayments(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"invoices", "retrieve-payments",
 			"--invoice-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})

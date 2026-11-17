@@ -167,6 +167,28 @@ func TestPaymentsRequest(t *testing.T) {
 	})
 }
 
+func TestPaymentsRetrieveTransactions(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	t.Run("regular flags", func(t *testing.T) {
+		mocktest.TestRunMockTestWithFlags(
+			t,
+			"--api-key", "string",
+			"payments", "retrieve-transactions",
+			"--account-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--category-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--end", "end",
+			"--limit", "1",
+			"--mercury-category", "mercuryCategory",
+			"--offset", "0",
+			"--order", "asc",
+			"--request-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			"--search", "search",
+			"--start", "start",
+			"--status", "pending",
+		)
+	})
+}
+
 func TestPaymentsTransfer(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	t.Run("regular flags", func(t *testing.T) {

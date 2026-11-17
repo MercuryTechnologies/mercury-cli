@@ -16,14 +16,14 @@ func TestOnboardingApply(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"onboarding", "apply",
-			"--beneficial-owner", "{address1: address1, address2: address2, citizenshipStatus: USCitizen, city: city, country: country, dateOfBirth: '2016-07-22', email: email, firstName: firstName, identificationBlob: identificationBlob, identificationType: Passport, isPep: IsPep, jobTitle: ChiefExecutiveOfficer, lastName: lastName, otherJobTitle: otherJobTitle, percentOwnership: 0, phoneNumber: phoneNumber, postalCode: postalCode, region: region, socialProfileLinks: [string], state: state}",
-			"--partner", "partner",
+			"--beneficial-owner", "{address1: address1, address2: address2, citizenshipStatus: USCitizen, city: city, country: country, dateOfBirth: '2016-07-22', email: email, firstName: x, identificationBlob: identificationBlob, identificationType: Passport, isPep: IsPep, jobTitle: ChiefExecutiveOfficer, lastName: x, otherJobTitle: otherJobTitle, percentOwnership: 0, phoneNumber: phoneNumber, postalCode: postalCode, region: region, socialProfileLinks: [x], state: state}",
+			"--partner", "x",
 			"--about", "{countriesOfOperations: [string], countryOfOperation: countryOfOperation, description: description, industry: industry, legalBusinessName: legalBusinessName, website: website}",
 			"--application-type", "PendingEINApplication",
 			"--business-contact-details", "{address1: address1, address2: address2, city: city, country: country, phoneNumber: phoneNumber, postalCode: postalCode, state: state}",
 			"--business-legal-address", "{address1: address1, address2: address2, city: city, country: country, postalCode: postalCode, region: region}",
 			"--business-physical-address", "{address1: address1, address2: address2, city: city, country: country, postalCode: postalCode, region: region}",
-			"--formation-details", "{companyOriginCountry: companyOriginCountry, companyStructure: CCorp, einDocumentFileBlob: einDocumentFileBlob, eINDocumentFileBlob: eINDocumentFileBlob, federalEin: 12-3456789, foreignBusinessNumber: foreignBusinessNumber, formationDocumentFileBlob: 12-3456789, formationDocumentType: ArticlesOfIncorporation}",
+			"--formation-details", "{companyOriginCountry: companyOriginCountry, companyStructure: CCorp, einDocumentFileBlob: einDocumentFileBlob, eINDocumentFileBlob: eINDocumentFileBlob, federalEin: 12-3456789, foreignBusinessNumber: x, formationDocumentFileBlob: 12-3456789, formationDocumentType: ArticlesOfIncorporation}",
 			"--invite-email", "inviteEmail",
 			"--webhook-url", "webhookURL",
 		)
@@ -45,20 +45,20 @@ func TestOnboardingApply(t *testing.T) {
 			"--beneficial-owner.country", "country",
 			"--beneficial-owner.date-of-birth", "2016-07-22",
 			"--beneficial-owner.email", "email",
-			"--beneficial-owner.first-name", "firstName",
+			"--beneficial-owner.first-name", "x",
 			"--beneficial-owner.identification-blob", "identificationBlob",
 			"--beneficial-owner.identification-type", "Passport",
 			"--beneficial-owner.is-pep", "IsPep",
 			"--beneficial-owner.job-title", "ChiefExecutiveOfficer",
-			"--beneficial-owner.last-name", "lastName",
+			"--beneficial-owner.last-name", "x",
 			"--beneficial-owner.other-job-title", "otherJobTitle",
 			"--beneficial-owner.percent-ownership", "0",
 			"--beneficial-owner.phone-number", "phoneNumber",
 			"--beneficial-owner.postal-code", "postalCode",
 			"--beneficial-owner.region", "region",
-			"--beneficial-owner.social-profile-links", "[string]",
+			"--beneficial-owner.social-profile-links", "[x]",
 			"--beneficial-owner.state", "state",
-			"--partner", "partner",
+			"--partner", "x",
 			"--about.countries-of-operations", "[string]",
 			"--about.country-of-operation", "countryOfOperation",
 			"--about.description", "description",
@@ -90,7 +90,7 @@ func TestOnboardingApply(t *testing.T) {
 			"--formation-details.ein-document-file-blob", "einDocumentFileBlob",
 			"--formation-details.e-in-document-file-blob", "eINDocumentFileBlob",
 			"--formation-details.federal-ein", "12-3456789",
-			"--formation-details.foreign-business-number", "foreignBusinessNumber",
+			"--formation-details.foreign-business-number", "x",
 			"--formation-details.formation-document-file-blob", "12-3456789",
 			"--formation-details.formation-document-type", "ArticlesOfIncorporation",
 			"--invite-email", "inviteEmail",
@@ -109,21 +109,21 @@ func TestOnboardingApply(t *testing.T) {
 			"    country: country\n" +
 			"    dateOfBirth: '2016-07-22'\n" +
 			"    email: email\n" +
-			"    firstName: firstName\n" +
+			"    firstName: x\n" +
 			"    identificationBlob: identificationBlob\n" +
 			"    identificationType: Passport\n" +
 			"    isPep: IsPep\n" +
 			"    jobTitle: ChiefExecutiveOfficer\n" +
-			"    lastName: lastName\n" +
+			"    lastName: x\n" +
 			"    otherJobTitle: otherJobTitle\n" +
 			"    percentOwnership: 0\n" +
 			"    phoneNumber: phoneNumber\n" +
 			"    postalCode: postalCode\n" +
 			"    region: region\n" +
 			"    socialProfileLinks:\n" +
-			"      - string\n" +
+			"      - x\n" +
 			"    state: state\n" +
-			"partner: partner\n" +
+			"partner: x\n" +
 			"about:\n" +
 			"  countriesOfOperations:\n" +
 			"    - string\n" +
@@ -161,7 +161,7 @@ func TestOnboardingApply(t *testing.T) {
 			"  einDocumentFileBlob: einDocumentFileBlob\n" +
 			"  eINDocumentFileBlob: eINDocumentFileBlob\n" +
 			"  federalEin: 12-3456789\n" +
-			"  foreignBusinessNumber: foreignBusinessNumber\n" +
+			"  foreignBusinessNumber: x\n" +
 			"  formationDocumentFileBlob: 12-3456789\n" +
 			"  formationDocumentType: ArticlesOfIncorporation\n" +
 			"inviteEmail: inviteEmail\n" +

@@ -32,14 +32,14 @@ func TestSpendReceiptsCreateUploadURL(t *testing.T) {
 			t,
 			"--api-key", "string",
 			"spend:receipts", "create-upload-url",
-			"--file-name", "fileName",
+			"--file-name", "x",
 			"--idempotency-key", "Idempotency-Key",
 		)
 	})
 
 	t.Run("piping data", func(t *testing.T) {
 		// Test piping YAML data over stdin
-		pipeData := []byte("fileName: fileName")
+		pipeData := []byte("fileName: x")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
 			"--api-key", "string",

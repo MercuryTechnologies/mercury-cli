@@ -162,7 +162,7 @@ var webhooksVerify = cli.Command{
 		},
 		&requestflag.Flag[*string]{
 			Name:     "event-type",
-			Usage:    " Optional event type to test. If not specified, defaults to transaction.created.",
+			Usage:    `Allowed values: "transaction.created", "transaction.updated", "checkingAccount.balance.updated", "savingsAccount.balance.updated", "treasuryAccount.balance.updated", "investmentAccount.balance.updated", "creditAccount.balance.updated".`,
 			BodyPath: "eventType",
 		},
 	},

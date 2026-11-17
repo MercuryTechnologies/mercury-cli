@@ -19,9 +19,9 @@ func TestRecipientsInvitesCreate(t *testing.T) {
 			"--payment-method", "ach",
 			"--require-tax-document=true",
 			"--send-email=true",
-			"--name", "name",
-			"--notes", "notes",
-			"--organization-name-on-request", "organizationNameOnRequest",
+			"--name", "x",
+			"--notes", "x",
+			"--organization-name-on-request", "x",
 			"--recipient-id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		)
 	})
@@ -34,9 +34,9 @@ func TestRecipientsInvitesCreate(t *testing.T) {
 			"  - ach\n" +
 			"requireTaxDocument: true\n" +
 			"sendEmail: true\n" +
-			"name: name\n" +
-			"notes: notes\n" +
-			"organizationNameOnRequest: organizationNameOnRequest\n" +
+			"name: x\n" +
+			"notes: x\n" +
+			"organizationNameOnRequest: x\n" +
 			"recipientId: 182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,

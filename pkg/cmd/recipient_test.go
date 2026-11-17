@@ -17,7 +17,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"--api-key", "string",
 			"recipients", "create",
 			"--email", "string",
-			"--name", "name",
+			"--name", "x",
 			"--address", "{address1: address1, city: city, postalCode: postalCode, address2: address2, state: AL}",
 			"--check-info", "{address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}}",
 			"--contact-email", "contactEmail",
@@ -38,7 +38,7 @@ func TestRecipientsCreate(t *testing.T) {
 			"--api-key", "string",
 			"recipients", "create",
 			"--email", "string",
-			"--name", "name",
+			"--name", "x",
 			"--address.address1", "address1",
 			"--address.city", "city",
 			"--address.postal-code", "postalCode",
@@ -65,7 +65,7 @@ func TestRecipientsCreate(t *testing.T) {
 		pipeData := []byte("" +
 			"emails:\n" +
 			"  - string\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"address:\n" +
 			"  address1: address1\n" +
 			"  city: city\n" +
@@ -135,7 +135,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--domestic-wire-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
 			"--electronic-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, electronicAccountType: businessChecking, routingNumber: routingNumber}",
 			"--email", "string",
-			"--name", "name",
+			"--name", "x",
 			"--nickname", "nickname",
 			"--real-time-payment-routing-info", "{accountNumber: accountNumber, address: {address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}, routingNumber: routingNumber}",
 		)
@@ -166,7 +166,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"--electronic-routing-info.electronic-account-type", "businessChecking",
 			"--electronic-routing-info.routing-number", "routingNumber",
 			"--email", "string",
-			"--name", "name",
+			"--name", "x",
 			"--nickname", "nickname",
 			"--real-time-payment-routing-info.account-number", "accountNumber",
 			"--real-time-payment-routing-info.address", "{address1: address1, city: city, country: country, postalCode: postalCode, region: region, address2: address2}",
@@ -215,7 +215,7 @@ func TestRecipientsUpdate(t *testing.T) {
 			"  routingNumber: routingNumber\n" +
 			"emails:\n" +
 			"  - string\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"nickname: nickname\n" +
 			"realTimePaymentRoutingInfo:\n" +
 			"  accountNumber: accountNumber\n" +

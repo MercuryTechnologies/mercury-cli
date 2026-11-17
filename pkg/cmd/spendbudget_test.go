@@ -19,7 +19,7 @@ func TestSpendBudgetsCreate(t *testing.T) {
 			"--amount-per-user-per-period", "0",
 			"--description", "description",
 			"--end-date", "'2016-07-22'",
-			"--name", "name",
+			"--name", "x",
 			"--start-date", "'2016-07-22'",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -32,7 +32,7 @@ func TestSpendBudgetsCreate(t *testing.T) {
 			"amountPerUserPerPeriod: 0\n" +
 			"description: description\n" +
 			"endDate: '2016-07-22'\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"startDate: '2016-07-22'\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,
@@ -55,7 +55,7 @@ func TestSpendBudgetsUpdate(t *testing.T) {
 			"--description", "description",
 			"--end-date", "'2016-07-22'",
 			"--frequency", "oneTime",
-			"--name", "name",
+			"--name", "x",
 			"--start-date", "'2016-07-22'",
 			"--idempotency-key", "Idempotency-Key",
 		)
@@ -68,7 +68,7 @@ func TestSpendBudgetsUpdate(t *testing.T) {
 			"description: description\n" +
 			"endDate: '2016-07-22'\n" +
 			"frequency: oneTime\n" +
-			"name: name\n" +
+			"name: x\n" +
 			"startDate: '2016-07-22'\n")
 		mocktest.TestRunMockTestWithPipeAndFlags(
 			t, pipeData,

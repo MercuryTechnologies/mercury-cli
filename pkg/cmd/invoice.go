@@ -134,6 +134,11 @@ var invoicesCreate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      " the price of one unit of the item before sales tax",
 			InnerField: "unitPrice",
 		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "line-item.product-id",
+			Usage:      "The ID of an invoicing product. Use the /api/v1/ar/products endpoint to list your products.",
+			InnerField: "productId",
+		},
 		&requestflag.InnerFlag[*float64]{
 			Name:       "line-item.sales-tax-rate",
 			Usage:      " the sales tax applied to this item",
@@ -246,6 +251,11 @@ var invoicesUpdate = requestflag.WithInnerFlags(cli.Command{
 			Usage:      " the price of one unit of the item before sales tax",
 			InnerField: "unitPrice",
 		},
+		&requestflag.InnerFlag[*string]{
+			Name:       "line-item.product-id",
+			Usage:      "The ID of an invoicing product. Use the /api/v1/ar/products endpoint to list your products.",
+			InnerField: "productId",
+		},
 		&requestflag.InnerFlag[*float64]{
 			Name:       "line-item.sales-tax-rate",
 			Usage:      " the sales tax applied to this item",
@@ -340,6 +350,22 @@ var invoicesGet = cli.Command{
 		},
 	},
 	Action:          handleInvoicesGet,
+	HideHelpCommand: true,
+}
+
+var invoicesRetrievePayments = cli.Command{
+	Name:    "retrieve-payments",
+	Usage:   "Retrieve the payments applied to an invoice, oldest first. Each payment shows\nthe amount, the date it was applied, and where the money came from: a Mercury\ntransaction, a card payment, or a payment received outside Mercury.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "invoice-id",
+			Usage:     "ID for the invoice.",
+			Required:  true,
+			PathParam: "invoiceId",
+		},
+	},
+	Action:          handleInvoicesRetrievePayments,
 	HideHelpCommand: true,
 }
 
@@ -603,6 +629,48 @@ func handleInvoicesGet(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "invoices get",
+		Transform:      transform,
+	})
+}
+
+func handleInvoicesRetrievePayments(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("invoice-id") && len(unusedArgs) > 0 {
+		cmd.Set("invoice-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Invoices.GetPayments(ctx, cmd.Value("invoice-id").(string), options...)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "invoices retrieve-payments",
 		Transform:      transform,
 	})
 }

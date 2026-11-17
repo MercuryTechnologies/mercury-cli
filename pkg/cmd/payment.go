@@ -209,6 +209,74 @@ var paymentsRequest = requestflag.WithInnerFlags(cli.Command{
 	},
 })
 
+var paymentsRetrieveTransactions = cli.Command{
+	Name:    "retrieve-transactions",
+	Usage:   "Retrieve a paginated list of transactions for a specific account. Supports\nfiltering by date range, status, and search terms.",
+	Suggest: true,
+	Flags: []cli.Flag{
+		&requestflag.Flag[string]{
+			Name:      "account-id",
+			Usage:     "ID for a Mercury account.",
+			Required:  true,
+			PathParam: "accountId",
+		},
+		&requestflag.Flag[string]{
+			Name:      "category-id",
+			Usage:     "UUID of a custom category. Can be returned from /categories endpoint.",
+			QueryPath: "categoryId",
+		},
+		&requestflag.Flag[string]{
+			Name:      "end",
+			Usage:     "Latest date to filter transactions. If not provided, defaults to the current date. Format: YYYY-MM-DD or ISO 8601 string",
+			QueryPath: "end",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "limit",
+			Usage:     "Maximum number of results to return. Allowed range: 1 to 1000. Defaults to 1000",
+			Default:   1000,
+			QueryPath: "limit",
+		},
+		&requestflag.Flag[string]{
+			Name:      "mercury-category",
+			Usage:     "Name of mercuryCategory you want to filter on. Merchant Type in the UI.",
+			QueryPath: "mercuryCategory",
+		},
+		&requestflag.Flag[int64]{
+			Name:      "offset",
+			Usage:     "Number of results to skip for pagination",
+			QueryPath: "offset",
+		},
+		&requestflag.Flag[string]{
+			Name:      "order",
+			Usage:     "Sort order. Can be 'asc' or 'desc'. Defaults to 'desc'",
+			Default:   "desc",
+			QueryPath: "order",
+		},
+		&requestflag.Flag[string]{
+			Name:      "request-id",
+			Usage:     "ID returned from /account/:id/request-send-money",
+			QueryPath: "requestId",
+		},
+		&requestflag.Flag[string]{
+			Name:      "search",
+			Usage:     "Search term to filter transactions by description, note, recipient memo, or counterparty name",
+			QueryPath: "search",
+		},
+		&requestflag.Flag[string]{
+			Name:      "start",
+			Usage:     "Earliest date to filter transactions. If not provided, defaults to 30 days before the current date. Format: YYYY-MM-DD or ISO 8601 string",
+			QueryPath: "start",
+		},
+		&requestflag.Flag[string]{
+			Name:      "status",
+			Usage:     `Allowed values: "pending", "sent", "cancelled", "failed", "reversed", "blocked".`,
+			QueryPath: "status",
+		},
+	},
+	Action:          handlePaymentsRetrieveTransactions,
+	HideHelpCommand: true,
+}
+
 var paymentsTransfer = cli.Command{
 	Name:    "transfer",
 	Usage:   "Transfer funds between two accounts within the same organization. Supports\ntransfers between depository accounts (checking/savings), from a depository\naccount to a treasury/investment account, and from a treasury/investment account\nto a depository account. Creates paired debit and credit transactions.",
@@ -447,6 +515,55 @@ func handlePaymentsRequest(ctx context.Context, cmd *cli.Command) error {
 		Format:         format,
 		RawOutput:      cmd.Root().Bool("raw-output"),
 		Title:          "payments request",
+		Transform:      transform,
+	})
+}
+
+func handlePaymentsRetrieveTransactions(ctx context.Context, cmd *cli.Command) error {
+	client := mercury.NewClient(getDefaultRequestOptions(cmd)...)
+	unusedArgs := cmd.Args().Slice()
+	if !cmd.IsSet("account-id") && len(unusedArgs) > 0 {
+		cmd.Set("account-id", unusedArgs[0])
+		unusedArgs = unusedArgs[1:]
+	}
+	if len(unusedArgs) > 0 {
+		return fmt.Errorf("Unexpected extra arguments: %v", unusedArgs)
+	}
+
+	options, err := flagOptions(
+		cmd,
+		apiquery.NestedQueryFormatBrackets,
+		apiquery.ArrayQueryFormatComma,
+		EmptyBody,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	params := mercury.PaymentGetTransactionsParams{}
+
+	var res []byte
+	options = append(options, option.WithResponseBodyInto(&res))
+	_, err = client.Payments.GetTransactions(
+		ctx,
+		cmd.Value("account-id").(string),
+		params,
+		options...,
+	)
+	if err != nil {
+		return err
+	}
+
+	obj := gjson.ParseBytes(res)
+	format := cmd.Root().String("format")
+	explicitFormat := cmd.Root().IsSet("format")
+	transform := cmd.Root().String("transform")
+	return ShowJSON(obj, ShowJSONOpts{
+		ExplicitFormat: explicitFormat,
+		Format:         format,
+		RawOutput:      cmd.Root().Bool("raw-output"),
+		Title:          "payments retrieve-transactions",
 		Transform:      transform,
 	})
 }
