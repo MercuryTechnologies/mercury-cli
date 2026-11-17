@@ -35,12 +35,6 @@ func init() {
 				Name:  "debug",
 				Usage: "Enable debug logging",
 			},
-			// CUSTOM: confirmation prompt skip flag
-			&cli.BoolFlag{
-				Name:    "yes",
-				Aliases: []string{"y"},
-				Usage:   "Skip confirmation prompts",
-			},
 			&cli.StringFlag{
 				Name:        "base-url",
 				DefaultText: "url",
@@ -91,17 +85,13 @@ func init() {
 			},
 			&cli.StringFlag{
 				Name:  "environment",
-				Usage: "API environment: sandbox or production",
-				Validator: func(environment string) error {
-					return ValidateEnvironment(environment, "--environment")
-				},
+				Usage: "Set the environment for API requests",
 			},
 		},
 		Commands: []*cli.Command{
 			{
 				Name:     "customers",
-				Usage:    "Create, update, and manage customers",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&customersCreate,
@@ -113,8 +103,7 @@ func init() {
 			},
 			{
 				Name:     "invoices",
-				Usage:    "Create, update, and manage invoices",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&invoicesCreate,
@@ -136,8 +125,7 @@ func init() {
 			},
 			{
 				Name:     "cards",
-				Usage:    "List debit and credit cards for an account",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&cardsCreate,
@@ -152,8 +140,7 @@ func init() {
 			},
 			{
 				Name:     "categories",
-				Usage:    "List expense categories",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&categoriesCreate,
@@ -164,8 +151,7 @@ func init() {
 			},
 			{
 				Name:     "credit",
-				Usage:    "List credit accounts",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&creditList,
@@ -173,8 +159,7 @@ func init() {
 			},
 			{
 				Name:     "events",
-				Usage:    "List and inspect API events",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&eventsList,
@@ -183,8 +168,7 @@ func init() {
 			},
 			{
 				Name:     "org",
-				Usage:    "View organization details",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&orgGet,
@@ -192,8 +176,7 @@ func init() {
 			},
 			{
 				Name:     "payments",
-				Usage:    "Send money, request approvals, and transfer between accounts",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&paymentsCreate,
@@ -205,8 +188,7 @@ func init() {
 			},
 			{
 				Name:     "safes",
-				Usage:    "List and download SAFE agreements",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&safesList,
@@ -242,8 +224,7 @@ func init() {
 			},
 			{
 				Name:     "statements",
-				Usage:    "Download account statements as PDF",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&statementsDownload,
@@ -267,8 +248,7 @@ func init() {
 			},
 			{
 				Name:     "treasury",
-				Usage:    "View treasury accounts, statements, and transactions",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&treasuryList,
@@ -277,8 +257,7 @@ func init() {
 			},
 			{
 				Name:     "users",
-				Usage:    "List and view organization team members",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&usersList,
@@ -287,8 +266,7 @@ func init() {
 			},
 			{
 				Name:     "webhooks",
-				Usage:    "Set up and manage webhook endpoints",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&webhooksCreate,
@@ -301,8 +279,7 @@ func init() {
 			},
 			{
 				Name:     "accounts",
-				Usage:    "View accounts, cards, and transactions",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&accountsList,
@@ -311,8 +288,7 @@ func init() {
 			},
 			{
 				Name:     "recipients",
-				Usage:    "Add, update, and manage payment recipients",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&recipientsCreate,
@@ -344,8 +320,7 @@ func init() {
 			},
 			{
 				Name:     "transactions",
-				Usage:    "Search, update, and attach files to transactions",
-				Category: "Resources",
+				Category: "API RESOURCE",
 				Suggest:  true,
 				Commands: []*cli.Command{
 					&transactionsUpdate,
@@ -361,12 +336,6 @@ func init() {
 					&transactionsAttachmentsAttach,
 				},
 			},
-			// CUSTOM: OAuth auth commands
-			&authLogin,
-			&authLogout,
-			&authStatus,
-			// CUSTOM: self-upgrade command
-			&upgrade,
 			{
 				Name:     "onboarding",
 				Category: "API RESOURCE",
@@ -414,12 +383,6 @@ func init() {
 				Hidden:          true,
 				HideHelpCommand: true,
 				Action:          autocomplete.OutputCompletionScript,
-			},
-			{
-				Name:     "hat",
-				Usage:    "The most important command",
-				Category: "Resources",
-				Action:   openHat,
 			},
 		},
 		HideHelpCommand: true,

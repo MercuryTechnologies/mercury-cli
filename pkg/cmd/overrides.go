@@ -7,6 +7,11 @@ package cmd
 // strings (and global flag descriptions) to be concise, consistent, and free
 // of HTTP implementation details, and reshapes the generated command tree.
 //
+// Keep cmd.go exactly as generated and make root command and flag changes
+// here. stlc replays every edit to a generated file onto each regeneration,
+// and an edit next to lines the generator changes stops the CLI build with a
+// merge conflict.
+//
 // After a Stainless update, run `go build ./...` to confirm nothing broke.
 // If Stainless renames a variable, the compiler will tell you here.
 
@@ -28,6 +33,9 @@ import (
 )
 
 func ptr[T any](v T) *T { return &v }
+
+// resourcesCategory is the `mercury --help` heading for resource groups.
+const resourcesCategory = "Resources"
 
 // setFlagUsage overwrites the Usage text of a named flag on a command. It uses
 // reflection so one helper works across all generic `requestflag.Flag[T]`
@@ -52,19 +60,36 @@ func setFlagUsage(cmd *cli.Command, name, usage string) {
 	}
 }
 
-// nestedGroupUsage holds the help text for groups that nestColonGroups moves
-// or creates, keyed by their space-separated path under `mercury`.
-var nestedGroupUsage = map[string]string{
+// groupUsage holds the help text for resource groups, keyed by their
+// space-separated path under `mercury`. Top-level entries show in the
+// `mercury --help` box.
+var groupUsage = map[string]string{
+	"accounts":                 "List and view bank accounts",
+	"cards":                    "Issue, view, and manage debit and credit cards",
+	"categories":               "List expense categories",
+	"credit":                   "List credit accounts",
+	"customers":                "Create, update, and manage customers",
+	"events":                   "List and inspect API events",
+	"invoices":                 "Create, update, and manage invoices",
 	"invoices attachments":     "Get accounts receivable attachment details",
+	"org":                      "View organization details",
+	"payments":                 "Send money, request approvals, and transfer between accounts",
+	"recipients":               "Add, update, and manage payment recipients",
 	"recipients attachments":   "List and upload recipient tax form attachments",
 	"recipients invites":       "Create and manage recipient invites",
+	"safes":                    "List and download SAFE agreements",
 	"spend":                    "Manage budgets, receipts, and reimbursements",
 	"spend budgets":            "Create, update, and manage budgets",
 	"spend receipts":           "Upload receipts and match them to transactions",
 	"spend reimbursements":     "Create, review, and track reimbursements",
+	"statements":               "Download account statements as PDF",
 	"statements accounts":      "List monthly account statements",
 	"statements treasury":      "List treasury account statements",
+	"transactions":             "Search, update, and attach files to transactions",
 	"transactions attachments": "Upload file attachments to transactions",
+	"treasury":                 "View treasury accounts and transactions",
+	"users":                    "List and view organization team members",
+	"webhooks":                 "Set up and manage webhook endpoints",
 }
 
 // nestColonGroups moves each top-level group named `a:b` (or `a:b:c`) under
@@ -94,11 +119,11 @@ func nestColonGroups(root *cli.Command) {
 			if next == nil {
 				next = &cli.Command{
 					Name:    segment,
-					Usage:   nestedGroupUsage[strings.Join(segments[:i+1], " ")],
+					Usage:   groupUsage[strings.Join(segments[:i+1], " ")],
 					Suggest: true,
 				}
 				if parent == root {
-					next.Category = "Resources"
+					next.Category = resourcesCategory
 				}
 				parent.Commands = append(parent.Commands, next)
 			}
@@ -106,7 +131,7 @@ func nestColonGroups(root *cli.Command) {
 		}
 		group.Name = leaf
 		group.Category = ""
-		if usage, ok := nestedGroupUsage[strings.Join(segments, " ")]; ok {
+		if usage, ok := groupUsage[strings.Join(segments, " ")]; ok {
 			group.Usage = usage
 		}
 		parent.Commands = append(parent.Commands, group)
@@ -114,25 +139,19 @@ func nestColonGroups(root *cli.Command) {
 }
 
 func init() {
-	// ── Top-level resource descriptions (shown in `mercury --help` box) ──────
-	//
-	// These match by string name because the resource groups are declared inline
-	// in cmd.go, not as named package-level vars. If Stainless renames a resource,
-	// the match silently falls back to the generated description (no compiler
-	// error). This is the same fragility as the `// CUSTOM:` approach used
-	// elsewhere in cmd.go — just worth keeping in mind after codegen updates.
-	for _, sub := range Command.Commands {
-		switch sub.Name {
-		case "accounts":
-			sub.Usage = "List and view bank accounts"
-		case "cards":
-			sub.Usage = "Issue, view, and manage debit and credit cards"
-		case "payments":
-			sub.Usage = "Send money, request approvals, and transfer between accounts"
-		case "treasury":
-			sub.Usage = "View treasury accounts and transactions"
-		}
-	}
+	// ── Commands that are not generated ──────────────────────────────────────
+	Command.Commands = append(Command.Commands,
+		&authLogin,
+		&authLogout,
+		&authStatus,
+		&upgrade,
+		&cli.Command{
+			Name:     "hat",
+			Usage:    "The most important command",
+			Category: resourcesCategory,
+			Action:   openHat,
+		},
+	)
 
 	// ── Flatten `onboarding apply` to a top-level `mercury apply` command ─────
 	//
@@ -156,15 +175,41 @@ func init() {
 	//
 	// Stainless generates nested resources as flat top-level groups such as
 	// `spend:receipts`. nestColonGroups moves them under their parent, so the
-	// CLI exposes `mercury spend receipts`. Keep the nesting here, not in
-	// cmd.go: stlc replays every edit to a generated file onto each
-	// regeneration, and an edit next to lines the generator changes stops the
-	// CLI build with a merge conflict.
+	// CLI exposes `mercury spend receipts`.
 	nestColonGroups(Command)
 
+	// ── Top-level resource groups ────────────────────────────────────────────
+	//
+	// These match by string name because the resource groups are declared inline
+	// in cmd.go, not as named package-level vars. If Stainless renames a resource,
+	// the group keeps its generated (empty) description with no compiler error.
+	// Groups the generator adds later land under resourcesCategory without an edit.
+	for _, sub := range Command.Commands {
+		if sub.Category != "API RESOURCE" {
+			continue
+		}
+		sub.Category = resourcesCategory
+		if usage, ok := groupUsage[sub.Name]; ok {
+			sub.Usage = usage
+		}
+	}
+
 	// ── Global flag overrides ────────────────────────────────────────────────
+	debug := slices.IndexFunc(Command.Flags, func(f cli.Flag) bool { return f.Names()[0] == "debug" })
+	Command.Flags = slices.Insert(Command.Flags, debug+1, cli.Flag(&cli.BoolFlag{
+		Name:    "yes",
+		Aliases: []string{"y"},
+		Usage:   "Skip confirmation prompts",
+	}))
 	for _, f := range Command.Flags {
 		switch f.Names()[0] {
+		case "environment":
+			if sf, ok := f.(*cli.StringFlag); ok {
+				sf.Usage = "API environment: sandbox or production"
+				sf.Validator = func(environment string) error {
+					return ValidateEnvironment(environment, "--environment")
+				}
+			}
 		case "api-key":
 			if rf, ok := f.(*requestflag.Flag[string]); ok {
 				rf.Usage = "Mercury API token (from dashboard settings)"

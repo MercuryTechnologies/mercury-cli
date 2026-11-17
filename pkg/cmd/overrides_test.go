@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -64,13 +65,40 @@ func TestCommandTreeHasNoColonGroups(t *testing.T) {
 	}
 	spend := Command.Command("spend")
 	require.NotNil(t, spend)
-	assert.Equal(t, "Resources", spend.Category)
+	assert.Equal(t, resourcesCategory, spend.Category)
 	assert.NotNil(t, spend.Command("budgets"))
 
 	receipts := spend.Command("receipts")
 	require.NotNil(t, receipts)
 	assert.Empty(t, receipts.Category)
 	assert.NotEmpty(t, receipts.Usage)
+}
+
+func TestRootOverrides(t *testing.T) {
+	t.Parallel()
+
+	for _, sub := range Command.Commands {
+		assert.NotEqual(t, "API RESOURCE", sub.Category, sub.Name)
+	}
+	cards := Command.Command("cards")
+	require.NotNil(t, cards)
+	assert.Equal(t, groupUsage["cards"], cards.Usage)
+
+	var flags []string
+	for _, f := range Command.Flags {
+		flags = append(flags, f.Names()[0])
+	}
+	debug := slices.Index(flags, "debug")
+	require.GreaterOrEqual(t, debug, 0)
+	assert.Equal(t, "yes", flags[debug+1])
+
+	environment := slices.Index(flags, "environment")
+	require.GreaterOrEqual(t, environment, 0)
+	envFlag, ok := Command.Flags[environment].(*cli.StringFlag)
+	require.True(t, ok, "--environment is no longer a *cli.StringFlag, so its validator override is skipped")
+	require.NotNil(t, envFlag.Validator)
+	assert.NoError(t, envFlag.Validator("sandbox"))
+	assert.Error(t, envFlag.Validator("bogus"))
 }
 
 // commandPaths lists every command under cmd depth-first, in order, as
