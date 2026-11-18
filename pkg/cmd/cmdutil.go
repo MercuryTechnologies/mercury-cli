@@ -30,7 +30,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var OutputFormats = []string{"auto", "explore", "json", "jsonl", "pretty", "raw", "yaml"}
+var OutputFormats = []string{"auto", "csv", "explore", "json", "jsonl", "pretty", "raw", "yaml"}
 
 var Environments = []string{"production", "sandbox"}
 
@@ -378,6 +378,8 @@ func formatJSON(res gjson.Result, opts ShowJSONOpts) ([]byte, error) {
 		}
 	case "raw":
 		return []byte(res.Raw + "\n"), nil
+	case "csv":
+		return formatCSV(res, opts.csv)
 	case "yaml":
 		// Prefix every document with "---" so concatenated outputs (e.g. list
 		// commands streaming one item at a time) form a valid multi-document
@@ -403,12 +405,17 @@ const warningExploreNotSupported = "Warning: Output format 'explore' not support
 // ShowJSONOpts configures how JSON output is displayed.
 type ShowJSONOpts struct {
 	ExplicitFormat bool      // true if the user explicitly passed --format
-	Format         string    // output format (auto, explore, json, jsonl, pretty, raw, yaml)
+	Format         string    // output format (auto, csv, explore, json, jsonl, pretty, raw, yaml)
 	RawOutput      bool      // like jq -r: print strings without JSON quotes
 	Stderr         io.Writer // stderr for warnings; injectable for testing; defaults to os.Stderr
 	Stdout         *os.File  // stdout (or pager); injectable for testing; defaults to os.Stdout
 	Title          string    // display title
 	Transform      string    // GJSON path to extract before displaying
+
+	// csv holds the CSV column layout shared across per-item formatJSON calls;
+	// the pointer survives the by-value copies of ShowJSONOpts so streaming
+	// output writes one header row for the whole stream.
+	csv *csvState
 }
 
 func (o *ShowJSONOpts) setDefaults() {
@@ -417,6 +424,9 @@ func (o *ShowJSONOpts) setDefaults() {
 	}
 	if o.Stdout == nil {
 		o.Stdout = os.Stdout
+	}
+	if o.csv == nil {
+		o.csv = &csvState{}
 	}
 }
 
